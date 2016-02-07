@@ -181,8 +181,6 @@
 				18D84FAC1C6754100090BF78 /* Cells */,
 				1804041F1C662A6000876FFE /* AppDelegate.h */,
 				180404201C662A6000876FFE /* AppDelegate.m */,
-				180404221C662A6000876FFE /* ViewController.h */,
-				180404231C662A6000876FFE /* ViewController.m */,
 				180404871C662DE600876FFE /* ANServerManager.h */,
 				180404881C662DE600876FFE /* ANServerManager.m */,
 				180404251C662A6000876FFE /* Main.storyboard */,
@@ -300,6 +298,8 @@
 			children = (
 				180404941C66300200876FFE /* ANLoginViewController.h */,
 				180404951C66300200876FFE /* ANLoginViewController.m */,
+				180404221C662A6000876FFE /* ViewController.h */,
+				180404231C662A6000876FFE /* ViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";

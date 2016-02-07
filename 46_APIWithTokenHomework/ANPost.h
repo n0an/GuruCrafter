@@ -7,9 +7,23 @@
 //
 
 #import "ANServerObject.h"
+#import <UIKit/UIKit.h>
 
 @interface ANPost : ANServerObject
 
 @property (strong, nonatomic) NSString* text;
+
+@property (strong, nonatomic) NSString* date;
+@property (strong, nonatomic) NSURL* postImageURL;
+@property (assign, nonatomic) NSInteger heightImage;
+@property (assign, nonatomic) NSInteger widthImage;
+
+@property (strong, nonatomic) NSString* comments;
+@property (strong, nonatomic) NSString* likes;
+
+@property (assign, nonatomic) NSInteger sizeText;
+@property (strong, nonatomic) UIImage* postImage;
+
+
 
 @end

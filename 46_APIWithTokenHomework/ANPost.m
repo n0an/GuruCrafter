@@ -19,6 +19,10 @@
         
         self.text = [self.text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
         
+        
+        self.comments = [[[responseObject objectForKey:@"comments"] objectForKey:@"count"] stringValue];
+        self.likes = [[[responseObject objectForKey:@"likes"] objectForKey:@"count"] stringValue];
+        
     }
     return self;
 }
