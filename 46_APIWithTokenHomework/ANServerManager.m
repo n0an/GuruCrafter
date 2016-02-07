@@ -107,7 +107,7 @@
     
     NSDictionary* params =
     [NSDictionary dictionaryWithObjectsAndKeys:
-     userID,   @"user_ids",
+     userID,        @"user_ids",
      @"photo_50",   @"fields",
      @"nom",        @"name_case", nil];
     
@@ -272,7 +272,9 @@
     NSDictionary* params =
     [NSDictionary dictionaryWithObjectsAndKeys:
      groupID,                   @"owner_id",
-     text,                      @"message", nil];
+     text,                      @"message",
+     self.accessToken.token,    @"access_token",
+     nil];
     
     
     

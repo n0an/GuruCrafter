@@ -38,6 +38,7 @@
 		180404961C66300200876FFE /* ANLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404951C66300200876FFE /* ANLoginViewController.m */; };
 		1804049A1C66309100876FFE /* ANAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404991C66309100876FFE /* ANAccessToken.m */; };
 		1804049D1C6630D000876FFE /* ANPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804049C1C6630D000876FFE /* ANPost.m */; };
+		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +123,8 @@
 		180404991C66309100876FFE /* ANAccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAccessToken.m; sourceTree = "<group>"; };
 		1804049B1C6630D000876FFE /* ANPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPost.h; sourceTree = "<group>"; };
 		1804049C1C6630D000876FFE /* ANPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPost.m; sourceTree = "<group>"; };
+		18D84FA91C67540D0090BF78 /* ANPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostCell.h; sourceTree = "<group>"; };
+		18D84FAA1C67540D0090BF78 /* ANPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +178,7 @@
 			children = (
 				1804048D1C662F3B00876FFE /* Models */,
 				180404971C66305C00876FFE /* Controllers */,
+				18D84FAC1C6754100090BF78 /* Cells */,
 				1804041F1C662A6000876FFE /* AppDelegate.h */,
 				180404201C662A6000876FFE /* AppDelegate.m */,
 				180404221C662A6000876FFE /* ViewController.h */,
@@ -298,6 +302,15 @@
 				180404951C66300200876FFE /* ANLoginViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		18D84FAC1C6754100090BF78 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				18D84FA91C67540D0090BF78 /* ANPostCell.h */,
+				18D84FAA1C67540D0090BF78 /* ANPostCell.m */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -446,6 +459,7 @@
 				1804047D1C662D2000876FFE /* AFURLResponseSerialization.m in Sources */,
 				1804047B1C662D2000876FFE /* AFURLConnectionOperation.m in Sources */,
 				180404821C662D2000876FFE /* UIButton+AFNetworking.m in Sources */,
+				18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */,
 				180404801C662D2000876FFE /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				1804047A1C662D2000876FFE /* AFSecurityPolicy.m in Sources */,
 				180404851C662D2000876FFE /* UIRefreshControl+AFNetworking.m in Sources */,
@@ -682,6 +696,7 @@
 				180404481C662A6000876FFE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		180404491C662A6000876FFE /* Build configuration list for PBXNativeTarget "46_APIWithTokenHomeworkTests" */ = {
 			isa = XCConfigurationList;
@@ -690,6 +705,7 @@
 				1804044B1C662A6000876FFE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1804044C1C662A6000876FFE /* Build configuration list for PBXNativeTarget "46_APIWithTokenHomeworkUITests" */ = {
 			isa = XCConfigurationList;
@@ -698,6 +714,7 @@
 				1804044E1C662A6000876FFE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

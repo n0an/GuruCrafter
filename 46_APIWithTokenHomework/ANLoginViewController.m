@@ -57,11 +57,10 @@
     
     NSString* urlString =
     @"https://oauth.vk.com/authorize?"
-    "client_id=5209463&"
+    "client_id=5278567&"
     "scope=139286&" // +2 +4 +16 + 131072 + 8192
-    "redirect_uri=hello.there&"
+    "redirect_uri=https://oauth.vk.com/blank.html&"
     "display=mobile&"
-    "v=5.11&"
     "response_type=token";
     
     NSURL* url = [NSURL URLWithString:urlString];
@@ -103,9 +102,7 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
-    
-    
-    if ([[[request URL] host] isEqualToString:@"hello.there"]) {
+    if ([[[request URL] description] rangeOfString:@"#access_token="].location != NSNotFound) {
         
         ANAccessToken* token = [[ANAccessToken alloc] init];
         
@@ -153,7 +150,11 @@
         [self dismissViewControllerAnimated:YES completion:nil];
         
         return NO;
+
+        
+        
     }
+    
     
     
     return YES;
