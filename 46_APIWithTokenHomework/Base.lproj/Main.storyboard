@@ -6,7 +6,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
+        <!--iOSDevCourse-->
         <scene sceneID="0b6-l5-8XE">
             <objects>
                 <tableViewController id="hCH-qc-UiJ" customClass="ViewController" sceneMemberID="viewController">
@@ -15,7 +15,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="300" id="cgT-Mk-B48">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="300" id="cgT-Mk-B48" customClass="ANPostCell">
                                 <rect key="frame" x="0.0" y="92" width="600" height="300"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cgT-Mk-B48" id="Myy-Au-6GF">
@@ -143,6 +143,15 @@
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="commentsCountLabel" destination="PV9-BM-1pd" id="kSp-yx-sZF"/>
+                                    <outlet property="dateLabel" destination="e1c-5u-Smp" id="WV7-pi-xw9"/>
+                                    <outlet property="fullNameLabel" destination="vDS-YI-kAi" id="Qeb-ft-Pao"/>
+                                    <outlet property="likesCountLabel" destination="VdP-Pn-FXD" id="KaD-QQ-Mq9"/>
+                                    <outlet property="postAuthorImageView" destination="m6t-bs-EiR" id="0pT-Be-dDA"/>
+                                    <outlet property="postImageView" destination="msO-kk-hiM" id="ggZ-fV-TuP"/>
+                                    <outlet property="postTextLabel" destination="z7b-Oo-fHA" id="kMh-8v-LgA"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -150,7 +159,7 @@
                             <outlet property="delegate" destination="hCH-qc-UiJ" id="mpg-Gk-4gY"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="a8D-h6-L2D"/>
+                    <navigationItem key="navigationItem" title="iOSDevCourse" id="a8D-h6-L2D"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5bp-Qw-byE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
