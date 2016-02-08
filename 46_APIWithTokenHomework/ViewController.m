@@ -17,12 +17,6 @@
 
 #import "ANPhoto.h"
 
-static CGSize CGSizeResizeToHeight(CGSize size, CGFloat height) {
-    size.width *= height / size.height;
-    size.height = height;
-    return size;
-}
-
 @interface ViewController () <UIScrollViewDelegate>
 
 @property (assign, nonatomic) BOOL firstTimeAppear;
@@ -57,10 +51,8 @@ static NSInteger postsInRequest = 20;
     UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
-    
-
-    
 }
+
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -74,7 +66,6 @@ static NSInteger postsInRequest = 20;
             NSLog(@"%@ %@", user.firstName, user.lastName);
         }];
     }
-    
     
 }
 
@@ -114,9 +105,6 @@ static NSInteger postsInRequest = 20;
                         [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
                     }
                     
-                    
-                    
-                    
                     [self.tableView beginUpdates];
                     [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
@@ -131,8 +119,6 @@ static NSInteger postsInRequest = 20;
                 }];
         
     }
-    
-    
     
     
 }
@@ -246,19 +232,36 @@ static NSInteger postsInRequest = 20;
         postCell.commentsCountLabel.text = post.comments;
         postCell.likesCountLabel.text = post.likes;
         
-        
         postCell.postTextLabel.text = post.text;
         
         
-        
-        
         // *** ADDING IMAGES
-        
+        // **** IF ONLY ONE PHOTO. PLACING IT TO MAIN IMAGEVIEW
         postCell.postImageView.image = nil;
         
         if (post.postMainImageURL) {
             [postCell.postImageView setImageWithURL:post.postMainImageURL];
         }
+        
+        // **** IF THERE'RE MANY PHOTOS - PLACE THE FIRST ONE TO THE MAIN IMAGEVIEW, THEN
+        // **** TAKE THE FOLLOWING 3, AND FILL GALLERY BY THEM
+        postCell.galleryImageViewFirst.image = nil;
+        postCell.galleryImageViewSecond.image = nil;
+        postCell.galleryImageViewThird.image = nil;
+        
+        if ([post.attachmentsArray count] > 1) {
+            for (int i = 1; i < MIN(4, [post.attachmentsArray count]) ; i++) {
+                ANPhoto* photo = [post.attachmentsArray objectAtIndex:i];
+                NSURL* photoURL = [NSURL URLWithString:photo.photo_604];
+                
+                UIImageView* imageView = [postCell.galleryImageViews objectAtIndex:i-1];
+                
+                [imageView setImageWithURL:photoURL];
+                
+
+            }
+        }
+        
         
         
         return postCell;

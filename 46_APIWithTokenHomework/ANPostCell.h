@@ -22,8 +22,12 @@
 @property (weak, nonatomic) IBOutlet UIImageView* postAuthorImageView;
 @property (weak, nonatomic) IBOutlet UIImageView* postImageView;
 
+@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewFirst;
+@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewSecond;
+@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewThird;
 
 
+@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *galleryImageViews;
 
 + (CGFloat) heightForText:(NSString*) text;
 

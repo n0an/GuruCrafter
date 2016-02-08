@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSString* photo_1280;
 @property (strong, nonatomic) NSString* photo_2560;
 
-
+@property (strong, nonatomic) NSString* maxRes;
 
 
 
