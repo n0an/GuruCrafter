@@ -47,6 +47,15 @@ static NSInteger postsInRequest = 20;
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
     
+    
+    UIBarButtonItem* addPostBarButton =
+    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                  target:self
+                                                  action:@selector(postOnWall:)];
+    
+    self.navigationItem.rightBarButtonItem = addPostBarButton;
+
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -141,6 +150,21 @@ static NSInteger postsInRequest = 20;
          
      }];
     
+    
+}
+
+
+- (void) postOnWall:(id) sender {
+    
+    [[ANServerManager sharedManager]
+     postText:@"Test from 47 Lesson :-)"
+     onGroupWall:@"58860049"
+     onSuccess:^(id result) {
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         
+     }];
     
 }
 
