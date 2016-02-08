@@ -58,13 +58,6 @@ static NSInteger postsInRequest = 20;
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
     
-    
-//    UIBarButtonItem* addPostBarButton =
-//    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-//                                                  target:self
-//                                                  action:@selector(postOnWall:)];
-//    
-//    self.navigationItem.rightBarButtonItem = addPostBarButton;
 
     
 }
@@ -261,7 +254,11 @@ static NSInteger postsInRequest = 20;
         
         // *** ADDING IMAGES
         
+        postCell.postImageView.image = nil;
         
+        if (post.postMainImageURL) {
+            [postCell.postImageView setImageWithURL:post.postMainImageURL];
+        }
         
         
         return postCell;

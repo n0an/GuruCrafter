@@ -30,12 +30,6 @@
         
         self.authorID = [[responseObject objectForKey:@"from_id"] stringValue];
         
-        // *** MAIN ATTACHMENT
-//        NSDictionary* mainAttachment = [[responseObject objectForKey:@"attachment"] objectForKey:@"photo"];
-//        self.postImageURL = [NSURL URLWithString:[mainAttachment objectForKey:@"src_xbig"]];
-//        
-//        NSInteger originalHeight = [[mainAttachment objectForKey:@"height"] integerValue];
-//        NSInteger originalWidth = [[mainAttachment objectForKey:@"width"] integerValue];
         
         
         // *** ATTACHMENTS ARRAY
@@ -50,6 +44,13 @@
                 [attachmentsArray addObject:photo];
             }
             
+        }
+        
+        // *** IF THERE'S ONLY ONE PHOTO - GET URL NOW, OTHERWISE - LEAVE ARRAY
+        
+        if ([attachmentsArray count] == 1) {
+            ANPhoto* singlePhoto = [attachmentsArray objectAtIndex:0];
+            self.postMainImageURL = [NSURL URLWithString:singlePhoto.photo_604];
         }
         
         self.attachmentsArray = attachmentsArray;
