@@ -15,8 +15,37 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="addPostCell" id="58W-Sv-2Sp">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="58W-Sv-2Sp" id="BXv-ZY-u8r">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OTz-Jb-9Nb">
+                                            <rect key="frame" x="519" y="7" width="73" height="30"/>
+                                            <color key="backgroundColor" red="0.385073059" green="0.5745729745" blue="0.82465277780000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="30" id="Q8p-4u-Sln"/>
+                                                <constraint firstAttribute="width" constant="73" id="oJc-x7-mpE"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <state key="normal" title="Add Post">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <segue destination="FlH-1h-GaZ" kind="show" identifier="addPostSegue" id="bzI-20-eBb"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="OTz-Jb-9Nb" secondAttribute="trailing" constant="8" id="ekw-ol-FW5"/>
+                                        <constraint firstItem="OTz-Jb-9Nb" firstAttribute="centerY" secondItem="BXv-ZY-u8r" secondAttribute="centerY" id="f1h-4p-NEO"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="postCell" rowHeight="300" id="cgT-Mk-B48" customClass="ANPostCell">
-                                <rect key="frame" x="0.0" y="92" width="600" height="300"/>
+                                <rect key="frame" x="0.0" y="136" width="600" height="300"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cgT-Mk-B48" id="Myy-Au-6GF">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="299.5"/>
@@ -158,6 +187,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5bp-Qw-byE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-96" y="96"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="fM2-cW-9X7">
+            <objects>
+                <viewController id="FlH-1h-GaZ" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="m9c-SL-7QZ"/>
+                        <viewControllerLayoutGuide type="bottom" id="pFQ-ih-5Gh"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Jfe-bc-z6b">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tNZ-FY-cMg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="748" y="-632"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="MSa-Qm-GZ5">
