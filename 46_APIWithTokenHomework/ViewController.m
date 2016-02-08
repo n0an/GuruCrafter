@@ -26,7 +26,7 @@
 
 @end
 
-static NSInteger postsInRequest = 20;
+static NSInteger postsInRequest = 2;
 
 
 @implementation ViewController

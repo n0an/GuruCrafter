@@ -39,6 +39,7 @@
 		1804049A1C66309100876FFE /* ANAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404991C66309100876FFE /* ANAccessToken.m */; };
 		1804049D1C6630D000876FFE /* ANPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804049C1C6630D000876FFE /* ANPost.m */; };
 		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
+		18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8591C68896400C1204F /* ANPhoto.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +126,8 @@
 		1804049C1C6630D000876FFE /* ANPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPost.m; sourceTree = "<group>"; };
 		18D84FA91C67540D0090BF78 /* ANPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostCell.h; sourceTree = "<group>"; };
 		18D84FAA1C67540D0090BF78 /* ANPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCell.m; sourceTree = "<group>"; };
+		18E8D8581C68896400C1204F /* ANPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhoto.h; sourceTree = "<group>"; };
+		18E8D8591C68896400C1204F /* ANPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhoto.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -283,6 +286,8 @@
 			children = (
 				1804048A1C662F2C00876FFE /* ANServerObject.h */,
 				1804048B1C662F2C00876FFE /* ANServerObject.m */,
+				18E8D8581C68896400C1204F /* ANPhoto.h */,
+				18E8D8591C68896400C1204F /* ANPhoto.m */,
 				1804049B1C6630D000876FFE /* ANPost.h */,
 				1804049C1C6630D000876FFE /* ANPost.m */,
 				1804048E1C662F5800876FFE /* ANUser.h */,
@@ -463,6 +468,7 @@
 				180404801C662D2000876FFE /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				1804047A1C662D2000876FFE /* AFSecurityPolicy.m in Sources */,
 				180404851C662D2000876FFE /* UIRefreshControl+AFNetworking.m in Sources */,
+				18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */,
 				180404861C662D2000876FFE /* UIWebView+AFNetworking.m in Sources */,
 				180404781C662D2000876FFE /* AFHTTPSessionManager.m in Sources */,
 				180404811C662D2000876FFE /* UIAlertView+AFNetworking.m in Sources */,

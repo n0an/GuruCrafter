@@ -24,11 +24,10 @@
 @property (strong, nonatomic) NSString* comments;
 @property (strong, nonatomic) NSString* likes;
 
-@property (assign, nonatomic) NSInteger sizeText;
-@property (strong, nonatomic) UIImage* postImage;
-
 @property (strong, nonatomic) NSString* authorID;
 @property (strong, nonatomic) ANUser* author;
+
+@property (strong, nonatomic) NSArray* attachmentsArray;
 
 
 @end

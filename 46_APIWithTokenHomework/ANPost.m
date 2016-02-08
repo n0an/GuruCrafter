@@ -7,6 +7,7 @@
 //
 
 #import "ANPost.h"
+#import "ANPhoto.h"
 
 @implementation ANPost
 
@@ -14,9 +15,6 @@
 {
     self = [super initWithServerResponse:responseObject];
     if (self) {
-        
-//        self.text = [responseObject objectForKey:@"text"];
-//        self.text = [self.text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
         
         self.text = [self stringByStrippingHTML:[responseObject objectForKey:@"text"]];
         
@@ -32,12 +30,31 @@
         
         self.authorID = [[responseObject objectForKey:@"from_id"] stringValue];
         
+        // *** MAIN ATTACHMENT
+        NSDictionary* mainAttachment = [[responseObject objectForKey:@"attachment"] objectForKey:@"photo"];
+        self.postImageURL = [NSURL URLWithString:[mainAttachment objectForKey:@"src_xbig"]];
         
-        NSDictionary* attachments = [[responseObject objectForKey:@"attachment"] objectForKey:@"photo"];
-        self.postImageURL = [NSURL URLWithString:[attachments objectForKey:@"src_xbig"]];
+        NSInteger originalHeight = [[mainAttachment objectForKey:@"height"] integerValue];
+        NSInteger originalWidth = [[mainAttachment objectForKey:@"width"] integerValue];
         
-        NSInteger originalHeight = [[attachments objectForKey:@"height"] integerValue];
-        NSInteger originalWidth = [[attachments objectForKey:@"width"] integerValue];
+        
+        // *** ATTACHMENTS ARRAY
+        NSArray* attachments = [responseObject objectForKey:@"attachments"];
+        
+        NSMutableArray* attachmentsArray = [NSMutableArray array];
+        
+        for (NSDictionary* dict in attachments) {
+            
+            if ([[dict objectForKey:@"type"] isEqualToString:@"photo"]) {
+                ANPhoto* photo = [[ANPhoto alloc] initWithServerResponse:[dict objectForKey:@"photo"]];
+                [attachmentsArray addObject:photo];
+            }
+            
+        }
+        
+        self.attachmentsArray = attachmentsArray;
+        
+        
         
         
     }

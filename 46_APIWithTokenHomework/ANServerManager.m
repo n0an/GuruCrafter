@@ -214,7 +214,7 @@
      @(count),      @"count",
      @(offset),     @"offset",
      @"all",        @"filter",
-     @"1",          @"extended" ,nil];
+     @"1",          @"extended", nil];
     
     
     
