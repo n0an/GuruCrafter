@@ -13,11 +13,15 @@
 @property (assign, nonatomic) NSInteger width;
 @property (assign, nonatomic) NSInteger height;
 
-@property (strong, nonatomic) NSString* src_big;
-@property (strong, nonatomic) NSString* src_small;
-@property (strong, nonatomic) NSString* src_xbig;
-@property (strong, nonatomic) NSString* src_xxbig;
-@property (strong, nonatomic) NSString* src_xxxbig;
+@property (strong, nonatomic) NSString* photo_75;
+@property (strong, nonatomic) NSString* photo_130;
+@property (strong, nonatomic) NSString* photo_604;
+@property (strong, nonatomic) NSString* photo_807;
+@property (strong, nonatomic) NSString* photo_1280;
+@property (strong, nonatomic) NSString* photo_2560;
+
+
+
 
 
 

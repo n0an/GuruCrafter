@@ -26,7 +26,7 @@
 
 @end
 
-static NSInteger postsInRequest = 2;
+static NSInteger postsInRequest = 20;
 
 
 @implementation ViewController
@@ -208,7 +208,7 @@ static NSInteger postsInRequest = 2;
     
     [postCell.postAuthorImageView setImageWithURL:post.author.imageURL];
     
-    
+    /*
     postCell.postImageView.image = nil;
     
 //    [postCell.postImageView setImageWithURL:post.postImageURL];
@@ -224,12 +224,13 @@ static NSInteger postsInRequest = 2;
      success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
          
          weakPostCell.postImageView.image = image;
+         [weakPostCell layoutSubviews];
          
      }
      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
          
      }];
-    
+    */
     
     
     return postCell;

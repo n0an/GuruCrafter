@@ -214,7 +214,8 @@
      @(count),      @"count",
      @(offset),     @"offset",
      @"all",        @"filter",
-     @"1",          @"extended", nil];
+     @"1",          @"extended",
+     @"5.44",       @"v", nil];
     
     
     
@@ -227,7 +228,7 @@
          NSDictionary* response = [responseObject objectForKey:@"response"];
          
          NSArray* profiles = [response objectForKey:@"profiles"];
-         NSArray* wall = [response objectForKey:@"wall"];
+         NSArray* wall = [response objectForKey:@"items"];
          NSArray* groups = [response objectForKey:@"groups"];
 
          // *** CREATING AUTHORS PROFILES ARRAY

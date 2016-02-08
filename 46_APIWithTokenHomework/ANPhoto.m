@@ -20,14 +20,20 @@
         self.width = [[responseObject objectForKey:@"width"] integerValue];
         self.height = [[responseObject objectForKey:@"height"] integerValue];
 
-        self.src_small = [responseObject objectForKey:@"src_small"];
-        self.src_big = [responseObject objectForKey:@"src_big"];
-        self.src_xbig = [responseObject objectForKey:@"src_xbig"];
-        self.src_xxbig = [responseObject objectForKey:@"src_xxbig"];
-        self.src_xxxbig = [responseObject objectForKey:@"src_xxxbig"];
+        self.photo_75 = [responseObject objectForKey:@"photo_75"];
+        self.photo_130 = [responseObject objectForKey:@"photo_130"];
+        self.photo_604 = [responseObject objectForKey:@"photo_604"];
+        self.photo_807 = [responseObject objectForKey:@"photo_807"];
+        self.photo_1280 = [responseObject objectForKey:@"photo_1280"];
+        self.photo_2560 = [responseObject objectForKey:@"photo_2560"];
+
     }
     return self;
     
 }
+
+
+
+
 
 @end

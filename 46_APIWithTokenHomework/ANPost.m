@@ -31,11 +31,11 @@
         self.authorID = [[responseObject objectForKey:@"from_id"] stringValue];
         
         // *** MAIN ATTACHMENT
-        NSDictionary* mainAttachment = [[responseObject objectForKey:@"attachment"] objectForKey:@"photo"];
-        self.postImageURL = [NSURL URLWithString:[mainAttachment objectForKey:@"src_xbig"]];
-        
-        NSInteger originalHeight = [[mainAttachment objectForKey:@"height"] integerValue];
-        NSInteger originalWidth = [[mainAttachment objectForKey:@"width"] integerValue];
+//        NSDictionary* mainAttachment = [[responseObject objectForKey:@"attachment"] objectForKey:@"photo"];
+//        self.postImageURL = [NSURL URLWithString:[mainAttachment objectForKey:@"src_xbig"]];
+//        
+//        NSInteger originalHeight = [[mainAttachment objectForKey:@"height"] integerValue];
+//        NSInteger originalWidth = [[mainAttachment objectForKey:@"width"] integerValue];
         
         
         // *** ATTACHMENTS ARRAY

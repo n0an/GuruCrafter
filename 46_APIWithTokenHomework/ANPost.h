@@ -17,9 +17,9 @@
 
 @property (strong, nonatomic) NSString* date;
 
-@property (strong, nonatomic) NSURL* postImageURL;
-@property (assign, nonatomic) NSInteger heightImage;
-@property (assign, nonatomic) NSInteger widthImage;
+//@property (strong, nonatomic) NSURL* postImageURL;
+//@property (assign, nonatomic) NSInteger heightImage;
+//@property (assign, nonatomic) NSInteger widthImage;
 
 @property (strong, nonatomic) NSString* comments;
 @property (strong, nonatomic) NSString* likes;
