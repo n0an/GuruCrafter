@@ -14,7 +14,6 @@
 
 #import "ANPost.h"
 #import "ANPostCell.h"
-#import "ANImageViewGallery.h"
 
 #import "ANPhoto.h"
 
@@ -60,12 +59,12 @@ static NSInteger postsInRequest = 20;
     self.refreshControl = refresh;
     
     
-    UIBarButtonItem* addPostBarButton =
-    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                  target:self
-                                                  action:@selector(postOnWall:)];
-    
-    self.navigationItem.rightBarButtonItem = addPostBarButton;
+//    UIBarButtonItem* addPostBarButton =
+//    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+//                                                  target:self
+//                                                  action:@selector(postOnWall:)];
+//    
+//    self.navigationItem.rightBarButtonItem = addPostBarButton;
 
     
 }
@@ -98,134 +97,6 @@ static NSInteger postsInRequest = 20;
 
 #pragma mark - Helper Methods
 
-- (CGFloat)heightLabelOfTextForString:(NSString *)aString fontSize:(CGFloat)fontSize widthLabel:(CGFloat)width {
-    
-    UIFont* font = [UIFont systemFontOfSize:fontSize];
-    
-    NSShadow* shadow = [[NSShadow alloc] init];
-    shadow.shadowOffset = CGSizeMake(0, -1);
-    shadow.shadowBlurRadius = 0;
-    
-    NSMutableParagraphStyle* paragraph = [[NSMutableParagraphStyle alloc] init];
-    [paragraph setLineBreakMode:NSLineBreakByWordWrapping];
-    [paragraph setAlignment:NSTextAlignmentLeft];
-    
-    NSDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys: font, NSFontAttributeName, paragraph, NSParagraphStyleAttributeName,shadow, NSShadowAttributeName, nil];
-    
-    CGRect rect = [aString boundingRectWithSize:CGSizeMake(300, CGFLOAT_MAX)
-                                        options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                     attributes:attributes
-                                        context:nil];
-    
-    return rect.size.height;
-}
-
-
-
-
-
-#pragma mark - TextImageConfigure
-
-- (CGSize)setFramesToImageViews:(NSArray *)imageViews imageFrames:(NSArray *)imageFrames toFitSize:(CGSize)frameSize {
-    
-    int N = (int)imageFrames.count;
-    CGRect newFrames[N];
-    
-    float ideal_height = MAX(frameSize.height, frameSize.width) / N;
-    float seq[N];
-    float total_width = 0;
-    for (int i = 0; i < [imageFrames count]; i++) {
-        
-        if ([[imageFrames objectAtIndex:i] isKindOfClass:[ANPhoto class]]) {
-            ANPhoto *image = [imageFrames objectAtIndex:i];
-            CGSize size = CGSizeMake(image.width, image.height);
-            CGSize newSize = CGSizeResizeToHeight(size, ideal_height);
-            newFrames[i] = (CGRect) {{0, 0}, newSize};
-            seq[i] = newSize.width;
-            total_width += seq[i];
-            
-        } /* else if ([[imageFrames objectAtIndex:i] isKindOfClass:[TTVideo class]]) {
-            
-            CGSize size = CGSizeMake(320, 240);
-            CGSize newSize = CGSizeResizeToHeight(size, ideal_height);
-            newFrames[i] = (CGRect) {{0, 0}, newSize};
-            seq[i] = newSize.width;
-            total_width += seq[i];
-        } */
-        
-        
-    }
-    
-    int K = (int)roundf(total_width / frameSize.width);
-    
-    float M[N][K];
-    float D[N][K];
-    
-    for (int i = 0 ; i < N; i++)
-        for (int j = 0; j < K; j++)
-            D[i][j] = 0;
-    
-    for (int i = 0; i < K; i++)
-        M[0][i] = seq[0];
-    
-    for (int i = 0; i < N; i++)
-        M[i][0] = seq[i] + (i ? M[i-1][0] : 0);
-    
-    float cost;
-    for (int i = 1; i < N; i++) {
-        for (int j = 1; j < K; j++) {
-            M[i][j] = INT_MAX;
-            
-            for (int k = 0; k < i; k++) {
-                cost = MAX(M[k][j-1], M[i][0]-M[k][0]);
-                if (M[i][j] > cost) {
-                    M[i][j] = cost;
-                    D[i][j] = k;
-                }
-            }
-        }
-    }
-    
-    int k1 = K-1;
-    int n1 = N-1;
-    int ranges[N][2];
-    while (k1 >= 0) {
-        ranges[k1][0] = D[n1][k1]+1;
-        ranges[k1][1] = n1;
-        
-        n1 = D[n1][k1];
-        k1--;
-    }
-    ranges[0][0] = 0;
-    
-    float cellDistance = 5;
-    float heightOffset = cellDistance, widthOffset;
-    float frameWidth;
-    for (int i = 0; i < K; i++) {
-        float rowWidth = 0;
-        frameWidth = frameSize.width - ((ranges[i][1] - ranges[i][0]) + 2) * cellDistance;
-        
-        for (int j = ranges[i][0]; j <= ranges[i][1]; j++) {
-            rowWidth += newFrames[j].size.width;
-        }
-        
-        float ratio = frameWidth / rowWidth;
-        widthOffset = 0;
-        
-        for (int j = ranges[i][0]; j <= ranges[i][1]; j++) {
-            newFrames[j].size.width *= ratio;
-            newFrames[j].size.height *= ratio;
-            newFrames[j].origin.x = widthOffset + (j - (ranges[i][0]) + 1) * cellDistance;
-            newFrames[j].origin.y = heightOffset;
-            
-            widthOffset += newFrames[j].size.width;
-        }
-        heightOffset += newFrames[ranges[i][0]].size.height + cellDistance;
-    }
-    
-    return CGSizeMake(frameSize.width, heightOffset);
-}
-
 
 
 
@@ -247,19 +118,10 @@ static NSInteger postsInRequest = 20;
                     NSMutableArray* newPaths = [NSMutableArray array];
                     
                     for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                        [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                        [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
                     }
                     
-                    // *** FILLING postImagesSizesArray
                     
-                    for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                        
-                        CGSize newSize = [self setFramesToImageViews:nil imageFrames:[[self.postsArray objectAtIndex:i] attachmentsArray] toFitSize:CGSizeMake(302, 400)];
-                        
-                        [self.postImageViewsSizesArray addObject:[NSNumber numberWithFloat:roundf(newSize.height)]];
-                        
-                        
-                    }
                     
                     
                     [self.tableView beginUpdates];
@@ -330,81 +192,82 @@ static NSInteger postsInRequest = 20;
 
 #pragma mark - UITableViewDataSource
 
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return [self.postsArray count];
+    if (section == 0) {
+        return 1;
+    } else if (section == 1) {
+        return [self.postsArray count];
+    }
+    
+    return 1;
+    
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    static NSString *postIdentifier = @"postCell";
+    
+    static NSString *postIdentifier =       @"postCell";
+    static NSString *addPostIdentifier =    @"addPostCell";
 
-    ANPostCell* postCell = [tableView dequeueReusableCellWithIdentifier:postIdentifier];
     
-    if (!postCell) {
-        postCell = [[ANPostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:postIdentifier];
-    }
-    
-    ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
-    
-    if (post.fromGroup != nil) {
-        postCell.fullNameLabel.text = post.fromGroup.groupName;
-        [postCell.postAuthorImageView setImageWithURL:post.fromGroup.imageURL];
-
-
-    } else if (post.author != nil) {
-        postCell.fullNameLabel.text = [NSString stringWithFormat:@"%@ %@", post.author.firstName, post.author.lastName];
-        [postCell.postAuthorImageView setImageWithURL:post.author.imageURL];
-
-    }
-    
-    postCell.dateLabel.text = post.date;
-    
-    postCell.commentsCountLabel.text = post.comments;
-    postCell.likesCountLabel.text = post.likes;
-    
-    
-    postCell.postTextLabel.text = post.text;
-    
-    CGRect rect = postCell.postTextLabel.frame;
-    rect.size.height = [self heightLabelOfTextForString:post.text fontSize:15.f widthLabel:CGRectGetWidth(rect)];
-    postCell.postTextLabel.frame = rect;
-    
-    
-    
-    // *** ADDING IMAGES
-    
-    if ([postCell viewWithTag:11]) {
-        [[postCell viewWithTag:11] removeFromSuperview];
-    }
-    
-    if ([post.attachmentsArray count] > 0) {
+    if (indexPath.section == 0) { // *** ADD POST BUTTON
         
-        CGPoint point = CGPointZero;
+        UITableViewCell* addPostCell = [tableView dequeueReusableCellWithIdentifier:addPostIdentifier];
         
-        if (![post.text isEqualToString:@""]) {
-            point = CGPointMake(CGRectGetMinX(postCell.postTextLabel.frame),CGRectGetMaxY(postCell.postTextLabel.frame));
-            
-        } else {
-            point = CGPointMake(CGRectGetMinX(postCell.postAuthorImageView.frame),CGRectGetMaxY(postCell.postAuthorImageView.frame));
+        if (!addPostCell) {
+            addPostCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:addPostIdentifier];
         }
         
+        return addPostCell;
         
-        ANImageViewGallery* gallery = [[ANImageViewGallery alloc] initWithImageArray:post.attachmentsArray startPoint:point];
+    } else if (indexPath.section == 1) { // *** WALL POSTS SECTION
+        ANPostCell* postCell = [tableView dequeueReusableCellWithIdentifier:postIdentifier];
         
-        gallery.tag = 11;
+        if (!postCell) {
+            postCell = [[ANPostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:postIdentifier];
+        }
         
-        [postCell addSubview:gallery];
+        ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
+        
+        if (post.fromGroup != nil) {
+            postCell.fullNameLabel.text = post.fromGroup.groupName;
+            [postCell.postAuthorImageView setImageWithURL:post.fromGroup.imageURL];
+            
+            
+        } else if (post.author != nil) {
+            postCell.fullNameLabel.text = [NSString stringWithFormat:@"%@ %@", post.author.firstName, post.author.lastName];
+            [postCell.postAuthorImageView setImageWithURL:post.author.imageURL];
+            
+        }
+        
+        postCell.dateLabel.text = post.date;
+        
+        postCell.commentsCountLabel.text = post.comments;
+        postCell.likesCountLabel.text = post.likes;
+        
+        
+        postCell.postTextLabel.text = post.text;
         
         
         
         
+        // *** ADDING IMAGES
+        
+        
+        
+        
+        return postCell;
     }
     
-    
-    
-    return postCell;
+    return nil;
     
 }
 
@@ -412,34 +275,19 @@ static NSInteger postsInRequest = 20;
 
 #pragma mark - UITableViewDelegate
 
-//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    return UITableViewAutomaticDimension;
-//    
-//}
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return UITableViewAutomaticDimension;
+    
+}
 
 
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    return UITableViewAutomaticDimension; // Auto Layout elements in the cell
+    return UITableViewAutomaticDimension; // Auto Layout elements in the cell
     
-    
-    ANPost *post = [self.postsArray objectAtIndex:indexPath.row];
-    
-    float height = 10;
-    
-    if (![post.text isEqualToString:@""]) {
-        height = height + (int)[self heightLabelOfTextForString:post.text fontSize:15.f widthLabel:300];
-    }
-    
-    if ([post.attachmentsArray count] > 0) {
-        
-        height = height + [[self.postImageViewsSizesArray objectAtIndex:indexPath.row]floatValue];
-    }
-    
-    return 46 + 10 + height + 20;
-    
+ 
     
 }
 

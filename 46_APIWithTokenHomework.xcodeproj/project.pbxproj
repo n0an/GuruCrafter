@@ -39,10 +39,9 @@
 		1804049A1C66309100876FFE /* ANAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404991C66309100876FFE /* ANAccessToken.m */; };
 		1804049D1C6630D000876FFE /* ANPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804049C1C6630D000876FFE /* ANPost.m */; };
 		184818381C68B050005B4F1D /* ANGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 184818371C68B050005B4F1D /* ANGroup.m */; };
+		18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */; };
 		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
 		18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8591C68896400C1204F /* ANPhoto.m */; };
-		18E8D85D1C6896F700C1204F /* ANImageViewGallery.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D85C1C6896F700C1204F /* ANImageViewGallery.m */; };
-		18E8D8611C68997C00C1204F /* MHFacebookImageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8601C68997C00C1204F /* MHFacebookImageViewer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,14 +128,12 @@
 		1804049C1C6630D000876FFE /* ANPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPost.m; sourceTree = "<group>"; };
 		184818361C68B050005B4F1D /* ANGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANGroup.h; sourceTree = "<group>"; };
 		184818371C68B050005B4F1D /* ANGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANGroup.m; sourceTree = "<group>"; };
+		18B1CF6B1C68E635008610CA /* ANAddPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAddPostViewController.h; sourceTree = "<group>"; };
+		18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddPostViewController.m; sourceTree = "<group>"; };
 		18D84FA91C67540D0090BF78 /* ANPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostCell.h; sourceTree = "<group>"; };
 		18D84FAA1C67540D0090BF78 /* ANPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCell.m; sourceTree = "<group>"; };
 		18E8D8581C68896400C1204F /* ANPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhoto.h; sourceTree = "<group>"; };
 		18E8D8591C68896400C1204F /* ANPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhoto.m; sourceTree = "<group>"; };
-		18E8D85B1C6896F700C1204F /* ANImageViewGallery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANImageViewGallery.h; sourceTree = "<group>"; };
-		18E8D85C1C6896F700C1204F /* ANImageViewGallery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANImageViewGallery.m; sourceTree = "<group>"; };
-		18E8D85F1C68997C00C1204F /* MHFacebookImageViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHFacebookImageViewer.h; sourceTree = "<group>"; };
-		18E8D8601C68997C00C1204F /* MHFacebookImageViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHFacebookImageViewer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,7 +230,6 @@
 		1804044F1C662D2000876FFE /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				18E8D85E1C68997C00C1204F /* MHFacebookImageViewer */,
 				180404501C662D2000876FFE /* AFNetworking */,
 				180404641C662D2000876FFE /* UIKit+AFNetworking */,
 			);
@@ -313,8 +309,8 @@
 		180404971C66305C00876FFE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				18E8D85B1C6896F700C1204F /* ANImageViewGallery.h */,
-				18E8D85C1C6896F700C1204F /* ANImageViewGallery.m */,
+				18B1CF6B1C68E635008610CA /* ANAddPostViewController.h */,
+				18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */,
 				180404941C66300200876FFE /* ANLoginViewController.h */,
 				180404951C66300200876FFE /* ANLoginViewController.m */,
 				180404221C662A6000876FFE /* ViewController.h */,
@@ -330,15 +326,6 @@
 				18D84FAA1C67540D0090BF78 /* ANPostCell.m */,
 			);
 			name = Cells;
-			sourceTree = "<group>";
-		};
-		18E8D85E1C68997C00C1204F /* MHFacebookImageViewer */ = {
-			isa = PBXGroup;
-			children = (
-				18E8D85F1C68997C00C1204F /* MHFacebookImageViewer.h */,
-				18E8D8601C68997C00C1204F /* MHFacebookImageViewer.m */,
-			);
-			path = MHFacebookImageViewer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -488,12 +475,12 @@
 				1804047B1C662D2000876FFE /* AFURLConnectionOperation.m in Sources */,
 				180404821C662D2000876FFE /* UIButton+AFNetworking.m in Sources */,
 				18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */,
-				18E8D85D1C6896F700C1204F /* ANImageViewGallery.m in Sources */,
 				180404801C662D2000876FFE /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				1804047A1C662D2000876FFE /* AFSecurityPolicy.m in Sources */,
 				180404851C662D2000876FFE /* UIRefreshControl+AFNetworking.m in Sources */,
 				18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */,
 				180404861C662D2000876FFE /* UIWebView+AFNetworking.m in Sources */,
+				18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */,
 				184818381C68B050005B4F1D /* ANGroup.m in Sources */,
 				180404781C662D2000876FFE /* AFHTTPSessionManager.m in Sources */,
 				180404811C662D2000876FFE /* UIAlertView+AFNetworking.m in Sources */,
@@ -501,7 +488,6 @@
 				180404891C662DE600876FFE /* ANServerManager.m in Sources */,
 				1804047F1C662D2000876FFE /* AFNetworkActivityIndicatorManager.m in Sources */,
 				1804047E1C662D2000876FFE /* AFURLSessionManager.m in Sources */,
-				18E8D8611C68997C00C1204F /* MHFacebookImageViewer.m in Sources */,
 				180404211C662A6000876FFE /* AppDelegate.m in Sources */,
 				180404901C662F5800876FFE /* ANUser.m in Sources */,
 				1804041E1C662A6000876FFE /* main.m in Sources */,
