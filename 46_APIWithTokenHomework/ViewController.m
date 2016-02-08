@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "ANServerManager.h"
 #import "ANUser.h"
+#import "ANGroup.h"
 #import "UIImageView+AFNetworking.h"
 
 #import "ANPost.h"
@@ -347,7 +348,18 @@ static NSInteger postsInRequest = 20;
     
     ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
     
-    postCell.fullNameLabel.text = [NSString stringWithFormat:@"%@ %@", post.author.firstName, post.author.lastName];
+    if (post.fromGroup != nil) {
+        postCell.fullNameLabel.text = post.fromGroup.groupName;
+        [postCell.postAuthorImageView setImageWithURL:post.fromGroup.imageURL];
+
+
+    } else if (post.author != nil) {
+        postCell.fullNameLabel.text = [NSString stringWithFormat:@"%@ %@", post.author.firstName, post.author.lastName];
+        [postCell.postAuthorImageView setImageWithURL:post.author.imageURL];
+
+    }
+    
+    
     
     postCell.postTextLabel.text = post.text;
     
@@ -361,7 +373,6 @@ static NSInteger postsInRequest = 20;
     postCell.likesCountLabel.text = post.likes;
     
     
-    [postCell.postAuthorImageView setImageWithURL:post.author.imageURL];
     
     
     

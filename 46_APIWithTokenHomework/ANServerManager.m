@@ -13,6 +13,7 @@
 #import "ANAccessToken.h"
 
 #import "ANPost.h"
+#import "ANGroup.h"
 
 @interface ANServerManager ()
 
@@ -232,6 +233,13 @@
          NSArray* wall = [response objectForKey:@"items"];
          NSArray* groups = [response objectForKey:@"groups"];
 
+         
+         // *** WE HAVE ONLY ONE GROUP - iOSDevCourse group. Getting it to object
+         
+         ANGroup* group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
+
+         
+         
          // *** CREATING AUTHORS PROFILES ARRAY
          NSMutableArray* authorsArray = [NSMutableArray array];
          
@@ -258,12 +266,19 @@
              // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS POST
              
              for (ANUser* author in authorsArray) {
+                 
+                 if ([post.authorID hasPrefix:@"-"]) {
+                     post.fromGroup = group;
+                     continue;
+                 }
+                 
                  if ([author.userID isEqualToString:post.authorID]) {
                      post.author = author;
                  }
              }
              
          }
+         
          
          
          if (success) {

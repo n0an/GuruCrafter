@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @class ANUser;
+@class ANGroup;
 
 @interface ANPost : ANServerObject
 
@@ -26,6 +27,8 @@
 
 @property (strong, nonatomic) NSString* authorID;
 @property (strong, nonatomic) ANUser* author;
+@property (strong, nonatomic) ANGroup* fromGroup;
+
 
 @property (strong, nonatomic) NSArray* attachmentsArray;
 
