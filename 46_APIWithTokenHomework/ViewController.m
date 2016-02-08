@@ -359,6 +359,10 @@ static NSInteger postsInRequest = 20;
 
     }
     
+    postCell.dateLabel.text = post.date;
+    
+    postCell.commentsCountLabel.text = post.comments;
+    postCell.likesCountLabel.text = post.likes;
     
     
     postCell.postTextLabel.text = post.text;
@@ -367,16 +371,13 @@ static NSInteger postsInRequest = 20;
     rect.size.height = [self heightLabelOfTextForString:post.text fontSize:15.f widthLabel:CGRectGetWidth(rect)];
     postCell.postTextLabel.frame = rect;
     
-    postCell.dateLabel.text = post.date;
-    
-    postCell.commentsCountLabel.text = post.comments;
-    postCell.likesCountLabel.text = post.likes;
-    
-    
-    
     
     
     // *** ADDING IMAGES
+    
+    if ([postCell viewWithTag:11]) {
+        [[postCell viewWithTag:11] removeFromSuperview];
+    }
     
     if ([post.attachmentsArray count] > 0) {
         
@@ -384,6 +385,7 @@ static NSInteger postsInRequest = 20;
         
         if (![post.text isEqualToString:@""]) {
             point = CGPointMake(CGRectGetMinX(postCell.postTextLabel.frame),CGRectGetMaxY(postCell.postTextLabel.frame));
+            
         } else {
             point = CGPointMake(CGRectGetMinX(postCell.postAuthorImageView.frame),CGRectGetMaxY(postCell.postAuthorImageView.frame));
         }
@@ -425,7 +427,7 @@ static NSInteger postsInRequest = 20;
     
     ANPost *post = [self.postsArray objectAtIndex:indexPath.row];
     
-    float height = 0;
+    float height = 10;
     
     if (![post.text isEqualToString:@""]) {
         height = height + (int)[self heightLabelOfTextForString:post.text fontSize:15.f widthLabel:300];
