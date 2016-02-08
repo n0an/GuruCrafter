@@ -12,6 +12,10 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    
+    self.postAuthorImageView.layer.cornerRadius = self.postAuthorImageView.frame.size.height/2;
+    self.postAuthorImageView.clipsToBounds = YES;
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

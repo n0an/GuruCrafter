@@ -18,7 +18,9 @@
         self.firstName = [responseObject objectForKey:@"first_name"];
         self.lastName = [responseObject objectForKey:@"last_name"];
         
-        NSString* urlString = [responseObject objectForKey:@"photo_50"];
+        self.userID = [[responseObject objectForKey:@"uid"] stringValue];
+        
+        NSString* urlString = [responseObject objectForKey:@"photo"];
         
         if (urlString) {
             self.imageURL = [NSURL URLWithString:urlString];

@@ -27,7 +27,8 @@
         NSTimeInterval Date = [[responseObject objectForKey:@"date"] intValue];
         NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:Date];
         self.date = [dateWithFormat stringFromDate:dateValue];
-
+        
+        self.authorID = [[responseObject objectForKey:@"from_id"] stringValue];
         
     }
     return self;

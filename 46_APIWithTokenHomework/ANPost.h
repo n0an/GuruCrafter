@@ -9,6 +9,8 @@
 #import "ANServerObject.h"
 #import <UIKit/UIKit.h>
 
+@class ANUser;
+
 @interface ANPost : ANServerObject
 
 @property (strong, nonatomic) NSString* text;
@@ -24,6 +26,8 @@
 @property (assign, nonatomic) NSInteger sizeText;
 @property (strong, nonatomic) UIImage* postImage;
 
+@property (strong, nonatomic) NSString* authorID;
+@property (strong, nonatomic) ANUser* author;
 
 
 @end

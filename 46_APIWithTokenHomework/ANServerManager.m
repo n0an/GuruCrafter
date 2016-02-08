@@ -213,7 +213,8 @@
      groupID,       @"owner_id",
      @(count),      @"count",
      @(offset),     @"offset",
-     @"all",        @"filter", nil];
+     @"all",        @"filter",
+     @"1",          @"extended" ,nil];
     
     
     
@@ -223,23 +224,48 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"JSON: %@", responseObject);
          
-         NSArray* dictsArray = [responseObject objectForKey:@"response"];
+         NSDictionary* response = [responseObject objectForKey:@"response"];
          
-         if ([dictsArray count] > 1) {
-             dictsArray = [dictsArray subarrayWithRange:NSMakeRange(1, (int)[dictsArray count] - 1)];
+         NSArray* profiles = [response objectForKey:@"profiles"];
+         NSArray* wall = [response objectForKey:@"wall"];
+         NSArray* groups = [response objectForKey:@"groups"];
+
+         // *** CREATING AUTHORS PROFILES ARRAY
+         NSMutableArray* authorsArray = [NSMutableArray array];
+         
+         for (NSDictionary* dict in profiles) {
+             ANUser* author = [[ANUser alloc] initWithServerResponse:dict];
+             
+             [authorsArray addObject:author];
+         }
+         
+         
+         // *** CREATING POSTS ARRAY, AND GETTING AUTHOR FOR EACH POST
+         if ([wall count] > 1) {
+             wall = [wall subarrayWithRange:NSMakeRange(1, (int)[wall count] - 1)];
          } else {
-             dictsArray = nil;
+             wall = nil;
          }
          
-         NSMutableArray* objectsArray = [NSMutableArray array];
+         NSMutableArray* postsArray = [NSMutableArray array];
          
-         for (NSDictionary* dict in dictsArray) {
-             ANPost* user = [[ANPost alloc] initWithServerResponse:dict];
-             [objectsArray addObject:user];
+         for (NSDictionary* dict in wall) {
+             ANPost* post = [[ANPost alloc] initWithServerResponse:dict];
+             [postsArray addObject:post];
+             
+             // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS POST
+             
+             for (ANUser* author in authorsArray) {
+                 if ([author.userID isEqualToString:post.authorID]) {
+                     post.author = author;
+                 }
+             }
+             
          }
+         
          
          if (success) {
-             success(objectsArray);
+             success(postsArray);
          }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

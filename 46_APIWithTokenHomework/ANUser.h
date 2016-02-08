@@ -14,4 +14,8 @@
 @property (strong, nonatomic) NSString* lastName;
 @property (strong, nonatomic) NSURL* imageURL;
 
+@property (strong, nonatomic) NSString* userID;
+
 @end
+
+

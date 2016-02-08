@@ -133,7 +133,7 @@ static NSInteger postsInRequest = 20;
     
     ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
     
-//    postCell.fullNameLabel.text = [NSString stringWithFormat:@"%@ %@",self.userDetails.firstName, self.userDetails.lastName];
+    postCell.fullNameLabel.text = [NSString stringWithFormat:@"%@ %@", post.author.firstName, post.author.lastName];
     
     postCell.postTextLabel.text = post.text;
     postCell.dateLabel.text = post.date;
@@ -142,7 +142,7 @@ static NSInteger postsInRequest = 20;
     postCell.likesCountLabel.text = post.likes;
     
     
-//    [postCell.postAuthorImageView setImageWithURL:self.userDetails.imageURL];
+    [postCell.postAuthorImageView setImageWithURL:post.author.imageURL];
     
     
     postCell.postImageView.image = nil;
