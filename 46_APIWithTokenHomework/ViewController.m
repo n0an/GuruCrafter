@@ -43,6 +43,10 @@ static NSInteger postsInRequest = 20;
     [self getPostsFromServer];
 
     
+    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
+    [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refresh;
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -107,6 +111,35 @@ static NSInteger postsInRequest = 20;
                                             NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
 
                                         }];
+    
+    
+}
+
+
+- (void) refreshWall {
+    
+    [[ANServerManager sharedManager]
+     getGroupWall:@"58860049"
+     withOffset:0
+     count:MAX(postsInRequest, [self.postsArray count])
+     onSuccess:^(NSArray *posts) {
+         
+         [self.postsArray removeAllObjects];
+         
+         [self.postsArray addObjectsFromArray:posts];
+         
+         [self.tableView reloadData];
+         
+         [self.refreshControl endRefreshing];
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+         [self.refreshControl endRefreshing];
+         
+     }];
     
     
 }
