@@ -108,8 +108,9 @@
     NSDictionary* params =
     [NSDictionary dictionaryWithObjectsAndKeys:
      userID,        @"user_ids",
-     @"photo_50",   @"fields",
-     @"nom",        @"name_case", nil];
+     @"photo_100",  @"fields",
+     @"nom",        @"name_case",
+     @"5.44",       @"v", nil];
     
     [self.requestOperationManager
      GET:@"users.get"
