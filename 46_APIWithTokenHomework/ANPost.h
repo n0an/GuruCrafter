@@ -16,6 +16,7 @@
 @property (strong, nonatomic) NSString* text;
 
 @property (strong, nonatomic) NSString* date;
+
 @property (strong, nonatomic) NSURL* postImageURL;
 @property (assign, nonatomic) NSInteger heightImage;
 @property (assign, nonatomic) NSInteger widthImage;

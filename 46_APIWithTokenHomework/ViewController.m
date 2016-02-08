@@ -38,7 +38,7 @@ static NSInteger postsInRequest = 20;
     
     self.firstTimeAppear = YES;
     
-    self.loadingData = YES;
+    self.loadingData = NO;
 
     [self getPostsFromServer];
 
@@ -95,31 +95,38 @@ static NSInteger postsInRequest = 20;
 
 - (void) getPostsFromServer {
     
+    if (!self.loadingData) {
+        self.loadingData = YES;
+        
+        [[ANServerManager sharedManager]
+             getGroupWall:@"58860049"
+               withOffset:[self.postsArray count]
+                    count:postsInRequest
+                onSuccess:^(NSArray *posts) {
+                    [self.postsArray addObjectsFromArray:posts];
+                    
+                    NSMutableArray* newPaths = [NSMutableArray array];
+                    
+                    for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
+                        [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                    }
+                    
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                    
+                    self.loadingData = NO;
+                    
+                    
+                }
+                onFailure:^(NSError *error, NSInteger statusCode) {
+                    NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                    
+                }];
+        
+    }
     
-    [[ANServerManager sharedManager] getGroupWall:@"58860049"
-                                       withOffset:[self.postsArray count]
-                                            count:postsInRequest
-                                        onSuccess:^(NSArray *posts) {
-                                            [self.postsArray addObjectsFromArray:posts];
-                                            
-                                            NSMutableArray* newPaths = [NSMutableArray array];
-                                            
-                                            for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                                                [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-                                            }
-                                            
-                                            [self.tableView beginUpdates];
-                                            [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationTop];
-                                            [self.tableView endUpdates];
-                                            
-                                            self.loadingData = NO;
-
-
-                                        }
-                                        onFailure:^(NSError *error, NSInteger statusCode) {
-                                            NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-
-                                        }];
+    
     
     
 }
@@ -204,25 +211,25 @@ static NSInteger postsInRequest = 20;
     
     postCell.postImageView.image = nil;
     
-    [postCell.postImageView setImageWithURL:post.postImageURL];
+//    [postCell.postImageView setImageWithURL:post.postImageURL];
 
-    /*
+    
     NSURLRequest* request = [NSURLRequest requestWithURL:post.postImageURL];
     
     __weak ANPostCell* weakPostCell = postCell;
     
-    [postCell.postImage
+    [postCell.postImageView
      setImageWithURLRequest:request
      placeholderImage:nil
      success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
          
-         weakPostCell.postImage.image = image;
+         weakPostCell.postImageView.image = image;
          
      }
      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
          
      }];
-     */
+    
     
     
     return postCell;
@@ -264,7 +271,7 @@ static NSInteger postsInRequest = 20;
     if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
         if (!self.loadingData)
         {
-            self.loadingData = YES;
+//            self.loadingData = YES;
             [self getPostsFromServer];
         }
     }
