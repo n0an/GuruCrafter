@@ -34,7 +34,7 @@
                                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
-                                                <segue destination="sbh-OY-Dt0" kind="show" id="fPl-Up-OSG"/>
+                                                <segue destination="sbh-OY-Dt0" kind="show" identifier="addPostSegue" id="fPl-Up-OSG"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -58,13 +58,13 @@
                                                 <constraint firstAttribute="width" constant="50" id="uxR-GM-9fF"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vDS-YI-kAi">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vDS-YI-kAi">
                                             <rect key="frame" x="66" y="8" width="526" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1c-5u-Smp">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1c-5u-Smp">
                                             <rect key="frame" x="66" y="37" width="526" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -243,11 +243,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Enter your message here..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Weg-6g-IA4">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Weg-6g-IA4">
                                 <rect key="frame" x="20" y="90" width="560" height="490"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" returnKeyType="done"/>
+                                <connections>
+                                    <outlet property="delegate" destination="sbh-OY-Dt0" id="n2N-A0-7AX"/>
+                                </connections>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" red="0.385073059" green="0.5745729745" blue="0.82465277780000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -273,6 +276,9 @@
                     <navigationItem key="navigationItem" title="Adding Post" id="lxl-gt-5dz">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="tTU-nX-jIh">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="actionCancel:" destination="sbh-OY-Dt0" id="u0W-Jy-hL8"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Send" id="l89-Fz-dEG">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -282,7 +288,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="actionCancel" destination="tTU-nX-jIh" id="gUX-Ei-o5y"/>
                         <outlet property="postMessageTextView" destination="Weg-6g-IA4" id="PyP-P8-GaB"/>
                         <outlet property="sendButton" destination="l89-Fz-dEG" id="62T-2h-0KM"/>
                     </connections>

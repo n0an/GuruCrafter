@@ -117,7 +117,7 @@
      GET:@"users.get"
      parameters:params
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
-         NSLog(@"JSON: %@", responseObject);
+//         NSLog(@"JSON: %@", responseObject);
          
          NSArray* dictsArray = [responseObject objectForKey:@"response"];
          
@@ -251,11 +251,7 @@
          
          
          // *** CREATING POSTS ARRAY, AND GETTING AUTHOR FOR EACH POST
-         if ([wall count] > 1) {
-             wall = [wall subarrayWithRange:NSMakeRange(1, (int)[wall count] - 1)];
-         } else {
-             wall = nil;
-         }
+
          
          NSMutableArray* postsArray = [NSMutableArray array];
          

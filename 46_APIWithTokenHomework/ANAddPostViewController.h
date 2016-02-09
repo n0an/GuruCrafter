@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ANAddPostDelegate;
+
+
 @interface ANAddPostViewController : UIViewController
 
 
@@ -15,9 +18,20 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
 
+@property (strong, nonatomic) id <ANAddPostDelegate> delegate;
 
 - (IBAction)actionSend:(UIBarButtonItem *)sender;
+- (IBAction)actionCancel:(UIBarButtonItem *)sender;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *actionCancel;
+
+@end
+
+@protocol ANAddPostDelegate <NSObject>
+
+@required
+
+- (void) sendPostMessage:(NSString*) post;
+
+- (void) postDidSend;
 
 @end

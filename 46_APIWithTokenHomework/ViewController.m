@@ -17,7 +17,9 @@
 
 #import "ANPhoto.h"
 
-@interface ViewController () <UIScrollViewDelegate>
+#import "ANAddPostViewController.h"
+
+@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate>
 
 @property (assign, nonatomic) BOOL firstTimeAppear;
 
@@ -43,7 +45,7 @@ static NSInteger postsInRequest = 20;
     self.postImageViewsSizesArray = [NSMutableArray array];
     self.firstTimeAppear = YES;
     
-    self.loadingData = NO;
+    self.loadingData = YES;
 
     [self getPostsFromServer];
 
@@ -89,42 +91,41 @@ static NSInteger postsInRequest = 20;
 
 - (void) getPostsFromServer {
     
-    if (!self.loadingData) {
-        self.loadingData = YES;
-        
-        [[ANServerManager sharedManager]
-             getGroupWall:@"58860049"
-               withOffset:[self.postsArray count]
-                    count:postsInRequest
-                onSuccess:^(NSArray *posts) {
-                    [self.postsArray addObjectsFromArray:posts];
-                    
-                    NSMutableArray* newPaths = [NSMutableArray array];
-                    
-                    for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                        [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
-                    }
-                    
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                    
-                    self.loadingData = NO;
-                    
-                    
-                }
-                onFailure:^(NSError *error, NSInteger statusCode) {
-                    NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                    
-                }];
-        
-    }
+    [[ANServerManager sharedManager]
+     getGroupWall:@"58860049"
+     withOffset:[self.postsArray count]
+     count:postsInRequest
+     onSuccess:^(NSArray *posts) {
+         
+         [self.postsArray addObjectsFromArray:posts];
+         
+         NSMutableArray* newPaths = [NSMutableArray array];
+         
+         for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
+             [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+         }
+         
+         [self.tableView beginUpdates];
+         [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+         [self.tableView endUpdates];
+         
+         
+         self.loadingData = NO;
+         
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+     }];
     
     
 }
 
 
 - (void) refreshWall {
+    
+    self.loadingData = YES;
     
     [[ANServerManager sharedManager]
      getGroupWall:@"58860049"
@@ -140,6 +141,8 @@ static NSInteger postsInRequest = 20;
          
          [self.refreshControl endRefreshing];
          
+         self.loadingData = NO;
+
      }
      onFailure:^(NSError *error, NSInteger statusCode) {
          
@@ -157,6 +160,20 @@ static NSInteger postsInRequest = 20;
     
     [[ANServerManager sharedManager]
      postText:@"Test from 47 Lesson :-)"
+     onGroupWall:@"58860049"
+     onSuccess:^(id result) {
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         
+     }];
+    
+}
+
+- (void) postOnWallMessage:(NSString*) message {
+    
+    [[ANServerManager sharedManager]
+     postText:message
      onGroupWall:@"58860049"
      onSuccess:^(id result) {
          
@@ -208,14 +225,18 @@ static NSInteger postsInRequest = 20;
         return addPostCell;
         
     } else if (indexPath.section == 1) { // *** WALL POSTS SECTION
+        
+        
         ANPostCell* postCell = [tableView dequeueReusableCellWithIdentifier:postIdentifier];
         
         if (!postCell) {
             postCell = [[ANPostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:postIdentifier];
         }
         
-        ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
         
+        ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
+
+
         if (post.fromGroup != nil) {
             postCell.fullNameLabel.text = post.fromGroup.groupName;
             [postCell.postAuthorImageView setImageWithURL:post.fromGroup.imageURL];
@@ -307,15 +328,32 @@ static NSInteger postsInRequest = 20;
     if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
         if (!self.loadingData)
         {
-//            self.loadingData = YES;
+            self.loadingData = YES;
             [self getPostsFromServer];
         }
     }
 }
 
+#pragma mark - Segue
 
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"addPostSegue"]) {
+        ANAddPostViewController* vc = [segue destinationViewController];
+        
+        vc.delegate = self;
+    }
+}
 
+#pragma mark - +++ ANAddPostDelegate +++
 
+- (void) sendPostMessage:(NSString*) post {
+    [self postOnWallMessage:post];
+    [self refreshWall];
+}
+
+- (void) postDidSend {
+    [self refreshWall];
+}
 
 
 
