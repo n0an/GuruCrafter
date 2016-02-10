@@ -30,8 +30,6 @@
 
 @required
 
-- (void) sendPostMessage:(NSString*) post;
-
 - (void) postDidSend;
 
 @end

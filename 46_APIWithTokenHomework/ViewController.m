@@ -18,6 +18,8 @@
 #import "ANPhoto.h"
 
 #import "ANAddPostViewController.h"
+#import "ANChatViewController.h"
+
 
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate>
 
@@ -151,8 +153,6 @@ static NSInteger postsInRequest = 20;
          [self.refreshControl endRefreshing];
          
      }];
-    
-    
 }
 
 
@@ -248,6 +248,18 @@ static NSInteger postsInRequest = 20;
             
         }
         
+        // *** CREATING GESTURE RECOGNIZER FOR HADLE AUTHOR IMAGEVIEW TAP
+        
+        postCell.postAuthorImageView.userInteractionEnabled = YES;
+        
+        UIGestureRecognizer* tapAuthorImageViewGesutre =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnImageView:)];
+        [postCell.postAuthorImageView addGestureRecognizer:tapAuthorImageViewGesutre];
+        
+        
+        
+        
+        
         postCell.dateLabel.text = post.date;
         
         postCell.commentsCountLabel.text = post.comments;
@@ -279,17 +291,14 @@ static NSInteger postsInRequest = 20;
                 
                 [imageView setImageWithURL:photoURL];
                 
-
             }
         }
-        
         
         
         return postCell;
     }
     
     return nil;
-    
 }
 
 
@@ -308,8 +317,6 @@ static NSInteger postsInRequest = 20;
     
     return UITableViewAutomaticDimension; // Auto Layout elements in the cell
     
- 
-    
 }
 
 
@@ -318,6 +325,34 @@ static NSInteger postsInRequest = 20;
     
 }
 
+
+
+#pragma mark - Gestures
+
+
+
+
+- (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
+    
+    NSLog(@"TAP WORKS!!");
+    
+    // Taking tapped image view from activated recognizer
+    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+    
+    // Getting cell that has this image view. Double superview becuase - Cell->ContentView->ImageView
+    UITableViewCell* cell = (UITableViewCell*)tappedImageView.superview.superview;
+    
+    NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:cell];
+    
+    ANPost* clickedPost = [self.postsArray objectAtIndex:clickedIndexPath.row];
+    
+    ANChatViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANChatViewController"];
+    
+    vc.userID = clickedPost.authorID;
+    
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
 
 
 
@@ -334,6 +369,7 @@ static NSInteger postsInRequest = 20;
     }
 }
 
+
 #pragma mark - Segue
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -344,12 +380,10 @@ static NSInteger postsInRequest = 20;
     }
 }
 
+
+
 #pragma mark - +++ ANAddPostDelegate +++
 
-- (void) sendPostMessage:(NSString*) post {
-    [self postOnWallMessage:post];
-    [self refreshWall];
-}
 
 - (void) postDidSend {
     [self refreshWall];

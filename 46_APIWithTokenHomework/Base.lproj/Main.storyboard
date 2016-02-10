@@ -6,6 +6,39 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
+        <!--Chat View Controller-->
+        <scene sceneID="0bG-Bf-dre">
+            <objects>
+                <viewController storyboardIdentifier="ANChatViewController" id="vBd-Xu-PG5" customClass="ANChatViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dr5-qZ-RAf"/>
+                        <viewControllerLayoutGuide type="bottom" id="fSl-Xb-tgo"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="xug-gs-aB1">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MESSAGES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3d9-YY-gPm">
+                                <rect key="frame" x="256" y="289" width="89" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="3d9-YY-gPm" firstAttribute="centerX" secondItem="xug-gs-aB1" secondAttribute="centerX" id="8Yw-za-879"/>
+                            <constraint firstItem="3d9-YY-gPm" firstAttribute="centerY" secondItem="xug-gs-aB1" secondAttribute="centerY" id="SaF-BZ-sri"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="testMessageLabel" destination="3d9-YY-gPm" id="ybj-Hh-awS"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mhu-bR-04W" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-96" y="-618"/>
+        </scene>
         <!--iOSDevCourse-->
         <scene sceneID="0b6-l5-8XE">
             <objects>
