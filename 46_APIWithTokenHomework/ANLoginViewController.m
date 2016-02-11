@@ -58,7 +58,7 @@
     NSString* urlString =
     @"https://oauth.vk.com/authorize?"
     "client_id=5278567&"
-    "scope=139286&" // +2 +4 +16 + 131072 + 8192
+    "scope=405526&"//+2+4+16+131072+8192+262144+4096 //401430//405526//466966
     "redirect_uri=https://oauth.vk.com/blank.html&"
     "display=mobile&"
     "response_type=token";

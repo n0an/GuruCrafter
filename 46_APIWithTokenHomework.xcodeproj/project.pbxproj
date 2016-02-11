@@ -25,6 +25,7 @@
 		1887EEEC1C6BBEEB008D2D4C /* ANChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1887EEEB1C6BBEEB008D2D4C /* ANChatViewController.m */; };
 		18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */; };
 		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
+		18E4053F1C6CF43600A4F079 /* ANPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E4053E1C6CF43600A4F079 /* ANPrivateMessage.m */; };
 		18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8591C68896400C1204F /* ANPhoto.m */; };
 		AC73DC8C223EB42DB2FDA8D6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149FED9822B8F31BB63210E /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -83,6 +84,8 @@
 		18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddPostViewController.m; sourceTree = "<group>"; };
 		18D84FA91C67540D0090BF78 /* ANPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostCell.h; sourceTree = "<group>"; };
 		18D84FAA1C67540D0090BF78 /* ANPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCell.m; sourceTree = "<group>"; };
+		18E4053D1C6CF43600A4F079 /* ANPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPrivateMessage.h; sourceTree = "<group>"; };
+		18E4053E1C6CF43600A4F079 /* ANPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPrivateMessage.m; sourceTree = "<group>"; };
 		18E8D8581C68896400C1204F /* ANPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhoto.h; sourceTree = "<group>"; };
 		18E8D8591C68896400C1204F /* ANPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhoto.m; sourceTree = "<group>"; };
 		2149FED9822B8F31BB63210E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -199,6 +202,8 @@
 				1804048B1C662F2C00876FFE /* ANServerObject.m */,
 				18E8D8581C68896400C1204F /* ANPhoto.h */,
 				18E8D8591C68896400C1204F /* ANPhoto.m */,
+				18E4053D1C6CF43600A4F079 /* ANPrivateMessage.h */,
+				18E4053E1C6CF43600A4F079 /* ANPrivateMessage.m */,
 				1804049B1C6630D000876FFE /* ANPost.h */,
 				1804049C1C6630D000876FFE /* ANPost.m */,
 				184818361C68B050005B4F1D /* ANGroup.h */,
@@ -436,6 +441,7 @@
 				18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */,
 				1887EEEC1C6BBEEB008D2D4C /* ANChatViewController.m in Sources */,
 				18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */,
+				18E4053F1C6CF43600A4F079 /* ANPrivateMessage.m in Sources */,
 				184818381C68B050005B4F1D /* ANGroup.m in Sources */,
 				180404891C662DE600876FFE /* ANServerManager.m in Sources */,
 				180404211C662A6000876FFE /* AppDelegate.m in Sources */,

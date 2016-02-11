@@ -7,13 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <JSQMessagesViewController/JSQMessages.h>
+#import <JSQMessagesViewController/JSQMessagesBubbleImageFactory.h>
 
-@interface ANChatViewController : UIViewController
+@interface ANChatViewController : JSQMessagesViewController <UIActionSheetDelegate>
 
-@property (strong, nonatomic) NSString* userID;
+//@property (strong, nonatomic) NSString* partnerID;
+//@property (weak, nonatomic) IBOutlet UILabel* testMessageLabel;
 
 
-@property (weak, nonatomic) IBOutlet UILabel* testMessageLabel;
+@property (strong, nonatomic) NSURL *photoSelfURL;
+@property (strong, nonatomic) NSURL *photoPartnerURL;
+
+- (IBAction)actionCancel:(UIBarButtonItem*)sender;
 
 
 @end

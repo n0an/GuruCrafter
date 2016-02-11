@@ -14,6 +14,8 @@
 
 @property (strong, nonatomic, readonly) ANUser* currentUser;
 
+@property (strong, nonatomic) NSURL* photoSelfURL;
+
 + (ANServerManager*) sharedManager;
 
 
@@ -42,5 +44,14 @@
       onGroupWall:(NSString*) groupID
         onSuccess:(void(^)(id result)) success
         onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
+- (void) getPrivateMessagesFromUser:(NSString*) userID
+                         senderName:(NSString*) senderName
+                         withOffset:(NSInteger) offset
+                              count:(NSInteger) count
+                          onSuccess:(void(^)(NSArray* privateMessages)) success
+                          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
 
 @end

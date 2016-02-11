@@ -68,6 +68,9 @@ static NSInteger postsInRequest = 20;
         [[ANServerManager sharedManager] authorizeUser:^(ANUser *user) {
             NSLog(@"AUTHORIZED!");
             NSLog(@"%@ %@", user.firstName, user.lastName);
+            
+            ANServerManager* serverManager = [ANServerManager sharedManager];
+            serverManager.photoSelfURL = user.imageURL;
         }];
     }
     
@@ -233,7 +236,6 @@ static NSInteger postsInRequest = 20;
             postCell = [[ANPostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:postIdentifier];
         }
         
-        
         ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
 
 
@@ -348,7 +350,21 @@ static NSInteger postsInRequest = 20;
     
     ANChatViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANChatViewController"];
     
-    vc.userID = clickedPost.authorID;
+//    vc.senderId = clickedPost.authorID;
+    
+    ANServerManager* serverManager = [ANServerManager sharedManager];
+    
+    vc.photoSelfURL = serverManager.photoSelfURL;
+    
+    if (clickedPost.author != nil) {
+        vc.photoPartnerURL = clickedPost.author.imageURL;
+
+    } else if (clickedPost.fromGroup != nil) {
+        vc.photoPartnerURL = clickedPost.fromGroup.imageURL;
+    }
+
+    vc.senderId = clickedPost.authorID;
+    vc.senderDisplayName = [NSString stringWithFormat:@"%@ %@", clickedPost.author.firstName, clickedPost.author.lastName];
     
     [self.navigationController pushViewController:vc animated:YES];
     
