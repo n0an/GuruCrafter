@@ -44,6 +44,19 @@
     
     [self getPrivateMessagesBackgroundFromServer:20 offset:0];
     
+    JSQMessagesBubbleImageFactory *bubbleFactory= [[JSQMessagesBubbleImageFactory alloc] init];
+    
+    self.outgoingBubbleImageData=[bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    self.incomingBubbleImageData=[bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleGreenColor]];
+    
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:YES];
+    
+    self.collectionView.collectionViewLayout.springinessEnabled = YES;
+    
     
 }
 
@@ -119,11 +132,188 @@
                                           
      }];
     
+}
+
+
+#pragma mark - JSQMessages Data Source methods
+
+- (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
+    //Return the actual message at each indexpath.row
+    return [self.privateMessagesArray objectAtIndex:indexPath.item];
+}
+
+- (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
+    /**
+     *  You may return nil here if you do not want bubbles.
+     *  In this case, you should set the background color of your collection view cell's textView.
+     *
+     *  Otherwise, return your previously created bubble image data objects.
+     */
+    
+    JSQMessage *message = [self.privateMessagesArray objectAtIndex:indexPath.item];
+    
+    if (![self incoming:message]) {
+        
+        return self.outgoingBubbleImageData;
+        
+    } else {
+        
+        return self.incomingBubbleImageData;
+    }
+}
+
+- (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView
+                    avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    JSQMessage *message = [self.privateMessagesArray objectAtIndex:indexPath.item];
+    
+    UIImage *image = nil;
+    
+    if (![self incoming:message]) {
+        
+        image = self.photoPartnerImage;
+        
+    } else {
+        
+        image = self.photoSelfImage;
+    }
+    
+    JSQMessagesAvatarImage *avatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:image diameter:20];
+    return avatar;
+}
+
+
+
+
+- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellBottomLabelAtIndexPath:(NSIndexPath *)indexPath {
+    
+    JSQMessage *message = [self.privateMessagesArray objectAtIndex:indexPath.item];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"dd.MM.yyyy HH:mm"];
+    //cell.cellBottomLabel.text = [dateFormatter stringFromDate:message.date];
+    
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[dateFormatter stringFromDate:message.date]];
+    return attributedString;
+}
+
+
+- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath {
+    
+    JSQMessage *message = [self.privateMessagesArray objectAtIndex:indexPath.item];
+    
+    if ([self incoming:message]) {
+        return nil;
+    }
+    if (indexPath.item - 1 > 0) {
+        
+        JSQMessage *previous = [self.privateMessagesArray objectAtIndex:indexPath.item-1];
+        if ([previous.senderId isEqualToString:message.senderId]) {
+            
+            return nil;
+        }
+    }
+    return [[NSAttributedString alloc] initWithString:message.senderDisplayName];
+}
+
+
+#pragma mark - Collection View
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    
+    return [self.privateMessagesArray count];
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    
+    return 1;
+}
+
+
+- (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+    
+    JSQMessage *message = [self.privateMessagesArray objectAtIndex:indexPath.item];
+    
+    if (!message.isMediaMessage) {
+        
+        if (![self incoming:message]) {
+            cell.textView.textColor = [UIColor blackColor];
+        }
+        else {
+            cell.textView.textColor = [UIColor whiteColor];
+        }
+        cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
+                                              NSUnderlineStyleAttributeName : @(NSUnderlineStyleThick | NSUnderlinePatternSolid)};
+    }
+    
+    return cell;
     
 }
 
 
 
+
+#pragma mark - Adjusting cell label heights
+
+- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
+                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath
+{
+    /**
+     *  Each label in a cell has a `height` delegate method that corresponds to its text dataSource method
+     */
+    
+    /**
+     *  This logic should be consistent with what you return from `attributedTextForCellTopLabelAtIndexPath:`
+     *  The other label height delegate methods should follow similarly
+     *
+     *  Show a timestamp for every 3rd message
+     */
+    //if (indexPath.item % 3 == 0) {
+    //return kJSQMessagesCollectionViewCellLabelHeightDefault;
+    //}
+    
+    return 0.0f;
+}
+
+- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
+                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    //iOS7-style sender name labels
+    
+    JSQMessage *currentMessage = [self.privateMessagesArray objectAtIndex:indexPath.item];
+    if ([[currentMessage senderId] isEqualToString:self.senderId]) {
+        return kJSQMessagesCollectionViewCellLabelHeightDefault;
+    }
+    
+    if (indexPath.item - 1 > 0) {
+        JSQMessage *previousMessage = [self.privateMessagesArray objectAtIndex:indexPath.item - 1];
+        if ([[previousMessage senderId] isEqualToString:[currentMessage senderId]]) {
+            return 0.0f;
+        }
+    }
+    
+    return 0.0f;
+}
+
+- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
+                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellBottomLabelAtIndexPath:(NSIndexPath *)indexPath
+{
+    return kJSQMessagesCollectionViewAvatarSizeDefault;
+}
+
+
+
+
+
+#pragma mark - Other methods
+
+- (BOOL)incoming:(JSQMessage *)message {
+    
+    return ([message.senderId isEqualToString:self.senderId] == NO);
+}
 
 
 
