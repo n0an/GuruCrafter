@@ -64,6 +64,7 @@
     self.outgoingBubbleImageData=[bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     self.incomingBubbleImageData=[bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleGreenColor]];
     
+    
 }
 
 
@@ -72,7 +73,8 @@
     
     self.collectionView.collectionViewLayout.springinessEnabled = YES;
     
-    
+//    [self scrollToBottomAnimated:YES];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -103,6 +105,11 @@
     [self getPrivateMessagesBackgroundFromServer:20 offset:[self.privateMessagesArray count]];
     
     [refreshControl endRefreshing];
+}
+
+
+- (void)didPressAccessoryButton:(UIButton *)sender {
+    NSLog(@"didPressAccessoryButton");
 }
 
 #pragma mark - Send Button
@@ -263,7 +270,7 @@
         image = self.photoSelfImage;
     }
     
-    JSQMessagesAvatarImage *avatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:image diameter:20];
+    JSQMessagesAvatarImage *avatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:image diameter:100];
     return avatar;
 }
 
