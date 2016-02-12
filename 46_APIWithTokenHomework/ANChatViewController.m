@@ -12,6 +12,8 @@
 #import "ANPost.h"
 #import "ANPrivateMessage.h"
 
+#import <CCBottomRefreshControl/UIScrollView+BottomRefreshControl.h>
+
 
 @interface ANChatViewController ()
 
@@ -33,7 +35,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    self.testMessageLabel.text = self.userID;
+    // *** ADDING REFRESH CONTROLS
+    // **** BOTTOM REFRESH CONTROL - TO SEE NEW MESSAGES
+    UIRefreshControl* refreshControlBottom = [[UIRefreshControl alloc] init];
+    refreshControlBottom.triggerVerticalOffset = 100.f;
+    [refreshControlBottom addTarget:self action:@selector(refreshBottom:) forControlEvents:UIControlEventValueChanged];
+    
+    self.collectionView.bottomRefreshControl = refreshControlBottom;
+    
+    // **** TOP REFRESH CONTROL - TO SEE DEEP HISTORY OF MESSAGES
+    UIRefreshControl* refreshControlTop = [[UIRefreshControl alloc] init];
+    [refreshControlTop addTarget:self action:@selector(refreshTop:) forControlEvents:UIControlEventValueChanged];
+    
+    [self.collectionView addSubview:refreshControlTop];
+    
     
     self.navigationItem.title = self.senderDisplayName;
     self.privateMessagesArray = [NSMutableArray array];
@@ -74,6 +89,23 @@
     [self.navigationController popViewControllerAnimated:YES];
     
 }
+
+
+- (void)refreshBottom:(UIRefreshControl *)refreshControl {
+    
+    [self updateMessages];
+    
+    [refreshControl endRefreshing];
+}
+
+- (void)refreshTop:(UIRefreshControl *)refreshControl {
+    
+    [self getPrivateMessagesBackgroundFromServer:20 offset:[self.privateMessagesArray count]];
+    
+    [refreshControl endRefreshing];
+}
+
+
 
 
 
@@ -304,6 +336,31 @@
     return kJSQMessagesCollectionViewAvatarSizeDefault;
 }
 
+
+#pragma mark - ABAddPostDelegate
+
+- (void)updateMessages {
+    
+    [[ANServerManager sharedManager]
+     getPrivateMessagesFromUser:self.senderId
+     senderName:self.senderDisplayName
+     withOffset:0
+     count:MAX(10, [self.privateMessagesArray count])
+     onSuccess:^(NSArray *privateMessages) {
+         [self.privateMessagesArray removeAllObjects];
+         [self.privateMessagesArray addObjectsFromArray:privateMessages];
+         NSSortDescriptor *dateDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+         [self.privateMessagesArray sortUsingDescriptors:@[dateDescriptor]];
+         
+         [self.collectionView reloadData];
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+
+     }];
+    
+    
+}
 
 
 

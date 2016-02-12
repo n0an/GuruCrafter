@@ -20,17 +20,23 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - CCBottomRefreshControl (0.5.1):
+    - Masonry (~> 0.6.2)
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
+  - Masonry (0.6.4)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.6)
+  - CCBottomRefreshControl (~> 0.5)
   - JSQMessagesViewController (~> 7.2)
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
+  CCBottomRefreshControl: 57a596348855260f627ffc2b311328ed15b94877
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
 
 COCOAPODS: 0.39.0

@@ -5,4 +5,4 @@ pod 'AFNetworking', '~> 2.6'
 
 pod 'JSQMessagesViewController', '~> 7.2'
 
-
+pod 'CCBottomRefreshControl', '~> 0.5'

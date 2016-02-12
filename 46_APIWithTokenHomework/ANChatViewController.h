@@ -12,10 +12,6 @@
 
 @interface ANChatViewController : JSQMessagesViewController <UIActionSheetDelegate>
 
-//@property (strong, nonatomic) NSString* partnerID;
-//@property (weak, nonatomic) IBOutlet UILabel* testMessageLabel;
-
-
 @property (strong, nonatomic) NSURL *photoSelfURL;
 @property (strong, nonatomic) NSURL *photoPartnerURL;
 

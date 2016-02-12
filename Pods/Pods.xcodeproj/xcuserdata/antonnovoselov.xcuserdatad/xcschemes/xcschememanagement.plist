@@ -9,12 +9,22 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>CCBottomRefreshControl.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>JSQMessagesViewController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>JSQSystemSoundPlayer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Masonry.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -27,6 +37,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>041F1C807B2256B6B17797823C6C8EE1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>2EFEDBB649146422B0A076290AB959DE</key>
 		<dict>
 			<key>primary</key>
@@ -37,7 +52,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C25BD31D292764486199047E33B09620</key>
+		<key>5842E0902FFFFF0033B3004FF9561CC3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5FA71655FDFDCF95DAEAFCB777F1F9F9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
