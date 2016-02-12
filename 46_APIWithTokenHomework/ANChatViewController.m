@@ -105,6 +105,37 @@
     [refreshControl endRefreshing];
 }
 
+#pragma mark - Send Button
+
+- (void)didPressSendButton:(UIButton *)button
+           withMessageText:(NSString *)text
+                  senderId:(NSString *)senderId
+         senderDisplayName:(NSString *)senderDisplayName
+                      date:(NSDate *)date {
+    /*
+     [JSQSystemSoundPlayer jsq_playMessageSentSound];
+     
+     JSQMessage *message = [[JSQMessage alloc] initWithSenderId:self.senderId
+     senderDisplayName:self.senderDisplayName
+     date:[NSDate date]
+     text:text];
+     
+     [self.messages addObject:message];
+     */
+    [self didSendMessageWithText:text];
+    
+    //[self finishSendingMessageAnimated:YES];
+}
+
+
+
+-(void)didSendMessageWithText:(NSString*)text{
+    // AVIMTextMessage *message=[AVIMTextMessage messageWithText:text attributes:nil];
+    
+    NSString *message = [NSString stringWithFormat:@"%@", text];
+    
+    [self sendMessage:message];
+}
 
 
 
@@ -163,6 +194,28 @@
          NSLog(@"error = %@, code = %d", [error localizedDescription], statusCode);
                                           
      }];
+    
+}
+
+
+- (void)sendMessage:(NSString *)message {
+    
+    [[ANServerManager sharedManager]
+     sendPrivateMessageForUserID:self.senderId
+     message:message
+     onSuccess:^(id result) {
+         [self finishSendingMessageAnimated:YES];
+//         [self getPrivateMessagesBackgroundFromServer:10 offset:0];
+         [self updateMessages];
+         
+     }
+     
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         NSLog(@"error = %@, code = %d", [error localizedDescription], statusCode);
+
+     }];
+    
+    
     
 }
 

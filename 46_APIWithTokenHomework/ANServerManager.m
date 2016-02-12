@@ -413,5 +413,47 @@
 
 
 
+- (void) sendPrivateMessageForUserID:(NSString*) userID
+                             message:(NSString*) message
+                           onSuccess:(void(^)(id result)) success
+                           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     self.accessToken.token,    @"access_token",
+     userID,                    @"user_id",
+     message,                   @"message",
+     @"5.45",                   @"v", nil];
+
+
+    [self.requestOperationManager
+     POST:@"messages.send"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"messages.send JSON: %@", responseObject);
+         
+         
+         if (success) {
+             success(responseObject);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
+
+
+
+
 
 @end

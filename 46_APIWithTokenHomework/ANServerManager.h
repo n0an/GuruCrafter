@@ -54,4 +54,14 @@
                           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
+
+- (void) sendPrivateMessageForUserID:(NSString*) userID
+                             message:(NSString*) message
+                           onSuccess:(void(^)(id result)) success
+                           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
+
+
+
 @end
