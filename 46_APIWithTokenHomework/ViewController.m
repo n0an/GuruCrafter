@@ -18,7 +18,8 @@
 #import "ANPhoto.h"
 
 #import "ANAddPostViewController.h"
-#import "ANChatViewController.h"
+
+#import "ANMessagesViewController.h"
 
 
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate>
@@ -82,11 +83,6 @@ static NSInteger postsInRequest = 20;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-
-
-
-#pragma mark - Helper Methods
 
 
 
@@ -158,20 +154,6 @@ static NSInteger postsInRequest = 20;
      }];
 }
 
-
-- (void) postOnWall:(id) sender {
-    
-    [[ANServerManager sharedManager]
-     postText:@"Test from 47 Lesson :-)"
-     onGroupWall:@"58860049"
-     onSuccess:^(id result) {
-         
-     }
-     onFailure:^(NSError *error, NSInteger statusCode) {
-         
-     }];
-    
-}
 
 - (void) postOnWallMessage:(NSString*) message {
     
@@ -348,23 +330,16 @@ static NSInteger postsInRequest = 20;
     
     ANPost* clickedPost = [self.postsArray objectAtIndex:clickedIndexPath.row];
     
-    ANChatViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANChatViewController"];
+    ANMessagesViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANMessagesViewController"];
     
-//    vc.senderId = clickedPost.authorID;
-    
-    ANServerManager* serverManager = [ANServerManager sharedManager];
-    
-    vc.photoSelfURL = serverManager.photoSelfURL;
+    vc.partnerUserID = clickedPost.authorID;
     
     if (clickedPost.author != nil) {
-        vc.photoPartnerURL = clickedPost.author.imageURL;
-
+        vc.partnerUser = clickedPost.author;
     } else if (clickedPost.fromGroup != nil) {
-        vc.photoPartnerURL = clickedPost.fromGroup.imageURL;
+        vc.partnerGroup = clickedPost.fromGroup;
     }
-
-    vc.senderId = clickedPost.authorID;
-    vc.senderDisplayName = [NSString stringWithFormat:@"%@ %@", clickedPost.author.firstName, clickedPost.author.lastName];
+    
     
     [self.navigationController pushViewController:vc animated:YES];
     

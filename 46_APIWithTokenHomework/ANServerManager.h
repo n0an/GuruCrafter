@@ -45,7 +45,7 @@
         onSuccess:(void(^)(id result)) success
         onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
-
+/*
 - (void) getPrivateMessagesFromUser:(NSString*) userID
                          senderName:(NSString*) senderName
                          withOffset:(NSInteger) offset
@@ -60,8 +60,12 @@
                            onSuccess:(void(^)(id result)) success
                            onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
+*/
 
-
-
+- (void) getMessagesForUser:(NSString*) userID
+                 withOffset:(NSInteger) offset
+                      count:(NSInteger) count
+                  onSuccess:(void(^)(NSArray* messages)) success
+                  onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 @end

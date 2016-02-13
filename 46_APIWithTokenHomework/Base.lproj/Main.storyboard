@@ -325,7 +325,7 @@
         <!--Messages View Controller-->
         <scene sceneID="xFc-gQ-FLi">
             <objects>
-                <viewController id="x8N-gB-84b" customClass="ANMessagesViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ANMessagesViewController" id="x8N-gB-84b" customClass="ANMessagesViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="53q-jM-bDh"/>
                         <viewControllerLayoutGuide type="bottom" id="AzR-n6-MTg"/>
@@ -338,7 +338,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageSentCell" rowHeight="100" id="Zot-lt-nCa">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageSentCell" rowHeight="100" id="Zot-lt-nCa" customClass="ANMessageTableViewCell">
                                         <rect key="frame" x="0.0" y="28" width="600" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Zot-lt-nCa" id="RC7-M8-qpo">
@@ -396,8 +396,14 @@
                                             </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.73948682565122259" green="0.90842090945247678" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <outlet property="messageAuthorFullNameLabel" destination="ynB-mT-PmE" id="Ai8-fO-gaU"/>
+                                            <outlet property="messageAuthorImageView" destination="I4w-CB-I2g" id="gd2-12-fGB"/>
+                                            <outlet property="messageDateLabel" destination="fdz-Zi-qIb" id="vo7-lo-zh1"/>
+                                            <outlet property="messageTextLabel" destination="TcO-C4-q8y" id="4pS-tL-hO1"/>
+                                        </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageReceivedCell" rowHeight="100" id="7Cz-lA-VUv">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageReceivedCell" rowHeight="100" id="7Cz-lA-VUv" customClass="ANMessageTableViewCell">
                                         <rect key="frame" x="0.0" y="128" width="600" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7Cz-lA-VUv" id="wls-4Z-AEU">
@@ -449,6 +455,12 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.70528100846107966" green="1" blue="0.6874355483665997" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <outlet property="messageAuthorFullNameLabel" destination="jbF-tf-jNy" id="X9Y-4v-prq"/>
+                                            <outlet property="messageAuthorImageView" destination="S9d-yg-4b1" id="5RG-lc-oiA"/>
+                                            <outlet property="messageDateLabel" destination="Yja-06-Iqy" id="Qlf-7L-mXP"/>
+                                            <outlet property="messageTextLabel" destination="Fn1-a8-hxe" id="eXZ-GU-l0P"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>

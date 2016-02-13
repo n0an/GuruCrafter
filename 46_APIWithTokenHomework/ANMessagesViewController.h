@@ -8,10 +8,16 @@
 
 #import "ViewController.h"
 
+@class ANUser;
+@class ANGroup;
+
 @interface ANMessagesViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+@property (strong, nonatomic) NSString* partnerUserID;
 
+@property (strong, nonatomic) ANUser* partnerUser;
+@property (strong, nonatomic) ANGroup* partnerGroup;
 
 @end

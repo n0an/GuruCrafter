@@ -14,7 +14,8 @@
 
 #import "ANPost.h"
 #import "ANGroup.h"
-#import <JSQMessages.h>
+
+#import "ANMessage.h"
 
 @interface ANServerManager ()
 
@@ -81,7 +82,6 @@
             completion(nil);
             
         }
-        
         
         
     }];
@@ -342,12 +342,16 @@
 }
 
 
-- (void) getPrivateMessagesFromUser:(NSString*) userID
-                         senderName:(NSString*) senderName
-                         withOffset:(NSInteger) offset
-                              count:(NSInteger) count
-                          onSuccess:(void(^)(NSArray* privateMessages)) success
-                          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+
+
+
+
+
+- (void) getMessagesForUser:(NSString*) userID
+           withOffset:(NSInteger) offset
+                count:(NSInteger) count
+            onSuccess:(void(^)(NSArray* messages)) success
+            onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
     
     
     NSDictionary* params =
@@ -367,36 +371,22 @@
          NSLog(@"messages.getHistory JSON: %@", responseObject);
          
          NSDictionary* response = [responseObject objectForKey:@"response"];
+
+         NSArray* itemsArray = [response objectForKey:@"items"];
          
-         NSArray* dictItemsArray = [response objectForKey:@"items"];
-         
-         NSMutableArray* privateMessagesArray = [NSMutableArray array];
-         
-         
-         for (NSDictionary* dict in dictItemsArray) {
-             
-             NSString* senderId = [[dict objectForKey:@"from_id"] stringValue];
-             
-             NSTimeInterval timePassedSince1970 = [[dict objectForKey:@"date"] doubleValue];
-             
-             NSDate* date = [NSDate dateWithTimeIntervalSince1970:timePassedSince1970];
-             
-             NSString* text = [dict objectForKey:@"body"];
-             
-             JSQMessage *privateMessage = [[JSQMessage alloc] initWithSenderId:senderId
-                                                             senderDisplayName:senderName
-                                                                          date:date text:text];
-             
-             [privateMessagesArray addObject:privateMessage];
-             
-             
+         NSMutableArray* messagesArray = [NSMutableArray array];
+
+         for (NSDictionary* dict in itemsArray) {
+             ANMessage* message = [[ANMessage alloc] initWithServerResponse:dict];
+             [messagesArray addObject:message];
          }
-         
-         
          
          if (success) {
-             success(privateMessagesArray);
+             success(messagesArray);
          }
+         
+         
+         
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
@@ -410,46 +400,6 @@
     
     
 }
-
-
-
-- (void) sendPrivateMessageForUserID:(NSString*) userID
-                             message:(NSString*) message
-                           onSuccess:(void(^)(id result)) success
-                           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
-
-    
-    NSDictionary* params =
-    [NSDictionary dictionaryWithObjectsAndKeys:
-     self.accessToken.token,    @"access_token",
-     userID,                    @"user_id",
-     message,                   @"message",
-     @"5.45",                   @"v", nil];
-
-
-    [self.requestOperationManager
-     POST:@"messages.send"
-     parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
-         NSLog(@"messages.send JSON: %@", responseObject);
-         
-         
-         if (success) {
-             success(responseObject);
-         }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-         NSLog(@"Error: %@", error);
-         
-         if (failure) {
-             failure(error, operation.response.statusCode);
-             
-         }
-     }];
-    
-    
-}
-
 
 
 
