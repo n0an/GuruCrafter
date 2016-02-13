@@ -12,9 +12,9 @@
 
 @interface ANServerManager : NSObject
 
-@property (strong, nonatomic, readonly) ANUser* currentUser;
+@property (strong, nonatomic) ANUser* currentUser;
 
-@property (strong, nonatomic) NSURL* photoSelfURL;
+//@property (strong, nonatomic) NSURL* photoSelfURL;
 
 + (ANServerManager*) sharedManager;
 
@@ -45,22 +45,7 @@
         onSuccess:(void(^)(id result)) success
         onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
-/*
-- (void) getPrivateMessagesFromUser:(NSString*) userID
-                         senderName:(NSString*) senderName
-                         withOffset:(NSInteger) offset
-                              count:(NSInteger) count
-                          onSuccess:(void(^)(NSArray* privateMessages)) success
-                          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
-
-
-- (void) sendPrivateMessageForUserID:(NSString*) userID
-                             message:(NSString*) message
-                           onSuccess:(void(^)(id result)) success
-                           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
-
-*/
 
 - (void) getMessagesForUser:(NSString*) userID
                  withOffset:(NSInteger) offset

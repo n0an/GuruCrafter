@@ -12,6 +12,9 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    
+    self.messageAuthorImageView.layer.cornerRadius = self.messageAuthorImageView.frame.size.height/2;
+    self.messageAuthorImageView.clipsToBounds = YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

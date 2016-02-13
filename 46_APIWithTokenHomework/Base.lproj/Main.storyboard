@@ -6,32 +6,6 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Private Messages-->
-        <scene sceneID="0bG-Bf-dre">
-            <objects>
-                <viewController storyboardIdentifier="ANChatViewController" id="vBd-Xu-PG5" customClass="ANChatViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="dr5-qZ-RAf"/>
-                        <viewControllerLayoutGuide type="bottom" id="fSl-Xb-tgo"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="xug-gs-aB1">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Private Messages" id="01R-qK-90S">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="6ce-YZ-USg">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <connections>
-                                <action selector="actionCancel:" destination="vBd-Xu-PG5" id="xe8-zj-Qdx"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Mhu-bR-04W" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-96" y="-1434"/>
-        </scene>
         <!--iOSDevCourse-->
         <scene sceneID="0b6-l5-8XE">
             <objects>
@@ -320,9 +294,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4uM-20-FJZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="694" y="-342"/>
+            <point key="canvasLocation" x="1506" y="-342"/>
         </scene>
-        <!--Messages View Controller-->
+        <!--Messages-->
         <scene sceneID="xFc-gQ-FLi">
             <objects>
                 <viewController storyboardIdentifier="ANMessagesViewController" id="x8N-gB-84b" customClass="ANMessagesViewController" sceneMemberID="viewController">
@@ -339,7 +313,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageSentCell" rowHeight="100" id="Zot-lt-nCa" customClass="ANMessageTableViewCell">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="100"/>
+                                        <rect key="frame" x="0.0" y="92" width="600" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Zot-lt-nCa" id="RC7-M8-qpo">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="99.5"/>
@@ -352,13 +326,13 @@
                                                         <constraint firstAttribute="height" constant="50" id="zyi-j1-lPg"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="myFirstName myLastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ynB-mT-PmE">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="myFirstName myLastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ynB-mT-PmE">
                                                     <rect key="frame" x="66" y="8" width="526" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fdz-Zi-qIb">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fdz-Zi-qIb">
                                                     <rect key="frame" x="66" y="37" width="526" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -404,7 +378,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageReceivedCell" rowHeight="100" id="7Cz-lA-VUv" customClass="ANMessageTableViewCell">
-                                        <rect key="frame" x="0.0" y="128" width="600" height="100"/>
+                                        <rect key="frame" x="0.0" y="192" width="600" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7Cz-lA-VUv" id="wls-4Z-AEU">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="99.5"/>
@@ -477,13 +451,14 @@
                             <constraint firstItem="AzR-n6-MTg" firstAttribute="top" secondItem="Ckt-Qc-tRx" secondAttribute="bottom" id="bvF-12-kv1"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="Messages" id="kQH-7e-ZUa"/>
                     <connections>
                         <outlet property="tableView" destination="Ckt-Qc-tRx" id="IUk-cU-8ea"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zRY-pw-Kdr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-96" y="-675"/>
+            <point key="canvasLocation" x="716" y="-675"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="MSa-Qm-GZ5">
@@ -504,6 +479,28 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tAE-G7-msG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-916" y="96"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="sbV-Vn-taa">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="WiG-vS-b3U" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="XdP-2s-bYo">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.385073059" green="0.5745729745" blue="0.82465277780000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="x8N-gB-84b" kind="relationship" relationship="rootViewController" id="8xD-gZ-kn4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="awR-35-PnK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-96" y="-675"/>
         </scene>
     </scenes>
 </document>

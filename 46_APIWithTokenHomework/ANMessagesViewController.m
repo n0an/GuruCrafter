@@ -11,6 +11,12 @@
 #import "ANGroup.h"
 #import "ANServerManager.h"
 
+#import "ANMessageTableViewCell.h"
+#import "ANMessage.h"
+
+#import "UIImageView+AFNetworking.h"
+
+
 @interface ANMessagesViewController ()
 
 @property (strong, nonatomic) ANServerManager* serverManager;
@@ -18,6 +24,11 @@
 @property (strong, nonatomic) NSMutableArray* messages;
 
 @property (assign, nonatomic) BOOL loadingData;
+
+@property (strong, nonatomic) NSString* sourceFullName;
+@property (strong, nonatomic) NSURL* sourceImageURL;
+
+
 
 @end
 
@@ -28,16 +39,26 @@ static NSInteger messagesInRequest = 20;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    
+  
     NSLog(@"ANMessagesViewController, partnerUserID = %@", self.partnerUserID);
     
+        if (self.partnerUser != nil) {
+        self.sourceFullName = [NSString stringWithFormat:@"%@ %@", self.partnerUser.firstName, self.partnerUser.lastName];
+        self.sourceImageURL = self.partnerUser.imageURL;
+        
+    } else if (self.partnerGroup != nil) {
+        self.sourceFullName = [NSString stringWithFormat:@"%@ %@", self.partnerGroup.groupName];
+        self.sourceImageURL = self.partnerGroup.imageURL;
+    }
+    
+    
     self.serverManager = [ANServerManager sharedManager];
-
-    self.navigationController.title = @"Messages";
+    
+    self.navigationItem.title = self.sourceFullName;
     
     self.loadingData = YES;
+    
+    self.messages = [NSMutableArray array];
     
     [self getMessagesFromServer];
     
@@ -49,6 +70,7 @@ static NSInteger messagesInRequest = 20;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 
 
@@ -74,9 +96,9 @@ static NSInteger messagesInRequest = 20;
                   [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
                   [self.tableView endUpdates];
                   
+//                  [self.tableView reloadData];
                   
                   self.loadingData = NO;
-                  
                   
               }
               onFailure:^(NSError *error, NSInteger statusCode) {
@@ -95,12 +117,92 @@ static NSInteger messagesInRequest = 20;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+
     return [self.messages count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *messageSentIdentifier =        @"messageSentCell";
+    static NSString *messageReceivedIdentifier =    @"messageReceivedCell";
+    
+    NSLog(@"self.messages = %@", self.messages);
+
+    
+    ANMessage* message = [self.messages objectAtIndex:indexPath.row];
+    
+    
+    ANUser* currentUser = self.serverManager.currentUser;
+    
+    NSString* selfUserID = currentUser.userID;
+
+    if ([message.authorID isEqualToString:selfUserID]) {
+        /**
+         *       THIS IS THE MESSAGE SENT BY US
+         */
+        
+        ANMessageTableViewCell* messageSentCell = [tableView dequeueReusableCellWithIdentifier:messageSentIdentifier];
+        
+        if (!messageSentCell) {
+            messageSentCell = [[ANMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:messageSentIdentifier];
+        }
+        
+        messageSentCell.messageDateLabel.text = message.messageDate;
+        messageSentCell.messageTextLabel.text = message.messageText;
+        
+        messageSentCell.messageAuthorFullNameLabel.text = [NSString stringWithFormat:@"%@ %@", currentUser.firstName, currentUser.lastName];
+        
+        [messageSentCell.messageAuthorImageView setImageWithURL:currentUser.imageURL];
+        
+        return messageSentCell;
+        
+        
+        
+    } else if ([message.authorID isEqualToString:self.partnerUserID]) {
+        /**
+         *       THIS IS THE MESSAGE SENT BY PARTNER
+        */
+        
+        ANMessageTableViewCell* messageReceivedCell = [tableView dequeueReusableCellWithIdentifier:messageReceivedIdentifier];
+        
+        if (!messageReceivedCell) {
+            messageReceivedCell = [[ANMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:messageReceivedIdentifier];
+        }
+        
+        messageReceivedCell.messageDateLabel.text = message.messageDate;
+        messageReceivedCell.messageTextLabel.text = message.messageText;
+
+        messageReceivedCell.messageAuthorFullNameLabel.text = self.sourceFullName;
+        [messageReceivedCell.messageAuthorImageView setImageWithURL:self.sourceImageURL];
+        
+        
+        return messageReceivedCell;
+
+    }
+    
+    
+    
+    return nil;
+    
+}
+
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return UITableViewAutomaticDimension;
+    
 }
 
 
 
-
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return UITableViewAutomaticDimension; // Auto Layout elements in the cell
+    
+}
 
 
 

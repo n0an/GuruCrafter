@@ -71,7 +71,8 @@ static NSInteger postsInRequest = 20;
             NSLog(@"%@ %@", user.firstName, user.lastName);
             
             ANServerManager* serverManager = [ANServerManager sharedManager];
-            serverManager.photoSelfURL = user.imageURL;
+            serverManager.currentUser = user;
+//            serverManager.photoSelfURL = user.imageURL;
         }];
     }
     
