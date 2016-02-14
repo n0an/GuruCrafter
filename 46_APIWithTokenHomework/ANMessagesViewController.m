@@ -70,7 +70,11 @@ static NSInteger messagesInRequest = 20;
     [self getMessagesFromServer];
     
     
+    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
+    [refresh addTarget:self action:@selector(refreshMessagesHistory) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refresh;
     
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -97,6 +101,8 @@ static NSInteger messagesInRequest = 20;
     
     
 }
+
+
 
 
 
@@ -135,6 +141,28 @@ static NSInteger messagesInRequest = 20;
 }
 
 
+- (void) refreshMessagesHistory {
+    
+    self.loadingData = YES;
+    
+    [[ANServerManager sharedManager] getMessagesForUser:self.partnerUserID
+         withOffset:0
+              count:MAX(messagesInRequest, [self.messages count])
+          onSuccess:^(NSArray *messages) {
+              
+              [self.messages removeAllObjects];
+              [self.messages addObjectsFromArray:messages];
+              
+              [self.tableView reloadData];
+              [self.refreshControl endRefreshing];
+              self.loadingData = NO;
+              
+          } onFailure:^(NSError *error, NSInteger statusCode) {
+              
+          }];
+
+}
+
 
 - (void) sendMessage:(NSString*) message {
     
@@ -144,6 +172,9 @@ static NSInteger messagesInRequest = 20;
                
                NSLog(@"MESSAGE SENT");
                
+               self.sectionsCount = 1;
+               
+               [self refreshMessagesHistory];
            }
      
            onFailure:^(NSError *error, NSInteger statusCode) {
@@ -249,12 +280,7 @@ static NSInteger messagesInRequest = 20;
         }
     }
     
-    
-    
-    
-    
-    
-    
+
     return nil;
     
 }
@@ -297,8 +323,7 @@ static NSInteger messagesInRequest = 20;
     
     [self sendMessage:message];
     
-    self.sectionsCount = 1;
-    [self.tableView reloadData];
+
 
 }
 

@@ -11,9 +11,9 @@
 @class ANUser;
 @class ANGroup;
 
-@interface ANMessagesViewController : UIViewController
+@interface ANMessagesViewController : UITableViewController
 
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+//@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @property (strong, nonatomic) NSString* partnerUserID;
 

@@ -24,18 +24,33 @@
 
 }
 
+#pragma mark - Helper Methods
+
+- (void) sendMessage {
+    [self.delegate sendButtonPressedWithMessage:self.messageTextField.text];
+    
+    self.messageTextField.text = @"";
+    
+    self.sendMessageButton.enabled = NO;
+}
+
 #pragma mark - Actions
 
 
 - (IBAction)actionSendPressed:(UIButton*)sender {
-    NSLog(@"actionSendPressed");
-    NSLog(@"message = %@", self.messageTextField.text);
     
-    
-    [self.delegate sendButtonPressedWithMessage:self.messageTextField.text];
+    [self sendMessage];
     
 }
 
+- (IBAction)actionTextChanged:(UITextField*)sender {
+    
+    if ([self.messageTextField.text length] > 0) {
+        self.sendMessageButton.enabled = YES;
+    } else {
+        self.sendMessageButton.enabled = NO;
+    }
+}
 
 
 
@@ -44,14 +59,20 @@
 
 #pragma mark - UITextFieldDelegate
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    
-    NSLog(@"textFieldDidBeginEditing");
-    NSLog(@"textField.text = %@", textField.text);
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    self.sendMessageButton.enabled = YES;
+    if ([self.messageTextField.text length] > 0) {
+        [self sendMessage];
+        [textField resignFirstResponder];
+
+    }
+    
+
+    return YES;
     
 }
+
+
 
 @end

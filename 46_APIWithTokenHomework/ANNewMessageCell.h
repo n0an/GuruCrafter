@@ -20,6 +20,8 @@
 
 - (IBAction)actionSendPressed:(UIButton*)sender;
 
+- (IBAction)actionTextChanged:(UITextField*)sender;
+
 
 @end
 
