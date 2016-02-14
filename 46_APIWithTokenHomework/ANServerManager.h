@@ -53,4 +53,10 @@
                   onSuccess:(void(^)(NSArray* messages)) success
                   onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
+
+- (void) sendMessage:(NSString*) text
+              toUser:(NSString*) userID
+           onSuccess:(void(^)(id result)) success
+           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
 @end

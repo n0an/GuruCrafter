@@ -20,4 +20,11 @@
 @property (strong, nonatomic) ANUser* partnerUser;
 @property (strong, nonatomic) ANGroup* partnerGroup;
 
+
+
+- (IBAction)actionComposePressed:(UIBarButtonItem*)sender;
+
+
+
+
 @end

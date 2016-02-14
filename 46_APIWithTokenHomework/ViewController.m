@@ -376,7 +376,6 @@ static NSInteger postsInRequest = 20;
 
 #pragma mark - +++ ANAddPostDelegate +++
 
-
 - (void) postDidSend {
     [self refreshWall];
 }

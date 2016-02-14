@@ -16,8 +16,10 @@
 
 #import "UIImageView+AFNetworking.h"
 
+#import "ANNewMessageCell.h"
 
-@interface ANMessagesViewController ()
+
+@interface ANMessagesViewController () <UIScrollViewDelegate, ANNewMessageDelegate>
 
 @property (strong, nonatomic) ANServerManager* serverManager;
 
@@ -27,6 +29,9 @@
 
 @property (strong, nonatomic) NSString* sourceFullName;
 @property (strong, nonatomic) NSURL* sourceImageURL;
+
+@property (assign, nonatomic) NSInteger sectionsCount;
+
 
 
 
@@ -41,8 +46,10 @@ static NSInteger messagesInRequest = 20;
     [super viewDidLoad];
   
     NSLog(@"ANMessagesViewController, partnerUserID = %@", self.partnerUserID);
+  
+    self.sectionsCount = 1;
     
-        if (self.partnerUser != nil) {
+    if (self.partnerUser != nil) {
         self.sourceFullName = [NSString stringWithFormat:@"%@ %@", self.partnerUser.firstName, self.partnerUser.lastName];
         self.sourceImageURL = self.partnerUser.imageURL;
         
@@ -71,6 +78,25 @@ static NSInteger messagesInRequest = 20;
     // Dispose of any resources that can be recreated.
 }
 
+
+
+#pragma mark - Actions
+
+- (IBAction)actionComposePressed:(UIBarButtonItem*)sender {
+    NSLog(@"actionComposePressed");
+    
+    if (self.sectionsCount == 1) {
+        self.sectionsCount = 2;
+    } else {
+        self.sectionsCount = 1;
+    }
+    
+//    self.sectionsCount = 2;
+    
+    [self.tableView reloadData];
+    
+    
+}
 
 
 
@@ -110,76 +136,122 @@ static NSInteger messagesInRequest = 20;
 
 
 
+- (void) sendMessage:(NSString*) message {
+    
+    [[ANServerManager sharedManager] sendMessage:message
+              toUser:self.partnerUserID
+           onSuccess:^(id result) {
+               
+               NSLog(@"MESSAGE SENT");
+               
+           }
+     
+           onFailure:^(NSError *error, NSInteger statusCode) {
+               
+           }];
+    
+    
+    
+}
+
+
+
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return self.sectionsCount;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-
+    if (self.sectionsCount == 2) {
+        if (section == 0) {
+            return 1;
+        } else if (section == 1) {
+            return [self.messages count];
+        }
+    }
     return [self.messages count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *messageSentIdentifier =        @"messageSentCell";
-    static NSString *messageReceivedIdentifier =    @"messageReceivedCell";
-    
-    NSLog(@"self.messages = %@", self.messages);
-
-    
-    ANMessage* message = [self.messages objectAtIndex:indexPath.row];
-    
-    
-    ANUser* currentUser = self.serverManager.currentUser;
-    
-    NSString* selfUserID = currentUser.userID;
-
-    if ([message.authorID isEqualToString:selfUserID]) {
-        /**
-         *       THIS IS THE MESSAGE SENT BY US
-         */
+    if ((self.sectionsCount == 2) && (indexPath.section == 0)) {
+        static NSString* newMessageIdentifier = @"newMessageCell";
         
-        ANMessageTableViewCell* messageSentCell = [tableView dequeueReusableCellWithIdentifier:messageSentIdentifier];
+        ANNewMessageCell* newMessageCell = [tableView dequeueReusableCellWithIdentifier:newMessageIdentifier];
         
-        if (!messageSentCell) {
-            messageSentCell = [[ANMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:messageSentIdentifier];
+        if (!newMessageCell) {
+            newMessageCell = [[ANNewMessageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:newMessageIdentifier];
         }
         
-        messageSentCell.messageDateLabel.text = message.messageDate;
-        messageSentCell.messageTextLabel.text = message.messageText;
+        newMessageCell.delegate = self;
         
-        messageSentCell.messageAuthorFullNameLabel.text = [NSString stringWithFormat:@"%@ %@", currentUser.firstName, currentUser.lastName];
+        return newMessageCell;
         
-        [messageSentCell.messageAuthorImageView setImageWithURL:currentUser.imageURL];
-        
-        return messageSentCell;
-        
-        
-        
-    } else if ([message.authorID isEqualToString:self.partnerUserID]) {
-        /**
-         *       THIS IS THE MESSAGE SENT BY PARTNER
-        */
-        
-        ANMessageTableViewCell* messageReceivedCell = [tableView dequeueReusableCellWithIdentifier:messageReceivedIdentifier];
-        
-        if (!messageReceivedCell) {
-            messageReceivedCell = [[ANMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:messageReceivedIdentifier];
-        }
-        
-        messageReceivedCell.messageDateLabel.text = message.messageDate;
-        messageReceivedCell.messageTextLabel.text = message.messageText;
-
-        messageReceivedCell.messageAuthorFullNameLabel.text = self.sourceFullName;
-        [messageReceivedCell.messageAuthorImageView setImageWithURL:self.sourceImageURL];
-        
-        
-        return messageReceivedCell;
-
     }
+    
+    
+    
+    if ((self.sectionsCount == 1) || ((self.sectionsCount == 2) && (indexPath.section == 1))) {
+        static NSString *messageSentIdentifier =        @"messageSentCell";
+        static NSString *messageReceivedIdentifier =    @"messageReceivedCell";
+        
+        ANMessage* message = [self.messages objectAtIndex:indexPath.row];
+        
+        ANUser* currentUser = self.serverManager.currentUser;
+        
+        NSString* selfUserID = currentUser.userID;
+        
+        if ([message.authorID isEqualToString:selfUserID]) {
+            /**
+             *       THIS IS THE MESSAGE SENT BY US
+             */
+            
+            ANMessageTableViewCell* messageSentCell = [tableView dequeueReusableCellWithIdentifier:messageSentIdentifier];
+            
+            if (!messageSentCell) {
+                messageSentCell = [[ANMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:messageSentIdentifier];
+            }
+            
+            messageSentCell.messageDateLabel.text = message.messageDate;
+            messageSentCell.messageTextLabel.text = message.messageText;
+            
+            messageSentCell.messageAuthorFullNameLabel.text = [NSString stringWithFormat:@"%@ %@", currentUser.firstName, currentUser.lastName];
+            
+            [messageSentCell.messageAuthorImageView setImageWithURL:currentUser.imageURL];
+            
+            return messageSentCell;
+            
+            
+            
+        } else if ([message.authorID isEqualToString:self.partnerUserID]) {
+            /**
+             *       THIS IS THE MESSAGE SENT BY PARTNER
+             */
+            
+            ANMessageTableViewCell* messageReceivedCell = [tableView dequeueReusableCellWithIdentifier:messageReceivedIdentifier];
+            
+            if (!messageReceivedCell) {
+                messageReceivedCell = [[ANMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:messageReceivedIdentifier];
+            }
+            
+            messageReceivedCell.messageDateLabel.text = message.messageDate;
+            messageReceivedCell.messageTextLabel.text = message.messageText;
+            
+            messageReceivedCell.messageAuthorFullNameLabel.text = self.sourceFullName;
+            [messageReceivedCell.messageAuthorImageView setImageWithURL:self.sourceImageURL];
+            
+            
+            return messageReceivedCell;
+            
+        }
+    }
+    
+    
+    
+    
     
     
     
@@ -204,6 +276,31 @@ static NSInteger messagesInRequest = 20;
     
 }
 
+
+
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
+        if (!self.loadingData)
+        {
+            self.loadingData = YES;
+            [self getMessagesFromServer];
+        }
+    }
+}
+
+#pragma mark - +++ ANNewMessageDelegate +++
+- (void) sendButtonPressedWithMessage:(NSString*) message {
+    NSLog(@"sendButtonPressedWithMessage");
+    NSLog(@"received message = %@",message);
+    
+    [self sendMessage:message];
+    
+    self.sectionsCount = 1;
+    [self.tableView reloadData];
+
+}
 
 
 

@@ -312,8 +312,61 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="newMessageCell" rowHeight="50" id="eyv-UQ-Ms3" customClass="ANNewMessageCell">
+                                        <rect key="frame" x="0.0" y="92" width="600" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eyv-UQ-Ms3" id="VU5-kA-Buh">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="49.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="nnP-vE-eci">
+                                                    <rect key="frame" x="8" y="9" width="503" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="eyv-UQ-Ms3" id="Bd0-yH-Kbu"/>
+                                                    </connections>
+                                                </textField>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bTe-4h-ZAb">
+                                                    <rect key="frame" x="519" y="9" width="73" height="30"/>
+                                                    <color key="backgroundColor" red="0.385073059" green="0.5745729745" blue="0.82465277780000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="kRB-9n-WpV"/>
+                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="73" id="wE7-qg-YqJ"/>
+                                                        <constraint firstAttribute="width" constant="73" id="wh5-hs-CxY"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                    <state key="normal" title="Send">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="wE7-qg-YqJ"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <connections>
+                                                        <action selector="actionSendPressed:" destination="eyv-UQ-Ms3" eventType="touchUpInside" id="lzQ-2C-cbp"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="bTe-4h-ZAb" firstAttribute="top" secondItem="VU5-kA-Buh" secondAttribute="top" constant="9" id="83i-yH-uyg"/>
+                                                <constraint firstItem="nnP-vE-eci" firstAttribute="top" secondItem="VU5-kA-Buh" secondAttribute="top" constant="9" id="Muh-ev-I2K"/>
+                                                <constraint firstAttribute="trailing" secondItem="bTe-4h-ZAb" secondAttribute="trailing" constant="8" id="Ofs-UR-AAw"/>
+                                                <constraint firstAttribute="bottom" secondItem="bTe-4h-ZAb" secondAttribute="bottom" constant="10.5" id="ayg-RT-Gti"/>
+                                                <constraint firstItem="nnP-vE-eci" firstAttribute="leading" secondItem="VU5-kA-Buh" secondAttribute="leading" constant="8" id="c44-7S-ZuW"/>
+                                                <constraint firstItem="bTe-4h-ZAb" firstAttribute="leading" secondItem="nnP-vE-eci" secondAttribute="trailing" constant="8" id="gPT-x9-0gP"/>
+                                                <constraint firstAttribute="bottom" secondItem="nnP-vE-eci" secondAttribute="bottom" constant="10.5" id="u02-cl-YWz"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <outlet property="messageTextField" destination="nnP-vE-eci" id="pIt-ob-NgQ"/>
+                                            <outlet property="sendMessageButton" destination="bTe-4h-ZAb" id="CM7-ae-SSE"/>
+                                        </connections>
+                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageSentCell" rowHeight="100" id="Zot-lt-nCa" customClass="ANMessageTableViewCell">
-                                        <rect key="frame" x="0.0" y="92" width="600" height="100"/>
+                                        <rect key="frame" x="0.0" y="142" width="600" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Zot-lt-nCa" id="RC7-M8-qpo">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="99.5"/>
@@ -378,7 +431,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageReceivedCell" rowHeight="100" id="7Cz-lA-VUv" customClass="ANMessageTableViewCell">
-                                        <rect key="frame" x="0.0" y="192" width="600" height="100"/>
+                                        <rect key="frame" x="0.0" y="242" width="600" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7Cz-lA-VUv" id="wls-4Z-AEU">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="99.5"/>
@@ -451,7 +504,14 @@
                             <constraint firstItem="AzR-n6-MTg" firstAttribute="top" secondItem="Ckt-Qc-tRx" secondAttribute="bottom" id="bvF-12-kv1"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Messages" id="kQH-7e-ZUa"/>
+                    <navigationItem key="navigationItem" title="Messages" id="kQH-7e-ZUa">
+                        <barButtonItem key="rightBarButtonItem" systemItem="compose" id="WYv-13-5Vx">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="actionComposePressed:" destination="x8N-gB-84b" id="Afu-Zt-ZbV"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="Ckt-Qc-tRx" id="IUk-cU-8ea"/>
                     </connections>

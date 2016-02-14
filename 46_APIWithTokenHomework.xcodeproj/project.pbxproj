@@ -28,6 +28,7 @@
 		18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */; };
 		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
 		18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8591C68896400C1204F /* ANPhoto.m */; };
+		18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F7DA581C70CEC90027A836 /* ANNewMessageCell.m */; };
 		AC73DC8C223EB42DB2FDA8D6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149FED9822B8F31BB63210E /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,8 @@
 		18D84FAA1C67540D0090BF78 /* ANPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCell.m; sourceTree = "<group>"; };
 		18E8D8581C68896400C1204F /* ANPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhoto.h; sourceTree = "<group>"; };
 		18E8D8591C68896400C1204F /* ANPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhoto.m; sourceTree = "<group>"; };
+		18F7DA571C70CEC90027A836 /* ANNewMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANNewMessageCell.h; sourceTree = "<group>"; };
+		18F7DA581C70CEC90027A836 /* ANNewMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANNewMessageCell.m; sourceTree = "<group>"; };
 		2149FED9822B8F31BB63210E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40CC3732CBA3BFF3108B259 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		C93851F0D87243F52E621999 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -237,6 +240,8 @@
 		18D84FAC1C6754100090BF78 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				18F7DA571C70CEC90027A836 /* ANNewMessageCell.h */,
+				18F7DA581C70CEC90027A836 /* ANNewMessageCell.m */,
 				18D84FA91C67540D0090BF78 /* ANPostCell.h */,
 				18D84FAA1C67540D0090BF78 /* ANPostCell.m */,
 				18639B841C6F3EA4008B6632 /* ANMessageTableViewCell.h */,
@@ -437,6 +442,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */,
 				1804049D1C6630D000876FFE /* ANPost.m in Sources */,
 				18639B861C6F3EA4008B6632 /* ANMessageTableViewCell.m in Sources */,
 				180404961C66300200876FFE /* ANLoginViewController.m in Sources */,

@@ -145,13 +145,8 @@
          }
      }];
     
-    
-    
-    
-    
+
 }
-
-
 
 
 - (void) getFriendsWithOffset:(NSInteger) offset
@@ -277,7 +272,6 @@
          }
          
          
-         
          if (success) {
              success(postsArray);
          }
@@ -290,7 +284,6 @@
              
          }
      }];
-    
     
     
 }
@@ -317,7 +310,6 @@
      nil];
     
     
-    
     [self.requestOperationManager
      POST:@"wall.post"
      parameters:params
@@ -340,9 +332,6 @@
     
     
 }
-
-
-
 
 
 
@@ -397,9 +386,46 @@
          }
      }];
     
+}
+
+
+- (void) sendMessage:(NSString*) text
+      toUser:(NSString*) userID
+        onSuccess:(void(^)(id result)) success
+        onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     userID,                    @"user_id",
+     text,                      @"message",
+     self.accessToken.token,    @"access_token",
+     nil];
+    
+    
+    [self.requestOperationManager
+     POST:@"messages.send"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"messages.send JSON: %@", responseObject);
+         
+         
+         if (success) {
+             success(responseObject);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
     
     
 }
+
 
 
 
