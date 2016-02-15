@@ -29,7 +29,7 @@
 
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *galleryImageViews;
 
-+ (CGFloat) heightForText:(NSString*) text;
+//+ (CGFloat) heightForText:(NSString*) text;
 
 
 

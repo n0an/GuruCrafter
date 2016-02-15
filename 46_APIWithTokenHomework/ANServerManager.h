@@ -59,4 +59,15 @@
            onSuccess:(void(^)(id result)) success
            onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
+
+
+
+- (void) getCommentsForGroup:(NSString*) groupID
+                      PostID:(NSString*) postID
+                  withOffset:(NSInteger) offset
+                       count:(NSInteger) count
+                   onSuccess:(void(^)(NSArray* comments)) success
+                   onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
 @end

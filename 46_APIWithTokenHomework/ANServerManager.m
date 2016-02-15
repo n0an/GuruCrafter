@@ -16,6 +16,7 @@
 #import "ANGroup.h"
 
 #import "ANMessage.h"
+#import "ANComment.h"
 
 @interface ANServerManager ()
 
@@ -425,6 +426,112 @@
     
     
 }
+
+
+
+
+
+- (void) getCommentsForGroup:(NSString*) groupID
+                      PostID:(NSString*) postID
+           withOffset:(NSInteger) offset
+                count:(NSInteger) count
+            onSuccess:(void(^)(NSArray* comments)) success
+            onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,       @"owner_id",
+     postID,        @"post_id",
+     @(count),      @"count",
+     @(offset),     @"offset",
+     @"1",          @"need_likes",
+     @"1",          @"extended",
+     @"5.45",       @"v", nil];
+    
+    
+    
+    [self.requestOperationManager
+     GET:@"wall.getComments"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"wall.getComments JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+
+         NSArray* profiles = [response objectForKey:@"profiles"];
+         NSArray* items = [response objectForKey:@"items"];
+         NSArray* groups = [response objectForKey:@"groups"];
+
+         // *** WE HAVE ONLY ONE GROUP - iOSDevCourse group. Getting it to object
+         
+         ANGroup* group;
+         if ([groups count] > 0) {
+             group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
+         }
+         
+         
+         
+         // *** CREATING AUTHORS PROFILES ARRAY
+         NSMutableArray* authorsArray = [NSMutableArray array];
+         
+         for (NSDictionary* dict in profiles) {
+             ANUser* author = [[ANUser alloc] initWithServerResponse:dict];
+             
+             [authorsArray addObject:author];
+         }
+         
+         
+         // *** CREATING COMMENTS ARRAY, AND GETTING AUTHOR FOR EACH COMMENT
+         
+         NSMutableArray* comments = [NSMutableArray array];
+         
+         for (NSDictionary* dict in items) {
+             ANComment* comment = [[ANComment alloc] initWithServerResponse:dict];
+             [comments addObject:comment];
+             
+             // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS COMMENT
+             
+             for (ANUser* author in authorsArray) {
+                 
+                 if ([comment.authorID hasPrefix:@"-"]) {
+                     comment.fromGroup = group;
+                     continue;
+                 }
+                 
+                 if ([author.userID isEqualToString:comment.authorID]) {
+                     comment.author = author;
+                 }
+             }
+             
+         }
+         
+         
+         if (success) {
+             success(comments);
+         }
+
+         
+
+     }
+     
+     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
 
 
 

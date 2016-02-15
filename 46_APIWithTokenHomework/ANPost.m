@@ -16,6 +16,8 @@
     self = [super initWithServerResponse:responseObject];
     if (self) {
         
+        self.postID = [[responseObject objectForKey:@"id"] stringValue];
+        
         self.text = [self stringByStrippingHTML:[responseObject objectForKey:@"text"]];
         
         self.comments = [[[responseObject objectForKey:@"comments"] objectForKey:@"count"] stringValue];

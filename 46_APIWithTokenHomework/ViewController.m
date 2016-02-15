@@ -22,6 +22,8 @@
 #import "ANMessagesViewController.h"
 #import "ANNewPostCell.h"
 
+#import "ANPostCommentsViewController.h"
+
 
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate>
 
@@ -38,6 +40,7 @@
 @end
 
 static NSInteger postsInRequest = 20;
+static NSString* iosDevCourseGroupID = @"58860049";
 
 
 @implementation ViewController
@@ -133,7 +136,7 @@ static NSInteger postsInRequest = 20;
     self.loadingData = YES;
     
     [[ANServerManager sharedManager]
-     getGroupWall:@"58860049"
+     getGroupWall:iosDevCourseGroupID
      withOffset:0
      count:MAX(postsInRequest, [self.postsArray count])
      onSuccess:^(NSArray *posts) {
@@ -301,17 +304,31 @@ static NSInteger postsInRequest = 20;
     
 }
 
-
-
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     return UITableViewAutomaticDimension; // Auto Layout elements in the cell
-    
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        return NO;
+    }
+    return YES;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    ANPost* selectedPost = [self.postsArray objectAtIndex:indexPath.row];
+    
+    ANPostCommentsViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPostCommentsViewController"];
+    
+    vc.groupID = iosDevCourseGroupID;
+    vc.postID = selectedPost.postID;
+    vc.post = selectedPost;
+    
+    [self.navigationController pushViewController:vc animated:YES];
     
 }
 
