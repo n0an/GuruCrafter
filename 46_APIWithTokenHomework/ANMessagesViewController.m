@@ -86,16 +86,15 @@ static NSInteger messagesInRequest = 20;
 
 #pragma mark - Actions
 
-- (IBAction)actionComposePressed:(UIBarButtonItem*)sender {
+- (IBAction)actionComposePressed:(UIButton*)sender {
     NSLog(@"actionComposePressed");
     
-    if (self.sectionsCount == 1) {
-        self.sectionsCount = 2;
+    if (self.sectionsCount == 3) {
+        self.sectionsCount = 4;
     } else {
-        self.sectionsCount = 1;
+        self.sectionsCount = 3;
     }
     
-//    self.sectionsCount = 2;
     
     [self.tableView reloadData];
     

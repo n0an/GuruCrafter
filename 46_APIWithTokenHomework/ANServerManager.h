@@ -70,4 +70,11 @@
                    onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
+- (void) addComment:(NSString*) text
+        onGroupWall:(NSString*) groupID
+            forPost:(NSString*) postID
+          onSuccess:(void(^)(id result)) success
+          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
 @end

@@ -17,4 +17,9 @@
 
 @property (strong, nonatomic) ANPost* post;
 
+
+
+
+
+
 @end

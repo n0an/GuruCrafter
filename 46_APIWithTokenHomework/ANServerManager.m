@@ -533,6 +533,50 @@
 
 
 
+- (void) addComment:(NSString*) text
+         onGroupWall:(NSString*) groupID
+             forPost:(NSString*) postID
+        onSuccess:(void(^)(id result)) success
+        onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"owner_id",
+     postID,                    @"post_id",
+     text,                      @"text",
+     self.accessToken.token,    @"access_token",
+     nil];
+    
+    
+    [self.requestOperationManager
+     POST:@"wall.addComment"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"wall.addComment JSON: %@", responseObject);
+         
+         
+         if (success) {
+             success(responseObject);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
 
 
 

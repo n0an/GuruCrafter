@@ -18,12 +18,16 @@
 
 #import "UIImageView+AFNetworking.h"
 
+#import "ANNewMessageCell.h"
+
+
 
 
 @interface ANPostCommentsViewController () <UIScrollViewDelegate>
 
 @property (strong, nonatomic) NSMutableArray* commentsArray;
 @property (assign, nonatomic) BOOL loadingData;
+@property (assign, nonatomic) NSInteger sectionsCount;
 
 @end
 
@@ -38,6 +42,8 @@ static NSInteger commentsInRequest = 10;
     
     [super viewDidLoad];
     
+    self.sectionsCount = 3;
+    
     self.commentsArray = [NSMutableArray array];
     
     self.loadingData = YES;
@@ -51,7 +57,30 @@ static NSInteger commentsInRequest = 10;
     
     self.navigationItem.title = [NSString stringWithFormat:@"Post #%@", self.postID];
     
+    
+
 }
+
+
+#pragma mark - Actions
+
+- (void)actionComposePressed:(UIButton*)sender {
+    NSLog(@"actionComposePressed");
+    
+    if (self.sectionsCount == 3) {
+        self.sectionsCount = 4;
+    } else {
+        self.sectionsCount = 3;
+    }
+    
+    
+    [self.tableView reloadData];
+    
+    
+}
+
+
+
 
 
 #pragma mark - API
@@ -130,21 +159,34 @@ static NSInteger commentsInRequest = 10;
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return self.sectionsCount;
 }
+
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (section == 0 || section == 1) {
-        return 1;
-    } else if (section == 2) {
-        return [self.commentsArray count];
+    
+    if (self.sectionsCount == 4) {
+        if (section == 3) {
+            return [self.commentsArray count];
+        } else {
+            return 1;
+        }
+        
+    } else {
+        
+        if (section == 2) {
+            return [self.commentsArray count];
+        } else {
+            return 1;
+        }
     }
     
     return 1;
-    
 }
+
+
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -221,6 +263,20 @@ static NSInteger commentsInRequest = 10;
             separatorCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:separatorIdentifier];
         }
         
+        UIButton* addCommentButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+        addCommentButton.showsTouchWhenHighlighted = YES;
+        
+        [addCommentButton addTarget:self action:@selector(actionComposePressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        CGFloat width = tableView.frame.size.width;
+        
+        CGRect rect = CGRectMake(width - 25, 5, 20, 20);
+        
+        addCommentButton.frame = rect;
+        
+        [separatorCell.contentView addSubview:addCommentButton];
+
+        
         return separatorCell;
         
         
@@ -269,7 +325,7 @@ static NSInteger commentsInRequest = 10;
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 1) {
-        return 10;
+        return 30;
     }
     
     return UITableViewAutomaticDimension;
@@ -278,7 +334,7 @@ static NSInteger commentsInRequest = 10;
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1) {
-        return 10;
+        return 30;
     }
     return UITableViewAutomaticDimension; // Auto Layout elements in the cell
 }
