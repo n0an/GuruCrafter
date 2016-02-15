@@ -257,13 +257,13 @@
                                                 <constraint firstAttribute="width" constant="50" id="LHO-Pv-BTi"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2JA-uZ-Tki">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2JA-uZ-Tki">
                                             <rect key="frame" x="66" y="8" width="526" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sgt-cA-Y5F">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sgt-cA-Y5F">
                                             <rect key="frame" x="66" y="37" width="526" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -427,8 +427,65 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="newMessageCell" rowHeight="50" id="QUW-8D-JUe" customClass="ANNewMessageCell">
+                                <rect key="frame" x="0.0" y="512" width="600" height="50"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QUW-8D-JUe" id="Fnw-gL-VUa">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="49.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="15" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="PJH-6B-dsj">
+                                            <rect key="frame" x="8" y="9" width="503" height="30"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no" returnKeyType="send"/>
+                                            <connections>
+                                                <action selector="actionTextChanged:" destination="QUW-8D-JUe" eventType="editingChanged" id="3N0-fV-32q"/>
+                                                <outlet property="delegate" destination="QUW-8D-JUe" id="cdb-uZ-Ht4"/>
+                                            </connections>
+                                        </textField>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fLv-WH-py7">
+                                            <rect key="frame" x="519" y="9" width="73" height="30"/>
+                                            <color key="backgroundColor" red="0.385073059" green="0.5745729745" blue="0.82465277780000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="73" id="d9O-nq-fHq"/>
+                                                <constraint firstAttribute="height" constant="30" id="w8O-gG-DQg"/>
+                                                <constraint firstAttribute="width" constant="73" id="y9V-cW-20l"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <state key="normal" title="Send">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted" title="Sending">
+                                                <color key="titleColor" red="0.70528100849999997" green="1" blue="0.68743554839999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="d9O-nq-fHq"/>
+                                                </mask>
+                                            </variation>
+                                            <connections>
+                                                <action selector="actionSendPressed:" destination="QUW-8D-JUe" eventType="touchUpInside" id="MGX-bE-AcK"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="PJH-6B-dsj" firstAttribute="leading" secondItem="Fnw-gL-VUa" secondAttribute="leading" constant="8" id="K2r-HV-aiX"/>
+                                        <constraint firstAttribute="trailing" secondItem="fLv-WH-py7" secondAttribute="trailing" constant="8" id="X1t-zm-639"/>
+                                        <constraint firstItem="fLv-WH-py7" firstAttribute="top" secondItem="Fnw-gL-VUa" secondAttribute="top" constant="9" id="gdg-h8-qpD"/>
+                                        <constraint firstItem="PJH-6B-dsj" firstAttribute="top" secondItem="Fnw-gL-VUa" secondAttribute="top" constant="9" id="j8s-V5-s0A"/>
+                                        <constraint firstAttribute="bottom" secondItem="PJH-6B-dsj" secondAttribute="bottom" constant="10.5" id="oIU-wb-gsc"/>
+                                        <constraint firstItem="fLv-WH-py7" firstAttribute="leading" secondItem="PJH-6B-dsj" secondAttribute="trailing" constant="8" id="rEX-Fs-F5f"/>
+                                        <constraint firstAttribute="bottom" secondItem="fLv-WH-py7" secondAttribute="bottom" constant="10.5" id="tLU-5V-VhG"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="messageTextField" destination="PJH-6B-dsj" id="dov-LY-c7v"/>
+                                    <outlet property="sendMessageButton" destination="fLv-WH-py7" id="hX8-cm-ivq"/>
+                                </connections>
+                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="commentCell" rowHeight="100" id="SUv-i3-Yuk" customClass="ANCommentCell">
-                                <rect key="frame" x="0.0" y="512" width="600" height="100"/>
+                                <rect key="frame" x="0.0" y="562" width="600" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SUv-i3-Yuk" id="wBI-E7-2qs">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="99.5"/>
@@ -458,7 +515,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0RN-Tk-xn3">
                                             <rect key="frame" x="46" y="37" width="546" height="28.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="15.02.2016 15:45" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2H-F6-x3e">

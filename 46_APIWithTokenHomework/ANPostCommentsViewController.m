@@ -23,7 +23,7 @@
 
 
 
-@interface ANPostCommentsViewController () <UIScrollViewDelegate>
+@interface ANPostCommentsViewController () <UIScrollViewDelegate, ANNewMessageDelegate>
 
 @property (strong, nonatomic) NSMutableArray* commentsArray;
 @property (assign, nonatomic) BOOL loadingData;
@@ -148,6 +148,28 @@ static NSInteger commentsInRequest = 10;
                NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
                
            }];
+    
+}
+
+
+- (void) addComment:(NSString*) message {
+    
+    [[ANServerManager sharedManager] addComment:message
+            onGroupWall:self.groupID
+                forPost:self.postID
+              onSuccess:^(id result) {
+                  
+                  NSLog(@"COMMENT ADDED");
+                  
+                  self.sectionsCount = 3;
+                  
+                  [self refreshComments];
+                  
+              }
+              onFailure:^(NSError *error, NSInteger statusCode) {
+                  NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+
+              }];
     
 }
 
@@ -280,7 +302,22 @@ static NSInteger commentsInRequest = 10;
         return separatorCell;
         
         
-    } else if (indexPath.section == 2) { // *** COMMENTS SECTION
+        
+    } else if (self.sectionsCount == 4 && indexPath.section == 2) { // *** NEW COMMENT SECTION
+        
+        static NSString* newMessageIdentifier = @"newMessageCell";
+        
+        ANNewMessageCell* newMessageCell = [tableView dequeueReusableCellWithIdentifier:newMessageIdentifier];
+        
+        if (!newMessageCell) {
+            newMessageCell = [[ANNewMessageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:newMessageIdentifier];
+        }
+        
+        newMessageCell.delegate = self;
+        
+        return newMessageCell;
+
+    } else if (indexPath.section == 3 || (indexPath.section == 2 && self.sectionsCount == 3)) { // *** COMMENTS SECTION
         
         
         ANCommentCell* commentCell = [tableView dequeueReusableCellWithIdentifier:commentIdentifier];
@@ -302,19 +339,15 @@ static NSInteger commentsInRequest = 10;
             [commentCell.postAuthorImageView setImageWithURL:comment.author.imageURL];
             
         }
-        
-        
+
         commentCell.dateLabel.text = comment.date;
         
         commentCell.likesCountLabel.text = comment.likes;
         
         commentCell.commentTextLabel.text = comment.text;
 
-        
- 
         return commentCell;
-        
- 
+
     }
     
     return nil;
@@ -355,6 +388,17 @@ static NSInteger commentsInRequest = 10;
 }
 
 
+
+#pragma mark - +++ ANNewMessageDelegate +++
+- (void) sendButtonPressedWithMessage:(NSString*) message {
+    NSLog(@"sendButtonPressedWithMessage");
+    NSLog(@"received message = %@",message);
+    
+    [self addComment:message];
+    
+    
+    
+}
 
 
 @end

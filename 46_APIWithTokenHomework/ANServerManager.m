@@ -451,6 +451,7 @@
      @(offset),     @"offset",
      @"1",          @"need_likes",
      @"1",          @"extended",
+     @"desc",       @"sort",
      @"5.45",       @"v", nil];
     
     
