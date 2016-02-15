@@ -20,6 +20,7 @@
 #import "ANAddPostViewController.h"
 
 #import "ANMessagesViewController.h"
+#import "ANNewPostCell.h"
 
 
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate>
@@ -56,6 +57,8 @@ static NSInteger postsInRequest = 20;
     UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
+    
+    
 }
 
 
@@ -202,10 +205,12 @@ static NSInteger postsInRequest = 20;
     
     if (indexPath.section == 0) { // *** ADD POST BUTTON
         
-        UITableViewCell* addPostCell = [tableView dequeueReusableCellWithIdentifier:addPostIdentifier];
+        ANNewPostCell* addPostCell = [tableView dequeueReusableCellWithIdentifier:addPostIdentifier];
+        
+        
         
         if (!addPostCell) {
-            addPostCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:addPostIdentifier];
+            addPostCell = [[ANNewPostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:addPostIdentifier];
         }
         
         return addPostCell;

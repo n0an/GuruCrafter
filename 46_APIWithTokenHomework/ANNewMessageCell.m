@@ -17,6 +17,8 @@
         self.sendMessageButton.enabled = NO;
     }
     
+    self.sendMessageButton.layer.cornerRadius = 10;
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

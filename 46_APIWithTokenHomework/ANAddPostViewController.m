@@ -23,6 +23,7 @@
         self.sendButton.enabled = NO;
     }
     
+    self.postMessageTextView.layer.cornerRadius = 10;
     
 }
 
