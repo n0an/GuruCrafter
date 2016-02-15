@@ -54,7 +54,7 @@ static NSInteger messagesInRequest = 20;
         self.sourceImageURL = self.partnerUser.imageURL;
         
     } else if (self.partnerGroup != nil) {
-        self.sourceFullName = [NSString stringWithFormat:@"%@ %@", self.partnerGroup.groupName];
+        self.sourceFullName = [NSString stringWithFormat:@"%@", self.partnerGroup.groupName];
         self.sourceImageURL = self.partnerGroup.imageURL;
     }
     

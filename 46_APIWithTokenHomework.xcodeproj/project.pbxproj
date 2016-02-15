@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18038CD01C71FE7900A33F3C /* ANPostCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18038CCF1C71FE7900A33F3C /* ANPostCommentsViewController.m */; };
+		18038CD31C72013D00A33F3C /* ANCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18038CD21C72013D00A33F3C /* ANCommentCell.m */; };
+		18038CD61C7208BB00A33F3C /* ANComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 18038CD51C7208BB00A33F3C /* ANComment.m */; };
 		1804041E1C662A6000876FFE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804041D1C662A6000876FFE /* main.m */; };
 		180404211C662A6000876FFE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404201C662A6000876FFE /* AppDelegate.m */; };
 		180404241C662A6000876FFE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404231C662A6000876FFE /* ViewController.m */; };
@@ -51,6 +54,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18038CCE1C71FE7900A33F3C /* ANPostCommentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostCommentsViewController.h; sourceTree = "<group>"; };
+		18038CCF1C71FE7900A33F3C /* ANPostCommentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCommentsViewController.m; sourceTree = "<group>"; };
+		18038CD11C72013D00A33F3C /* ANCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCommentCell.h; sourceTree = "<group>"; };
+		18038CD21C72013D00A33F3C /* ANCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCommentCell.m; sourceTree = "<group>"; };
+		18038CD41C7208BB00A33F3C /* ANComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANComment.h; sourceTree = "<group>"; };
+		18038CD51C7208BB00A33F3C /* ANComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANComment.m; sourceTree = "<group>"; };
 		180404191C662A6000876FFE /* 46_APIWithTokenHomework.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 46_APIWithTokenHomework.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1804041D1C662A6000876FFE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1804041F1C662A6000876FFE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -211,6 +220,8 @@
 				1804048B1C662F2C00876FFE /* ANServerObject.m */,
 				18E8D8581C68896400C1204F /* ANPhoto.h */,
 				18E8D8591C68896400C1204F /* ANPhoto.m */,
+				18038CD41C7208BB00A33F3C /* ANComment.h */,
+				18038CD51C7208BB00A33F3C /* ANComment.m */,
 				1804049B1C6630D000876FFE /* ANPost.h */,
 				1804049C1C6630D000876FFE /* ANPost.m */,
 				184818361C68B050005B4F1D /* ANGroup.h */,
@@ -234,6 +245,8 @@
 				18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */,
 				180404941C66300200876FFE /* ANLoginViewController.h */,
 				180404951C66300200876FFE /* ANLoginViewController.m */,
+				18038CCE1C71FE7900A33F3C /* ANPostCommentsViewController.h */,
+				18038CCF1C71FE7900A33F3C /* ANPostCommentsViewController.m */,
 				180404221C662A6000876FFE /* ViewController.h */,
 				180404231C662A6000876FFE /* ViewController.m */,
 			);
@@ -243,6 +256,8 @@
 		18D84FAC1C6754100090BF78 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				18038CD11C72013D00A33F3C /* ANCommentCell.h */,
+				18038CD21C72013D00A33F3C /* ANCommentCell.m */,
 				18C779A91C71D7DB006DAE38 /* ANNewPostCell.h */,
 				18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */,
 				18F7DA571C70CEC90027A836 /* ANNewMessageCell.h */,
@@ -448,12 +463,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */,
+				18038CD01C71FE7900A33F3C /* ANPostCommentsViewController.m in Sources */,
 				1804049D1C6630D000876FFE /* ANPost.m in Sources */,
 				18639B861C6F3EA4008B6632 /* ANMessageTableViewCell.m in Sources */,
 				18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */,
 				180404961C66300200876FFE /* ANLoginViewController.m in Sources */,
 				180404241C662A6000876FFE /* ViewController.m in Sources */,
 				1804049A1C66309100876FFE /* ANAccessToken.m in Sources */,
+				18038CD31C72013D00A33F3C /* ANCommentCell.m in Sources */,
 				1804048C1C662F2C00876FFE /* ANServerObject.m in Sources */,
 				18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */,
 				18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */,
@@ -461,6 +478,7 @@
 				184818381C68B050005B4F1D /* ANGroup.m in Sources */,
 				18639B831C6F13D1008B6632 /* ANMessagesViewController.m in Sources */,
 				180404891C662DE600876FFE /* ANServerManager.m in Sources */,
+				18038CD61C7208BB00A33F3C /* ANComment.m in Sources */,
 				180404211C662A6000876FFE /* AppDelegate.m in Sources */,
 				180404901C662F5800876FFE /* ANUser.m in Sources */,
 				18639B891C6F4F52008B6632 /* ANMessage.m in Sources */,

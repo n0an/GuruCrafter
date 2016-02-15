@@ -14,6 +14,8 @@
 
 @interface ANPost : ANServerObject
 
+@property (strong, nonatomic) NSString* postID;
+
 @property (strong, nonatomic) NSString* text;
 
 @property (strong, nonatomic) NSString* date;
