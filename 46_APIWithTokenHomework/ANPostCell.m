@@ -24,4 +24,13 @@
     // Configure the view for the selected state
 }
 
+
+
+- (IBAction)actionLikePressed:(UIButton*)sender {
+    
+    NSLog(@"actionLikePressed, postID = %@", self.postID);
+    
+    [self.delegate likeButtonPressedForPostID:self.postID];
+}
+
 @end

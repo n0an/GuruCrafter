@@ -113,7 +113,7 @@
      userID,        @"user_ids",
      @"photo_100",  @"fields",
      @"nom",        @"name_case",
-     @"5.44",       @"v", nil];
+     @"5.45",       @"v", nil];
     
     [self.requestOperationManager
      GET:@"users.get"
@@ -162,7 +162,9 @@
      @(count),      @"count",
      @(offset),     @"offset",
      @"photo_50",   @"fields",
-     @"nom",        @"name_case", nil];
+     @"nom",        @"name_case",
+     @"5.45",       @"v",
+     nil];
     
     [self.requestOperationManager
      GET:@"friends.get"
@@ -214,7 +216,7 @@
      @(offset),     @"offset",
      @"all",        @"filter",
      @"1",          @"extended",
-     @"5.44",       @"v", nil];
+     @"5.45",       @"v", nil];
     
     
     
@@ -222,7 +224,7 @@
      GET:@"wall.get"
      parameters:params
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
-         NSLog(@"JSON: %@", responseObject);
+//         NSLog(@"JSON: %@", responseObject);
          
          NSDictionary* response = [responseObject objectForKey:@"response"];
          
@@ -308,6 +310,7 @@
      groupID,                   @"owner_id",
      text,                      @"message",
      self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v",
      nil];
     
     
@@ -401,6 +404,7 @@
      userID,                    @"user_id",
      text,                      @"message",
      self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v",
      nil];
     
     
@@ -552,6 +556,7 @@
      postID,                    @"post_id",
      text,                      @"text",
      self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v",
      nil];
     
     
@@ -579,7 +584,49 @@
 }
 
 
-
+- (void) addLikeForItemType:(NSString*) itemType
+                 forOwnerID:(NSString*) ownerID
+                  forItemID:(NSString*) itemID
+          onSuccess:(void(^)(id result)) success
+          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    
+    if (![ownerID hasPrefix:@"-"]) {
+        ownerID = [@"-" stringByAppendingString:ownerID];
+    }
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     itemType,                  @"type",
+     itemID,                    @"item_id",
+     self.accessToken.token,    @"access_token",
+     ownerID,                   @"owner_id",
+     @"5.45",                   @"v",
+     nil];
+    
+    
+    [self.requestOperationManager
+     POST:@"likes.add"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"likes.add JSON: %@", responseObject);
+         
+         
+         if (success) {
+             success(responseObject);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
 
 
 

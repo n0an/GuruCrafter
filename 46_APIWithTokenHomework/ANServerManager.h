@@ -77,4 +77,11 @@
           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
+- (void) addLikeForItemType:(NSString*) itemType
+                 forOwnerID:(NSString*) ownerID
+                  forItemID:(NSString*) itemID
+                  onSuccess:(void(^)(id result)) success
+                  onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
 @end

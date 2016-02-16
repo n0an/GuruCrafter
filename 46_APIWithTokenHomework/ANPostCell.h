@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ANPostCellDelegate;
+
 @interface ANPostCell : UITableViewCell
+
+@property (strong, nonatomic) NSString* postID;
 
 @property (weak, nonatomic) IBOutlet UILabel* postTextLabel;
 @property (weak, nonatomic) IBOutlet UILabel* dateLabel;
@@ -31,6 +35,19 @@
 
 //+ (CGFloat) heightForText:(NSString*) text;
 
+- (IBAction)actionLikePressed:(UIButton*)sender;
 
+@property (strong, nonatomic) id <ANPostCellDelegate> delegate;
+
+
+
+@end
+
+
+@protocol ANPostCellDelegate <NSObject>
+
+@required
+
+- (void) likeButtonPressedForPostID:(NSString*) postID;
 
 @end

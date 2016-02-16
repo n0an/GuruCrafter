@@ -25,7 +25,7 @@
 #import "ANPostCommentsViewController.h"
 
 
-@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate>
+@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
 
 @property (assign, nonatomic) BOOL firstTimeAppear;
 
@@ -176,6 +176,26 @@ static NSString* iosDevCourseGroupID = @"58860049";
     
 }
 
+- (void) addLikeForPostID:(NSString*) postID {
+    
+
+    
+    [[ANServerManager sharedManager]
+     addLikeForItemType:@"post"
+     forOwnerID:iosDevCourseGroupID
+         forItemID:postID
+         onSuccess:^(id result) {
+             NSLog(@"Like added successfully!");
+             [self refreshWall];
+         }
+         onFailure:^(NSError *error, NSInteger statusCode)
+         {
+             NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+
+         }];
+    
+}
+
 
 
 #pragma mark - UITableViewDataSource
@@ -228,6 +248,9 @@ static NSString* iosDevCourseGroupID = @"58860049";
         }
         
         ANPost* post = [self.postsArray objectAtIndex:indexPath.row];
+        
+        postCell.delegate = self;
+        postCell.postID = post.postID;
 
 
         if (post.fromGroup != nil) {
@@ -402,6 +425,24 @@ static NSString* iosDevCourseGroupID = @"58860049";
     [self refreshWall];
 }
 
+
+#pragma mark - +++ ANPostCellDelegate +++
+
+- (void) likeButtonPressedForPostID:(NSString*) postID {
+    
+    NSLog(@"Incoming postID = %@", postID);
+    
+    ANUser* author;
+    
+    for (ANPost* post in self.postsArray) {
+        if ([postID isEqualToString:post.postID]) {
+            author = post.author;
+        }
+    }
+    
+    
+    [self addLikeForPostID:postID];
+}
 
 
 @end
