@@ -293,6 +293,67 @@
 
 
 
+- (void) refreshPostID:(NSString*) postID
+            forOwnerID:(NSString*) ownerID
+            onSuccess:(void(^)(ANPost* post)) success
+            onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    if (![ownerID hasPrefix:@"-"]) {
+        ownerID = [@"-" stringByAppendingString:ownerID];
+    }
+    
+    NSString* cumulativeID = [NSString stringWithFormat:@"%@_%@",ownerID,postID];
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     cumulativeID,  @"posts",
+     @"1",          @"extended",
+     @"5.45",       @"v", nil];
+    
+    
+    
+    [self.requestOperationManager
+     GET:@"wall.getById"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+        
+         NSLog(@"wall.getById JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+         
+         NSArray* profiles = [response objectForKey:@"profiles"];
+         NSArray* wall = [response objectForKey:@"items"];
+         NSArray* groups = [response objectForKey:@"groups"];
+         
+         ANGroup* group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
+         ANUser* author = [[ANUser alloc] initWithServerResponse:[profiles objectAtIndex:0]];
+         ANPost* post = [[ANPost alloc] initWithServerResponse:[wall objectAtIndex:0]];
+         
+         if ([post.authorID hasPrefix:@"-"]) {
+             post.fromGroup = group;
+         } else {
+             post.author = author;
+         }
+
+         
+         if (success) {
+             success(post);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
 
 - (void) postText:(NSString*) text
       onGroupWall:(NSString*) groupID
@@ -628,6 +689,101 @@
     
 }
 
+
+
+- (void) deleteLikeForItemType:(NSString*) itemType
+                    forOwnerID:(NSString*) ownerID
+                     forItemID:(NSString*) itemID
+                     onSuccess:(void(^)(id result)) success
+                     onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    
+    if (![ownerID hasPrefix:@"-"]) {
+        ownerID = [@"-" stringByAppendingString:ownerID];
+    }
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     itemType,                  @"type",
+     itemID,                    @"item_id",
+     self.accessToken.token,    @"access_token",
+     ownerID,                   @"owner_id",
+     @"5.45",                   @"v",
+     nil];
+    
+    
+    [self.requestOperationManager
+     POST:@"likes.delete"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"likes.delete JSON: %@", responseObject);
+         
+         
+         if (success) {
+             success(responseObject);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
+- (void) getIsLikeForItemType:(NSString*) itemType
+                   forOwnerID:(NSString*) ownerID
+                    forUserID:(NSString*) userID
+                    forItemID:(NSString*) itemID
+                    onSuccess:(void(^)(BOOL isLiked)) success
+                    onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    
+    if (![ownerID hasPrefix:@"-"]) {
+        ownerID = [@"-" stringByAppendingString:ownerID];
+    }
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     userID,                    @"user_id",
+     itemType,                  @"type",
+     ownerID,                   @"owner_id",
+     itemID,                    @"item_id",
+     @"5.45",                   @"v",
+     self.accessToken.token,    @"access_token",
+     nil];
+    
+    
+    [self.requestOperationManager
+     POST:@"likes.isLiked"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"likes.isLiked JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+         
+         BOOL isLiked = [[response objectForKey:@"liked"] boolValue];
+         
+         if (success) {
+             success(isLiked);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
 
 
 

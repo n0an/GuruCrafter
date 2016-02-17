@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class ANUser;
+@class ANPost;
 
 @interface ANServerManager : NSObject
 
@@ -38,6 +39,10 @@
             onSuccess:(void(^)(NSArray* posts)) success
             onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
+- (void) refreshPostID:(NSString*) postID
+            forOwnerID:(NSString*) ownerID
+             onSuccess:(void(^)(ANPost* post)) success
+             onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
 - (void) postText:(NSString*) text
@@ -82,6 +87,20 @@
                   forItemID:(NSString*) itemID
                   onSuccess:(void(^)(id result)) success
                   onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+- (void) deleteLikeForItemType:(NSString*) itemType
+                    forOwnerID:(NSString*) ownerID
+                     forItemID:(NSString*) itemID
+                     onSuccess:(void(^)(id result)) success
+                     onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
+- (void) getIsLikeForItemType:(NSString*) itemType
+                   forOwnerID:(NSString*) ownerID
+                    forUserID:(NSString*) userID
+                    forItemID:(NSString*) itemID
+                    onSuccess:(void(^)(BOOL isLiked)) success
+                    onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
 @end

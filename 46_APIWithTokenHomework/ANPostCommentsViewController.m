@@ -23,16 +23,23 @@
 
 
 
-@interface ANPostCommentsViewController () <UIScrollViewDelegate, ANNewMessageDelegate>
+@interface ANPostCommentsViewController () <UIScrollViewDelegate, ANNewMessageDelegate, ANPostCellDelegate>
 
 @property (strong, nonatomic) NSMutableArray* commentsArray;
 @property (assign, nonatomic) BOOL loadingData;
 @property (assign, nonatomic) NSInteger sectionsCount;
 
+@property (strong, nonatomic) ANPostCell* postCell;
+
+@property (assign, nonatomic) BOOL isLikedPost;
+
 @end
 
 
 static NSInteger commentsInRequest = 10;
+static NSString* iosDevCourseGroupID = @"58860049";
+static NSString* myVKAccountID = @"21743772";
+
 
 
 @implementation ANPostCommentsViewController
@@ -47,7 +54,7 @@ static NSInteger commentsInRequest = 10;
     self.commentsArray = [NSMutableArray array];
     
     self.loadingData = YES;
-    
+
     [self getCommentsFromServer];
     
     UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
@@ -56,6 +63,7 @@ static NSInteger commentsInRequest = 10;
     
     
     self.navigationItem.title = [NSString stringWithFormat:@"Post #%@", self.postID];
+    
     
     
 
@@ -96,6 +104,9 @@ static NSInteger commentsInRequest = 10;
                
                [self.commentsArray addObjectsFromArray:comments];
                
+               [self getIsLikeFromServer];
+
+               
                NSMutableArray* newPaths = [NSMutableArray array];
                
                for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
@@ -123,7 +134,10 @@ static NSInteger commentsInRequest = 10;
 
 - (void) refreshComments {
     
+    [self refreshPost];
+    
     self.loadingData = YES;
+    
     
     [[ANServerManager sharedManager] getCommentsForGroup:self.groupID
               PostID:self.postID
@@ -170,6 +184,102 @@ static NSInteger commentsInRequest = 10;
                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
 
               }];
+    
+}
+
+
+- (void) getIsLikeFromServer {
+    
+    [[ANServerManager sharedManager]
+             getIsLikeForItemType:@"post"
+             forOwnerID:iosDevCourseGroupID
+             forUserID:myVKAccountID
+             forItemID:self.postID
+             onSuccess:^(BOOL isLiked) {
+                 
+                 NSLog(@"isLiked = %d", isLiked);
+                 
+                 self.isLikedPost = isLiked;
+                 
+                 
+             }
+             
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 
+             }];
+    
+    
+}
+
+- (void) addLikeForPostID:(NSString*) postID {
+    
+    
+    [[ANServerManager sharedManager]
+     addLikeForItemType:@"post"
+     forOwnerID:iosDevCourseGroupID
+     forItemID:postID
+     onSuccess:^(id result) {
+         NSLog(@"Like added successfully!");
+         
+         [self refreshPost];
+         
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode)
+     {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+     }];
+    
+}
+
+- (void) deleteLikeForPostID:(NSString*) postID {
+    
+    
+    [[ANServerManager sharedManager]
+     deleteLikeForItemType:@"post"
+     forOwnerID:iosDevCourseGroupID
+     forItemID:postID
+     onSuccess:^(id result) {
+         NSLog(@"Like deleted successfully!");
+         
+         [self refreshPost];
+         
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode)
+     {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+     }];
+    
+}
+
+
+
+- (void) refreshPost {
+    
+    self.loadingData = YES;
+    
+    [[ANServerManager sharedManager] refreshPostID:self.postID
+                forOwnerID:iosDevCourseGroupID
+                 onSuccess:^(ANPost *post) {
+                     self.post = post;
+                     
+                     
+                     [self.tableView reloadData];
+                     
+                     self.loadingData = NO;
+                 }
+                 onFailure:^(NSError *error, NSInteger statusCode) {
+                     NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+
+                 }];
+    
+    
+    
+
+
     
 }
 
@@ -239,13 +349,24 @@ static NSInteger commentsInRequest = 10;
             
         }
         
+        postCell.delegate = self;
+        postCell.postID = self.postID;
+        
         
         postCell.dateLabel.text = self.post.date;
         
         postCell.commentsCountLabel.text = self.post.comments;
         postCell.likesCountLabel.text = self.post.likes;
         
+        
+        if (self.isLikedPost) {
+            postCell.likesCountLabel.textColor = [UIColor blueColor];
+        } else {
+            postCell.likesCountLabel.textColor = [UIColor lightGrayColor];
+        }
+        
         postCell.postTextLabel.text = self.post.text;
+        
         
         
         // *** ADDING IMAGES
@@ -273,6 +394,7 @@ static NSInteger commentsInRequest = 10;
                 
             }
         }
+        
 
         return postCell;
 
@@ -397,6 +519,21 @@ static NSInteger commentsInRequest = 10;
     [self addComment:message];
     
     
+    
+}
+
+
+#pragma mark - +++ ANPostCellDelegate +++
+
+- (void) likeButtonPressedForPostID:(NSString*) postID {
+    
+    if (self.isLikedPost) {
+        self.isLikedPost = NO;
+        [self deleteLikeForPostID:self.postID];
+    } else {
+        self.isLikedPost = YES;
+        [self addLikeForPostID:self.postID];
+    }
     
 }
 

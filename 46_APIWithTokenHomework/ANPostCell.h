@@ -33,9 +33,12 @@
 
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *galleryImageViews;
 
+@property (weak, nonatomic) IBOutlet UIButton* likeButton;
+
 //+ (CGFloat) heightForText:(NSString*) text;
 
 - (IBAction)actionLikePressed:(UIButton*)sender;
+
 
 @property (strong, nonatomic) id <ANPostCellDelegate> delegate;
 

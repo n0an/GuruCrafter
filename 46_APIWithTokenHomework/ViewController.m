@@ -32,6 +32,7 @@
 @property (strong, nonatomic) NSMutableArray* postsArray;
 
 @property (assign, nonatomic) BOOL loadingData;
+@property (assign, nonatomic) BOOL isLikedPost;
 
 
 @property (strong,nonatomic) NSMutableArray *postImageViewsSizesArray;
@@ -41,6 +42,8 @@
 
 static NSInteger postsInRequest = 20;
 static NSString* iosDevCourseGroupID = @"58860049";
+static NSString* myVKAccountID = @"21743772";
+
 
 
 @implementation ViewController
@@ -116,7 +119,7 @@ static NSString* iosDevCourseGroupID = @"58860049";
          [self.tableView beginUpdates];
          [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
          [self.tableView endUpdates];
-         
+
          
          self.loadingData = NO;
          
@@ -176,25 +179,71 @@ static NSString* iosDevCourseGroupID = @"58860049";
     
 }
 
-- (void) addLikeForPostID:(NSString*) postID {
-    
 
+
+- (void) getIsLikeFromServer:(NSString*) postID {
+    
+    [[ANServerManager sharedManager]
+     getIsLikeForItemType:@"post"
+     forOwnerID:iosDevCourseGroupID
+     forUserID:myVKAccountID
+     forItemID:postID
+     onSuccess:^(BOOL isLiked) {
+         
+         NSLog(@"post# %@ isLiked = %d", postID, isLiked);
+         
+         self.isLikedPost = isLiked;
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+     }];
+    
+    
+}
+
+- (void) addLikeForPostID:(NSString*) postID {
     
     [[ANServerManager sharedManager]
      addLikeForItemType:@"post"
      forOwnerID:iosDevCourseGroupID
-         forItemID:postID
-         onSuccess:^(id result) {
-             NSLog(@"Like added successfully!");
-             [self refreshWall];
-         }
-         onFailure:^(NSError *error, NSInteger statusCode)
-         {
-             NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-
-         }];
+     forItemID:postID
+     onSuccess:^(id result) {
+         NSLog(@"Like added successfully!");
+         
+         [self refreshWall];
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode)
+     {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+     }];
     
 }
+
+- (void) deleteLikeForPostID:(NSString*) postID {
+    
+    
+    [[ANServerManager sharedManager]
+     deleteLikeForItemType:@"post"
+     forOwnerID:iosDevCourseGroupID
+     forItemID:postID
+     onSuccess:^(id result) {
+         NSLog(@"Like deleted successfully!");
+         
+         [self refreshWall];
+         
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode)
+     {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+     }];
+    
+}
+
+
 
 
 
@@ -279,7 +328,11 @@ static NSString* iosDevCourseGroupID = @"58860049";
         postCell.dateLabel.text = post.date;
         
         postCell.commentsCountLabel.text = post.comments;
+        
+ 
         postCell.likesCountLabel.text = post.likes;
+        
+        
         
         postCell.postTextLabel.text = post.text;
         
@@ -309,6 +362,9 @@ static NSString* iosDevCourseGroupID = @"58860049";
                 
             }
         }
+        
+        
+        
         
         
         return postCell;
@@ -432,16 +488,16 @@ static NSString* iosDevCourseGroupID = @"58860049";
     
     NSLog(@"Incoming postID = %@", postID);
     
-    ANUser* author;
+    [self getIsLikeFromServer:postID];
     
-    for (ANPost* post in self.postsArray) {
-        if ([postID isEqualToString:post.postID]) {
-            author = post.author;
-        }
+    if (self.isLikedPost) {
+        [self deleteLikeForPostID:postID];
+    } else {
+        [self addLikeForPostID:postID];
     }
     
-    
-    [self addLikeForPostID:postID];
+    self.isLikedPost = NO; // DEFAULT
+
 }
 
 

@@ -34,5 +34,7 @@
 
 @property (strong, nonatomic) NSArray* attachmentsArray;
 
+@property (assign, nonatomic) BOOL isLikedByMyself;
+
 
 @end
