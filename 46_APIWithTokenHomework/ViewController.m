@@ -57,36 +57,27 @@ static NSString* myVKAccountID = @"21743772";
     
     self.loadingData = YES;
 
-    [self getPostsFromServer];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
-    
+
     UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
     
     
-}
+    [[ANServerManager sharedManager] authorizeUser:^(ANUser *user) {
+        NSLog(@"AUTHORIZED!");
+        NSLog(@"%@ %@", user.firstName, user.lastName);
+        
+        ANServerManager* serverManager = [ANServerManager sharedManager];
+        serverManager.currentUser = user;
+        
+        [self getPostsFromServer];
 
-
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+    }];
     
-    if (self.firstTimeAppear) {
-        
-        self.firstTimeAppear = NO;
-        
-        [[ANServerManager sharedManager] authorizeUser:^(ANUser *user) {
-            NSLog(@"AUTHORIZED!");
-            NSLog(@"%@ %@", user.firstName, user.lastName);
-            
-            ANServerManager* serverManager = [ANServerManager sharedManager];
-            serverManager.currentUser = user;
-//            serverManager.photoSelfURL = user.imageURL;
-        }];
-    }
     
 }
-
 
 
 - (void)didReceiveMemoryWarning {
@@ -108,20 +99,26 @@ static NSString* myVKAccountID = @"21743772";
      count:postsInRequest
      onSuccess:^(NSArray *posts) {
          
-         [self.postsArray addObjectsFromArray:posts];
-         
-         NSMutableArray* newPaths = [NSMutableArray array];
-         
-         for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-             [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
-         }
-         
-         [self.tableView beginUpdates];
-         [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-         [self.tableView endUpdates];
+         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+             [self.postsArray addObjectsFromArray:posts];
+             
+             NSMutableArray* newPaths = [NSMutableArray array];
+             
+             for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
+                 [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+             }
+             
+             dispatch_sync(dispatch_get_main_queue(), ^{
+                 [self.tableView beginUpdates];
+                 [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                 [self.tableView endUpdates];
+                 
+                 
+                 self.loadingData = NO;
+             });
+             
 
-         
-         self.loadingData = NO;
+         });
          
          
      }
@@ -180,27 +177,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-
-- (void) getIsLikeFromServer:(NSString*) postID {
-    
-    [[ANServerManager sharedManager]
-     getIsLikeForItemType:@"post"
-     forOwnerID:iosDevCourseGroupID
-     forUserID:myVKAccountID
-     forItemID:postID
-     onSuccess:^(BOOL isLiked) {
-         
-         NSLog(@"post# %@ isLiked = %d", postID, isLiked);
-         
-         self.isLikedPost = isLiked;
-     }
-     onFailure:^(NSError *error, NSInteger statusCode) {
-         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-     }];
-    
-    
-}
-
 - (void) addLikeForPostID:(NSString*) postID {
     
     [[ANServerManager sharedManager]
@@ -242,8 +218,6 @@ static NSString* myVKAccountID = @"21743772";
      }];
     
 }
-
-
 
 
 
@@ -321,9 +295,7 @@ static NSString* myVKAccountID = @"21743772";
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnImageView:)];
         [postCell.postAuthorImageView addGestureRecognizer:tapAuthorImageViewGesutre];
         
-        
-        
-        
+ 
         
         postCell.dateLabel.text = post.date;
         
@@ -332,6 +304,12 @@ static NSString* myVKAccountID = @"21743772";
  
         postCell.likesCountLabel.text = post.likes;
         
+        if (post.isLikedByMyself) {
+            postCell.likesCountLabel.textColor = [UIColor blueColor];
+        } else {
+            postCell.likesCountLabel.textColor = [UIColor lightGrayColor];
+        }
+
         
         
         postCell.postTextLabel.text = post.text;
@@ -362,10 +340,7 @@ static NSString* myVKAccountID = @"21743772";
                 
             }
         }
-        
-        
-        
-        
+
         
         return postCell;
     }
@@ -453,7 +428,7 @@ static NSString* myVKAccountID = @"21743772";
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
+    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= self.tableView.contentSize.height - scrollView.frame.size.height) {
         if (!self.loadingData)
         {
             self.loadingData = YES;
@@ -487,16 +462,20 @@ static NSString* myVKAccountID = @"21743772";
 - (void) likeButtonPressedForPostID:(NSString*) postID {
     
     NSLog(@"Incoming postID = %@", postID);
+    BOOL isLikedByMyself = NO;
+    for (ANPost* post in self.postsArray) {
+        if ([postID isEqualToString:post.postID]) {
+            isLikedByMyself = post.isLikedByMyself;
+        }
+    }
     
-    [self getIsLikeFromServer:postID];
-    
-    if (self.isLikedPost) {
+    if (isLikedByMyself) {
         [self deleteLikeForPostID:postID];
     } else {
         [self addLikeForPostID:postID];
     }
     
-    self.isLikedPost = NO; // DEFAULT
+
 
 }
 

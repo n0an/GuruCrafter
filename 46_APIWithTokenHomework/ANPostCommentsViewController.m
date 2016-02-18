@@ -104,9 +104,6 @@ static NSString* myVKAccountID = @"21743772";
                
                [self.commentsArray addObjectsFromArray:comments];
                
-               [self getIsLikeFromServer];
-
-               
                NSMutableArray* newPaths = [NSMutableArray array];
                
                for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
@@ -145,6 +142,7 @@ static NSString* myVKAccountID = @"21743772";
                count:MAX(commentsInRequest, [self.commentsArray count])
            onSuccess:^(NSArray *comments) {
                
+               [self.tableView scrollsToTop];
                [self.commentsArray removeAllObjects];
                
                [self.commentsArray addObjectsFromArray:comments];
@@ -187,29 +185,6 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-
-- (void) getIsLikeFromServer {
-    
-    [[ANServerManager sharedManager]
-             getIsLikeForItemType:@"post"
-             forOwnerID:iosDevCourseGroupID
-             forUserID:myVKAccountID
-             forItemID:self.postID
-             onSuccess:^(BOOL isLiked) {
-                 
-                 NSLog(@"isLiked = %d", isLiked);
-                 
-                 self.isLikedPost = isLiked;
-                 
-                 
-             }
-             
-             onFailure:^(NSError *error, NSInteger statusCode) {
-                 
-             }];
-    
-    
-}
 
 - (void) addLikeForPostID:(NSString*) postID {
     
@@ -266,7 +241,7 @@ static NSString* myVKAccountID = @"21743772";
                  onSuccess:^(ANPost *post) {
                      self.post = post;
                      
-                     
+                     [self.tableView scrollsToTop];
                      [self.tableView reloadData];
                      
                      self.loadingData = NO;
@@ -275,12 +250,7 @@ static NSString* myVKAccountID = @"21743772";
                      NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
 
                  }];
-    
-    
-    
 
-
-    
 }
 
 
@@ -359,14 +329,13 @@ static NSString* myVKAccountID = @"21743772";
         postCell.likesCountLabel.text = self.post.likes;
         
         
-        if (self.isLikedPost) {
+        if (self.post.isLikedByMyself) {
             postCell.likesCountLabel.textColor = [UIColor blueColor];
         } else {
             postCell.likesCountLabel.textColor = [UIColor lightGrayColor];
         }
         
         postCell.postTextLabel.text = self.post.text;
-        
         
         
         // *** ADDING IMAGES
@@ -498,10 +467,10 @@ static NSString* myVKAccountID = @"21743772";
 
 
 #pragma mark - UIScrollViewDelegate
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-        if (!self.loadingData)
+    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {        if (!self.loadingData)
         {
             self.loadingData = YES;
             [self getCommentsFromServer];
@@ -527,11 +496,9 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void) likeButtonPressedForPostID:(NSString*) postID {
     
-    if (self.isLikedPost) {
-        self.isLikedPost = NO;
+    if (self.post.isLikedByMyself) {
         [self deleteLikeForPostID:self.postID];
     } else {
-        self.isLikedPost = YES;
         [self addLikeForPostID:self.postID];
     }
     

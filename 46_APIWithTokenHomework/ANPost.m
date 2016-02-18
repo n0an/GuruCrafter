@@ -23,6 +23,8 @@
         self.comments = [[[responseObject objectForKey:@"comments"] objectForKey:@"count"] stringValue];
         self.likes = [[[responseObject objectForKey:@"likes"] objectForKey:@"count"] stringValue];
         
+        self.isLikedByMyself = !([[[responseObject objectForKey:@"likes"] objectForKey:@"can_like"] boolValue]);
+        
         NSDateFormatter *dateWithFormat = [[NSDateFormatter alloc] init];
         [dateWithFormat setDateFormat:@"dd MMM yyyy | HH:mm"];
         

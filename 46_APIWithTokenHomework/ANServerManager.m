@@ -211,12 +211,14 @@
     
     NSDictionary* params =
     [NSDictionary dictionaryWithObjectsAndKeys:
-     groupID,       @"owner_id",
-     @(count),      @"count",
-     @(offset),     @"offset",
-     @"all",        @"filter",
-     @"1",          @"extended",
-     @"5.45",       @"v", nil];
+     groupID,                   @"owner_id",
+     @(offset),                 @"offset",
+     @(count),                  @"count",
+     @"all",                    @"filter",
+     @"1",                      @"extended",
+     @"5.21",                   @"v",
+     self.accessToken.token,    @"access_token",
+     nil];
     
     
     
@@ -224,7 +226,7 @@
      GET:@"wall.get"
      parameters:params
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
-//         NSLog(@"JSON: %@", responseObject);
+         NSLog(@"JSON: %@", responseObject);
          
          NSDictionary* response = [responseObject objectForKey:@"response"];
          
@@ -307,9 +309,11 @@
     
     NSDictionary* params =
     [NSDictionary dictionaryWithObjectsAndKeys:
-     cumulativeID,  @"posts",
-     @"1",          @"extended",
-     @"5.45",       @"v", nil];
+     cumulativeID,              @"posts",
+     @"1",                      @"extended",
+     self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v",
+     nil];
     
     
     
