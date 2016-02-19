@@ -156,9 +156,7 @@ static NSString* myVKAccountID = @"21743772";
                }
                self.loadingData = NO;
 
-               
- 
-              
+   
           }
            onFailure:^(NSError *error, NSInteger statusCode) {
               
@@ -201,7 +199,6 @@ static NSString* myVKAccountID = @"21743772";
                    
                }];
 
-        
     }
     
     
@@ -270,18 +267,9 @@ static NSString* myVKAccountID = @"21743772";
                      NSLog(@"changingInxPath = %@", changingInxPath);
                  }
              }
-             
-//             [self.tableView beginUpdates];
-//
-//             [self.tableView reloadRowsAtIndexPaths:@[changingInxPath] withRowAnimation:UITableViewRowAnimationFade];
-//
-//             [self.tableView endUpdates];
 
-             
          }
-         
-         
-         
+
          [self.tableView reloadData];
          
          self.loadingData = NO;
@@ -355,8 +343,8 @@ static NSString* myVKAccountID = @"21743772";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     
-    if (self.sectionsCount == 4) {
-        if (section == 3) {
+    if (self.newCommentSectionActivated == activatedYES) {
+        if (section == ANTableViewSectionComments) {
             return [self.commentsArray count];
         } else {
             return 1;
@@ -364,7 +352,7 @@ static NSString* myVKAccountID = @"21743772";
         
     } else {
         
-        if (section == 2) {
+        if (section == ANTableViewSectionNewCommentOrComments) {
             return [self.commentsArray count];
         } else {
             return 1;
@@ -414,13 +402,18 @@ static NSString* myVKAccountID = @"21743772";
         postCell.dateLabel.text = self.post.date;
         
         postCell.commentsCountLabel.text = self.post.comments;
-        postCell.likesCountLabel.text = self.post.likes;
         
         
+        [postCell.likeButton setTitle:self.post.likes forState:UIControlStateNormal];
+        
+
         if (self.post.isLikedByMyself) {
-            postCell.likesCountLabel.textColor = [UIColor blueColor];
+            [postCell.likeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+            [postCell.likeButton setImage:[UIImage imageNamed:@"like_b_16.png"] forState:UIControlStateNormal];
+            
         } else {
-            postCell.likesCountLabel.textColor = [UIColor lightGrayColor];
+            [postCell.likeButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+            [postCell.likeButton setImage:[UIImage imageNamed:@"like_16.png"] forState:UIControlStateNormal];
         }
         
         postCell.postTextLabel.text = self.post.text;
@@ -522,20 +515,21 @@ static NSString* myVKAccountID = @"21743772";
         commentCell.dateLabel.text = comment.date;
         
         
-        NSString* likesBtnLabelText = [NSString stringWithFormat:@"Likes: %@", comment.likes];
+//        NSString* likesBtnLabelText = [NSString stringWithFormat:@"Likes: %@", comment.likes];
         
-        [commentCell.likeButton setTitle:likesBtnLabelText forState:UIControlStateNormal];
+        [commentCell.likeButton setTitle:comment.likes forState:UIControlStateNormal];
         [commentCell.likeButton addTarget:self action:@selector(actionLikeCommentPressed:) forControlEvents:UIControlEventTouchUpInside];
         
         
         if (comment.isLikedByMyself) {
             [commentCell.likeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+            [commentCell.likeButton setImage:[UIImage imageNamed:@"like_b_16.png"] forState:UIControlStateNormal];
+
         } else {
             [commentCell.likeButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        }
+            [commentCell.likeButton setImage:[UIImage imageNamed:@"like_16.png"] forState:UIControlStateNormal];
 
-        
-        commentCell.likesCountLabel.text = comment.likes;
+        }
         
         commentCell.commentTextLabel.text = comment.text;
 

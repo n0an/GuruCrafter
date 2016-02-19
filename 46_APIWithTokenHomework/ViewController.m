@@ -93,6 +93,37 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+#pragma mark - Helper Methods
+
+- (void) performTransitionToPostDetails:(NSIndexPath*) indexPath {
+    ANPost* selectedPost = [self.postsArray objectAtIndex:indexPath.row];
+    
+    ANPostCommentsViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPostCommentsViewController"];
+    
+    vc.groupID = iosDevCourseGroupID;
+    vc.postID = selectedPost.postID;
+    vc.post = selectedPost;
+    
+    [self.navigationController pushViewController:vc animated:YES];
+
+}
+
+
+
+#pragma mark - Actions
+
+- (void) actionCommentPressed:(UIButton*) sender {
+    
+    CGPoint btnPosition = [sender convertPoint:CGPointZero toView:self.tableView];
+    
+    NSIndexPath *btnIndexPath = [self.tableView indexPathForRowAtPoint:btnPosition];
+    
+    NSLog(@"actionCommentPressed");
+    
+    
+    [self performTransitionToPostDetails:btnIndexPath];
+    
+}
 
 
 #pragma mark - API
@@ -329,22 +360,27 @@ static NSString* myVKAccountID = @"21743772";
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnImageView:)];
         [postCell.postAuthorImageView addGestureRecognizer:tapAuthorImageViewGesutre];
         
- 
         
         postCell.dateLabel.text = post.date;
         
+        
         postCell.commentsCountLabel.text = post.comments;
         
- 
-        postCell.likesCountLabel.text = post.likes;
-        
-        if (post.isLikedByMyself) {
-            postCell.likesCountLabel.textColor = [UIColor blueColor];
-        } else {
-            postCell.likesCountLabel.textColor = [UIColor lightGrayColor];
-        }
+        [postCell.commentButton addTarget:self action:@selector(actionCommentPressed:) forControlEvents:UIControlEventTouchUpInside];
 
         
+        
+        [postCell.likeButton setTitle:post.likes forState:UIControlStateNormal];
+
+        if (post.isLikedByMyself) {
+            [postCell.likeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+            [postCell.likeButton setImage:[UIImage imageNamed:@"like_b_16.png"] forState:UIControlStateNormal];
+        } else {
+            [postCell.likeButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+            [postCell.likeButton setImage:[UIImage imageNamed:@"like_16.png"] forState:UIControlStateNormal];
+
+        }
+
         
         postCell.postTextLabel.text = post.text;
         
@@ -406,17 +442,11 @@ static NSString* myVKAccountID = @"21743772";
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    ANPost* selectedPost = [self.postsArray objectAtIndex:indexPath.row];
-    
-    ANPostCommentsViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPostCommentsViewController"];
-    
-    vc.groupID = iosDevCourseGroupID;
-    vc.postID = selectedPost.postID;
-    vc.post = selectedPost;
-    
-    [self.navigationController pushViewController:vc animated:YES];
+    [self performTransitionToPostDetails:indexPath];
     
 }
 
@@ -479,8 +509,16 @@ static NSString* myVKAccountID = @"21743772";
         ANAddPostViewController* vc = [segue destinationViewController];
         
         vc.delegate = self;
+        
+        
     }
 }
+
+
+
+
+
+
 
 
 

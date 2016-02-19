@@ -34,6 +34,7 @@
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *galleryImageViews;
 
 @property (weak, nonatomic) IBOutlet UIButton* likeButton;
+@property (weak, nonatomic) IBOutlet UIButton* commentButton;
 
 //+ (CGFloat) heightForText:(NSString*) text;
 

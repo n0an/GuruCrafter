@@ -226,7 +226,7 @@
      GET:@"wall.get"
      parameters:params
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
-         NSLog(@"JSON: %@", responseObject);
+         NSLog(@"getGroupWall JSON: %@", responseObject);
          
          NSDictionary* response = [responseObject objectForKey:@"response"];
          
