@@ -19,6 +19,20 @@
 #import "ANNewMessageCell.h"
 
 
+typedef enum {
+    ANTableViewSectionNewMsgOrMessages,
+    ANTableViewSectionMessages
+    
+} ANTableViewSection;
+
+typedef enum {
+    activatedYES = 2,
+    activatedNO = 1
+    
+} ANNewMessageSectionActivated;
+
+
+
 @interface ANMessagesViewController () <UIScrollViewDelegate, ANNewMessageDelegate>
 
 @property (strong, nonatomic) ANServerManager* serverManager;
@@ -31,6 +45,7 @@
 @property (strong, nonatomic) NSURL* sourceImageURL;
 
 @property (assign, nonatomic) NSInteger sectionsCount;
+@property (assign, nonatomic) ANNewMessageSectionActivated newMsgSectionActivated;
 
 
 
@@ -47,6 +62,7 @@ static NSInteger messagesInRequest = 20;
   
     NSLog(@"ANMessagesViewController, partnerUserID = %@", self.partnerUserID);
   
+    self.newMsgSectionActivated = activatedNO;
     self.sectionsCount = 1;
     
     if (self.partnerUser != nil) {
@@ -89,15 +105,16 @@ static NSInteger messagesInRequest = 20;
 - (IBAction)actionComposePressed:(UIButton*)sender {
     NSLog(@"actionComposePressed");
     
-    if (self.sectionsCount == 3) {
-        self.sectionsCount = 4;
+    if (self.newMsgSectionActivated == activatedNO) {
+        self.newMsgSectionActivated = activatedYES;
+        self.sectionsCount = 2;
     } else {
-        self.sectionsCount = 3;
+        self.newMsgSectionActivated = activatedNO;
+        self.sectionsCount = 1;
     }
     
     
     [self.tableView reloadData];
-    
     
 }
 
@@ -110,26 +127,27 @@ static NSInteger messagesInRequest = 20;
 
 - (void) getMessagesFromServer {
     
-    
     [[ANServerManager sharedManager] getMessagesForUser:self.partnerUserID
              withOffset:[self.messages count]
                   count:messagesInRequest
               onSuccess:^(NSArray *messages) {
-                  [self.messages addObjectsFromArray:messages];
                   
-                  NSMutableArray* newPaths = [NSMutableArray array];
-                  
-                  for (int i = (int)[self.messages count] - (int)[messages count]; i < [self.messages count]; i++) {
-                      [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                  if ([messages count] > 0) {
+                      [self.messages addObjectsFromArray:messages];
+                      
+                      NSMutableArray* newPaths = [NSMutableArray array];
+                      
+                      for (int i = (int)[self.messages count] - (int)[messages count]; i < [self.messages count]; i++) {
+                          [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:ANTableViewSectionNewMsgOrMessages]];
+                      }
+                      
+                      [self.tableView beginUpdates];
+                      [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                      [self.tableView endUpdates];
+                      
                   }
-                  
-                  [self.tableView beginUpdates];
-                  [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-                  [self.tableView endUpdates];
-                  
-//                  [self.tableView reloadData];
-                  
                   self.loadingData = NO;
+
                   
               }
               onFailure:^(NSError *error, NSInteger statusCode) {
@@ -142,24 +160,31 @@ static NSInteger messagesInRequest = 20;
 
 - (void) refreshMessagesHistory {
     
-    self.loadingData = YES;
-    
-    [[ANServerManager sharedManager] getMessagesForUser:self.partnerUserID
-         withOffset:0
-              count:MAX(messagesInRequest, [self.messages count])
-          onSuccess:^(NSArray *messages) {
-              
-              [self.messages removeAllObjects];
-              [self.messages addObjectsFromArray:messages];
-              
-              [self.tableView reloadData];
-              [self.refreshControl endRefreshing];
-              self.loadingData = NO;
-              
-          } onFailure:^(NSError *error, NSInteger statusCode) {
-              
-          }];
+    if (self.loadingData == NO) {
+        self.loadingData = YES;
+        
+        [[ANServerManager sharedManager] getMessagesForUser:self.partnerUserID
+                 withOffset:0
+                      count:MAX(messagesInRequest, [self.messages count])
+                  onSuccess:^(NSArray *messages) {
+                      
+                      if ([messages count] > 0) {
+                          [self.messages removeAllObjects];
+                          [self.messages addObjectsFromArray:messages];
+                          
+                          [self.tableView reloadData];
+                          [self.refreshControl endRefreshing];
+                          self.loadingData = NO;
+                      }
+                      
+                      
+                  } onFailure:^(NSError *error, NSInteger statusCode) {
+                      
+                  }];
 
+    }
+    
+    
 }
 
 
@@ -171,6 +196,7 @@ static NSInteger messagesInRequest = 20;
                
                NSLog(@"MESSAGE SENT");
                
+               self.newMsgSectionActivated = activatedNO;
                self.sectionsCount = 1;
                
                [self refreshMessagesHistory];
@@ -179,7 +205,6 @@ static NSInteger messagesInRequest = 20;
            onFailure:^(NSError *error, NSInteger statusCode) {
                
            }];
-    
     
     
 }
@@ -195,10 +220,10 @@ static NSInteger messagesInRequest = 20;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (self.sectionsCount == 2) {
-        if (section == 0) {
+    if (self.newMsgSectionActivated == activatedYES) {
+        if (section == ANTableViewSectionNewMsgOrMessages) {
             return 1;
-        } else if (section == 1) {
+        } else if (section == ANTableViewSectionMessages) {
             return [self.messages count];
         }
     }
@@ -207,7 +232,14 @@ static NSInteger messagesInRequest = 20;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if ((self.sectionsCount == 2) && (indexPath.section == 0)) {
+    
+    BOOL mesaggesSecComposeHide =   (indexPath.section == ANTableViewSectionNewMsgOrMessages) && (self.newMsgSectionActivated == activatedNO);
+    BOOL messagesSecComposeShow =   (indexPath.section == ANTableViewSectionMessages) && (self.newMsgSectionActivated == activatedYES);
+    BOOL messagesSection = mesaggesSecComposeHide || messagesSecComposeShow;
+
+    
+    
+    if ((self.newMsgSectionActivated == activatedYES) && (indexPath.section == ANTableViewSectionNewMsgOrMessages)) { // *** NEW MESSAGE SECTIONS
         static NSString* newMessageIdentifier = @"newMessageCell";
         
         ANNewMessageCell* newMessageCell = [tableView dequeueReusableCellWithIdentifier:newMessageIdentifier];
@@ -224,7 +256,7 @@ static NSInteger messagesInRequest = 20;
     
     
     
-    if ((self.sectionsCount == 1) || ((self.sectionsCount == 2) && (indexPath.section == 1))) {
+    if (messagesSection) { // *** MESSAGES WALL SECTION
         static NSString *messageSentIdentifier =        @"messageSentCell";
         static NSString *messageReceivedIdentifier =    @"messageReceivedCell";
         
@@ -305,6 +337,7 @@ static NSInteger messagesInRequest = 20;
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
     
     if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
         if (!self.loadingData)

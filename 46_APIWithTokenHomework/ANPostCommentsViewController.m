@@ -384,8 +384,8 @@ static NSString* myVKAccountID = @"21743772";
     static NSString *separatorIdentifier =  @"separatorCell";
     static NSString *commentIdentifier =    @"commentCell";
     
-    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated = activatedNO);
-    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated = activatedYES);
+    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated == activatedNO);
+    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated == activatedYES);
     BOOL commentsSection = commentsSecComposeHide || commentsSecComposeShow;
 
     if (indexPath.section == ANTableViewSectionPostInfo) { // *** POST CELL

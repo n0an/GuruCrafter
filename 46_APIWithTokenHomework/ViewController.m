@@ -25,6 +25,14 @@
 #import "ANPostCommentsViewController.h"
 
 
+typedef enum {
+    ANTableViewSectionAddPost,
+    ANTableViewSectionWall,
+    
+} ANTableViewSection;
+
+
+
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
 
 @property (assign, nonatomic) BOOL firstTimeAppear;
@@ -33,7 +41,6 @@
 
 @property (assign, nonatomic) BOOL loadingData;
 @property (assign, nonatomic) BOOL isLikedPost;
-
 
 @property (strong,nonatomic) NSMutableArray *postImageViewsSizesArray;
 
@@ -276,7 +283,7 @@ static NSString* myVKAccountID = @"21743772";
     static NSString *addPostIdentifier =    @"addPostCell";
 
     
-    if (indexPath.section == 0) { // *** ADD POST BUTTON
+    if (indexPath.section == ANTableViewSectionAddPost) { // *** ADD POST BUTTON
         
         ANNewPostCell* addPostCell = [tableView dequeueReusableCellWithIdentifier:addPostIdentifier];
         
@@ -288,7 +295,7 @@ static NSString* myVKAccountID = @"21743772";
         
         return addPostCell;
         
-    } else if (indexPath.section == 1) { // *** WALL POSTS SECTION
+    } else if (indexPath.section == ANTableViewSectionWall) { // *** WALL POSTS SECTION
         
         
         ANPostCell* postCell = [tableView dequeueReusableCellWithIdentifier:postIdentifier];
@@ -489,11 +496,9 @@ static NSString* myVKAccountID = @"21743772";
 - (void) likeButtonPressedForPostID:(NSString*) postID {
     
     NSLog(@"Incoming postID = %@", postID);
-//    BOOL isLikedByMyself = NO;
     ANPost* clickedPost;
     for (ANPost* post in self.postsArray) {
         if ([postID isEqualToString:post.postID]) {
-//            isLikedByMyself = post.isLikedByMyself;
             clickedPost = post;
         }
     }
