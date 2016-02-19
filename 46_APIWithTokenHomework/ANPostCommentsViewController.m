@@ -20,7 +20,19 @@
 
 #import "ANNewMessageCell.h"
 
+typedef enum {
+    ANTableViewSectionPostInfo,
+    ANTableViewSectionSeparator,
+    ANTableViewSectionNewCommentOrComments,
+    ANTableViewSectionComments
 
+} ANTableViewSection;
+
+typedef enum {
+    activatedYES = 4,
+    activatedNO = 3
+
+} ANNewCommentSectionActivated;
 
 
 @interface ANPostCommentsViewController () <UIScrollViewDelegate, ANNewMessageDelegate, ANPostCellDelegate>
@@ -28,6 +40,7 @@
 @property (strong, nonatomic) NSMutableArray* commentsArray;
 @property (assign, nonatomic) BOOL loadingData;
 @property (assign, nonatomic) NSInteger sectionsCount;
+@property (assign, nonatomic) ANNewCommentSectionActivated newCommentSectionActivated;
 
 @property (strong, nonatomic) ANPostCell* postCell;
 
@@ -49,6 +62,7 @@ static NSString* myVKAccountID = @"21743772";
     
     [super viewDidLoad];
     
+    self.newCommentSectionActivated = activatedNO;
     self.sectionsCount = 3;
     
     self.commentsArray = [NSMutableArray array];
@@ -64,8 +78,6 @@ static NSString* myVKAccountID = @"21743772";
     
     self.navigationItem.title = [NSString stringWithFormat:@"Post #%@", self.postID];
     
-    
-    
 
 }
 
@@ -75,10 +87,16 @@ static NSString* myVKAccountID = @"21743772";
 - (void)actionComposePressed:(UIButton*)sender {
     NSLog(@"actionComposePressed");
     
-    if (self.sectionsCount == 3) {
+    if (self.newCommentSectionActivated == activatedNO) {
+    
+        self.newCommentSectionActivated = activatedYES;
         self.sectionsCount = 4;
+        
     } else {
+        
+        self.sectionsCount = self.newCommentSectionActivated = activatedNO;
         self.sectionsCount = 3;
+
     }
     
     
@@ -121,22 +139,25 @@ static NSString* myVKAccountID = @"21743772";
                count:commentsInRequest
            onSuccess:^(NSArray *comments) {
                
-               [self.commentsArray addObjectsFromArray:comments];
-               
-               NSMutableArray* newPaths = [NSMutableArray array];
-               
-               for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
-                   [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:2]];
+               if ([comments count] > 0) {
+                   [self.commentsArray addObjectsFromArray:comments];
+                   
+                   NSMutableArray* newPaths = [NSMutableArray array];
+                   
+                   for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
+                       [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:2]];
+                   }
+                   
+                   [self.tableView beginUpdates];
+                   [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                   [self.tableView endUpdates];
+                   
+                   
                }
-               
-               [self.tableView beginUpdates];
-               [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-               [self.tableView endUpdates];
-               
-               
                self.loadingData = NO;
+
                
-               
+ 
               
           }
            onFailure:^(NSError *error, NSInteger statusCode) {
@@ -147,58 +168,42 @@ static NSString* myVKAccountID = @"21743772";
 
 }
 
-- (void) refreshPost {
-    
-    self.loadingData = YES;
-    
-    [[ANServerManager sharedManager] refreshPostID:self.postID
-                                        forOwnerID:iosDevCourseGroupID
-                                         onSuccess:^(ANPost *post) {
-                                             self.post = post;
-                                             
-                                             [self.tableView reloadData];
-                                             
-                                             self.loadingData = NO;
-                                         }
-                                         onFailure:^(NSError *error, NSInteger statusCode) {
-                                             NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                                             
-                                         }];
-    
-}
-
 
 
 - (void) refreshComments {
     
-    [self refreshPost];
-    
-    self.loadingData = YES;
-    
-    
-    [[ANServerManager sharedManager] getCommentsForGroup:self.groupID
-              PostID:self.postID
-          withOffset:0
-               count:MAX(commentsInRequest, [self.commentsArray count])
-           onSuccess:^(NSArray *comments) {
-               
-               [self.commentsArray removeAllObjects];
-               
-               [self.commentsArray addObjectsFromArray:comments];
-               
-               [self.tableView reloadData];
-               
-               [self.refreshControl endRefreshing];
-               
-               self.loadingData = NO;
+    if (self.loadingData == NO) {
+        self.loadingData = YES;
+        
+        [[ANServerManager sharedManager] getCommentsForGroup:self.groupID
+                  PostID:self.postID
+              withOffset:0
+                   count:MAX(commentsInRequest, [self.commentsArray count])
+               onSuccess:^(NSArray *comments) {
+                   
+                   if ([comments count] > 0) {
+                       [self.commentsArray removeAllObjects];
+                       
+                       [self.commentsArray addObjectsFromArray:comments];
+                       
+                       [self.tableView reloadData];
+                       
+                       [self.refreshControl endRefreshing];
+                       
+                       self.loadingData = NO;
+                   }
+                   
 
-               
-           }
-           onFailure:^(NSError *error, NSInteger statusCode) {
-               
-               NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-               
-           }];
+               }
+               onFailure:^(NSError *error, NSInteger statusCode) {
+                   
+                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                   
+               }];
+
+        
+    }
+    
     
 }
 
@@ -213,7 +218,9 @@ static NSString* myVKAccountID = @"21743772";
                   NSLog(@"COMMENT ADDED");
                   
                   self.sectionsCount = 3;
+                  self.newCommentSectionActivated = NO;
                   
+                  self.loadingData = YES;
                   [self refreshComments];
                   
               }
@@ -226,6 +233,8 @@ static NSString* myVKAccountID = @"21743772";
 
 
 - (void) addLikeForItemType:(NSString*) itemType andItemID:(NSString*) itemID {
+    
+    self.loadingData = YES;
     
     [[ANServerManager sharedManager]
      addLikeForItemType:itemType
@@ -242,17 +251,40 @@ static NSString* myVKAccountID = @"21743772";
              
          } else if ([itemType isEqualToString:@"comment"]) {
              
+             NSIndexPath* changingInxPath;
              for (ANComment* comment in self.commentsArray) {
                  if ([comment.postID isEqualToString:itemID]) {
                      comment.isLikedByMyself = YES;
                      comment.likes = likesCount;
+                     
+                     NSInteger index = [self.commentsArray indexOfObject:comment];
+                     NSInteger section;
+                     
+                     if (self.newCommentSectionActivated == activatedYES) {
+                         section = 3;
+                     } else {
+                         section = 2;
+                     }
+                     
+                     changingInxPath = [NSIndexPath indexPathForRow:index inSection:section];
+                     NSLog(@"changingInxPath = %@", changingInxPath);
                  }
              }
              
+//             [self.tableView beginUpdates];
+//
+//             [self.tableView reloadRowsAtIndexPaths:@[changingInxPath] withRowAnimation:UITableViewRowAnimationFade];
+//
+//             [self.tableView endUpdates];
+
              
          }
          
+         
+         
          [self.tableView reloadData];
+         
+         self.loadingData = NO;
          
      }
      onFailure:^(NSError *error, NSInteger statusCode)
@@ -266,6 +298,8 @@ static NSString* myVKAccountID = @"21743772";
 
 
 - (void) deleteLikeForItemType:(NSString*) itemType andItemID:(NSString*) itemID {
+    
+    self.loadingData = YES;
     
     [[ANServerManager sharedManager]
      deleteLikeForItemType:itemType
@@ -293,6 +327,9 @@ static NSString* myVKAccountID = @"21743772";
          }
          
          [self.tableView reloadData];
+         
+         self.loadingData = NO;
+
          
      }
      onFailure:^(NSError *error, NSInteger statusCode)
@@ -347,9 +384,11 @@ static NSString* myVKAccountID = @"21743772";
     static NSString *separatorIdentifier =  @"separatorCell";
     static NSString *commentIdentifier =    @"commentCell";
     
-    
+    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated = activatedNO);
+    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated = activatedYES);
+    BOOL commentsSection = commentsSecComposeHide || commentsSecComposeShow;
 
-    if (indexPath.section == 0) { // *** POST CELL
+    if (indexPath.section == ANTableViewSectionPostInfo) { // *** POST CELL
         
         ANPostCell* postCell = [tableView dequeueReusableCellWithIdentifier:postIdentifier];
 
@@ -417,7 +456,7 @@ static NSString* myVKAccountID = @"21743772";
         return postCell;
 
         
-    } else if (indexPath.section == 1) { // *** SEPARATOR SECTION
+    } else if (indexPath.section == ANTableViewSectionSeparator) { // *** SEPARATOR SECTION
         
         UITableViewCell* separatorCell = [tableView dequeueReusableCellWithIdentifier:separatorIdentifier];
         
@@ -443,7 +482,7 @@ static NSString* myVKAccountID = @"21743772";
         
         
         
-    } else if (self.sectionsCount == 4 && indexPath.section == 2) { // *** NEW COMMENT SECTION
+    } else if (self.newCommentSectionActivated == activatedYES && indexPath.section == ANTableViewSectionNewCommentOrComments) { // *** NEW COMMENT SECTION
         
         static NSString* newMessageIdentifier = @"newMessageCell";
         
@@ -457,7 +496,7 @@ static NSString* myVKAccountID = @"21743772";
         
         return newMessageCell;
 
-    } else if (indexPath.section == 3 || (indexPath.section == 2 && self.sectionsCount == 3)) { // *** COMMENTS SECTION
+    } else if (commentsSection) { // *** COMMENTS SECTION
         
         
         ANCommentCell* commentCell = [tableView dequeueReusableCellWithIdentifier:commentIdentifier];
@@ -528,18 +567,51 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated = activatedNO);
+    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated = activatedYES);
+    
+    NSLog(@"indexPath.section = %d, indexPath.row = %d", indexPath.section, indexPath.row);
+    
+    
+    if (commentsSecComposeHide || commentsSecComposeShow) {
+        ANComment* comment = [self.commentsArray objectAtIndex:indexPath.row];
+        NSLog(@"comment.author = %@", comment.author.firstName);
+
+        
+        if (indexPath.row == [self.commentsArray count] - 1) {
+            
+            NSLog(@"%d", indexPath.row);
+            NSLog(@"END OF COMMENTS");
+            
+            if (self.loadingData == NO) {
+                self.loadingData = YES;
+                NSLog(@"LOADING!");
+
+                [self getCommentsFromServer];
+            }
+            
+        }
+    }
+ 
+}
+
+
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {        if (!self.loadingData)
-        {
-            self.loadingData = YES;
-            [self getCommentsFromServer];
-        }
-    }
-}
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+//    
+//    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
+//        NSLog(@"scrollViewDidScroll");
+//        if (!self.loadingData)
+//        {
+//            self.loadingData = YES;
+//            [self getCommentsFromServer];
+//        }
+//    }
+//}
 
 
 

@@ -55,7 +55,6 @@ static NSString* myVKAccountID = @"21743772";
     self.postImageViewsSizesArray = [NSMutableArray array];
     self.firstTimeAppear = YES;
     
-    self.loadingData = YES;
 
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
@@ -72,6 +71,7 @@ static NSString* myVKAccountID = @"21743772";
         ANServerManager* serverManager = [ANServerManager sharedManager];
         serverManager.currentUser = user;
         
+        self.loadingData = YES;
         [self getPostsFromServer];
 
     }];
@@ -93,32 +93,35 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void) getPostsFromServer {
     
+    
     [[ANServerManager sharedManager]
      getGroupWall:@"58860049"
      withOffset:[self.postsArray count]
      count:postsInRequest
      onSuccess:^(NSArray *posts) {
          
-         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-             [self.postsArray addObjectsFromArray:posts];
-             
-             NSMutableArray* newPaths = [NSMutableArray array];
-             
-             for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                 [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
-             }
-             
-             dispatch_sync(dispatch_get_main_queue(), ^{
-                 [self.tableView beginUpdates];
-                 [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-                 [self.tableView endUpdates];
+         if ([posts count] > 0) {
+             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                 [self.postsArray addObjectsFromArray:posts];
+                 
+                 NSMutableArray* newPaths = [NSMutableArray array];
+                 
+                 for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
+                     [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+                 }
+                 
+                 dispatch_sync(dispatch_get_main_queue(), ^{
+                     [self.tableView beginUpdates];
+                     [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                     [self.tableView endUpdates];
+                     
+                     
+                     self.loadingData = NO;
+                 });
                  
                  
-                 self.loadingData = NO;
              });
-             
-
-         });
+         }
          
          
      }
@@ -126,6 +129,10 @@ static NSString* myVKAccountID = @"21743772";
          NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
          
      }];
+    
+    
+    
+    
     
     
 }
@@ -133,32 +140,41 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void) refreshWall {
     
-    self.loadingData = YES;
-    
-    [[ANServerManager sharedManager]
-     getGroupWall:iosDevCourseGroupID
-     withOffset:0
-     count:MAX(postsInRequest, [self.postsArray count])
-     onSuccess:^(NSArray *posts) {
-         
-         [self.postsArray removeAllObjects];
-         
-         [self.postsArray addObjectsFromArray:posts];
-         
-         [self.tableView reloadData];
-         
-         [self.refreshControl endRefreshing];
-         
-         self.loadingData = NO;
+    if (self.loadingData == NO) {
+        self.loadingData = YES;
+        
+        [[ANServerManager sharedManager]
+         getGroupWall:iosDevCourseGroupID
+         withOffset:0
+         count:MAX(postsInRequest, [self.postsArray count])
+         onSuccess:^(NSArray *posts) {
+             
+             if ([posts count] > 0) {
+                 [self.postsArray removeAllObjects];
+                 
+                 [self.postsArray addObjectsFromArray:posts];
+                 
+                 [self.tableView reloadData];
+                 
+                 [self.refreshControl endRefreshing];
+                 
+                 self.loadingData = NO;
 
-     }
-     onFailure:^(NSError *error, NSInteger statusCode) {
-         
-         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-         
-         [self.refreshControl endRefreshing];
-         
-     }];
+             }
+             
+         }
+         onFailure:^(NSError *error, NSInteger statusCode) {
+             
+             NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+             
+             [self.refreshControl endRefreshing];
+             
+         }];
+        
+    }
+    
+
+    
 }
 
 
