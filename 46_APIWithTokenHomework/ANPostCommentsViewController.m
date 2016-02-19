@@ -156,7 +156,6 @@ static NSString* myVKAccountID = @"21743772";
                                          onSuccess:^(ANPost *post) {
                                              self.post = post;
                                              
-                                             //                     [self.tableView scrollsToTop];
                                              [self.tableView reloadData];
                                              
                                              self.loadingData = NO;
@@ -183,7 +182,6 @@ static NSString* myVKAccountID = @"21743772";
                count:MAX(commentsInRequest, [self.commentsArray count])
            onSuccess:^(NSArray *comments) {
                
-//               [self.tableView scrollsToTop];
                [self.commentsArray removeAllObjects];
                
                [self.commentsArray addObjectsFromArray:comments];
@@ -233,15 +231,28 @@ static NSString* myVKAccountID = @"21743772";
      addLikeForItemType:itemType
      forOwnerID:iosDevCourseGroupID
      forItemID:itemID
-     onSuccess:^(id result) {
+     onSuccess:^(NSDictionary* result) {
          NSLog(@"Like added successfully!");
          
+         NSString* likesCount = [[result objectForKey:@"likes"] stringValue];
+         
          if ([itemType isEqualToString:@"post"]) {
-             [self refreshPost];
+             self.post.isLikedByMyself = YES;
+             self.post.likes = likesCount;
              
          } else if ([itemType isEqualToString:@"comment"]) {
-             [self refreshComments];
+             
+             for (ANComment* comment in self.commentsArray) {
+                 if ([comment.postID isEqualToString:itemID]) {
+                     comment.isLikedByMyself = YES;
+                     comment.likes = likesCount;
+                 }
+             }
+             
+             
          }
+         
+         [self.tableView reloadData];
          
      }
      onFailure:^(NSError *error, NSInteger statusCode)
@@ -260,16 +271,28 @@ static NSString* myVKAccountID = @"21743772";
      deleteLikeForItemType:itemType
      forOwnerID:iosDevCourseGroupID
      forItemID:itemID
-     onSuccess:^(id result) {
+     onSuccess:^(NSDictionary* result) {
          NSLog(@"Like deleted successfully!");
          
+         NSString* likesCount = [[result objectForKey:@"likes"] stringValue];
+         
          if ([itemType isEqualToString:@"post"]) {
-             [self refreshPost];
+             
+             self.post.isLikedByMyself = NO;
+             self.post.likes = likesCount;
              
          } else if ([itemType isEqualToString:@"comment"]) {
-             [self refreshComments];
+             
+             for (ANComment* comment in self.commentsArray) {
+                 if ([comment.postID isEqualToString:itemID]) {
+                     comment.isLikedByMyself = NO;
+                     comment.likes = likesCount;
+                 }
+             }
+             
          }
          
+         [self.tableView reloadData];
          
      }
      onFailure:^(NSError *error, NSInteger statusCode)

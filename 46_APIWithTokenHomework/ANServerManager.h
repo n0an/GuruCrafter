@@ -85,13 +85,13 @@
 - (void) addLikeForItemType:(NSString*) itemType
                  forOwnerID:(NSString*) ownerID
                   forItemID:(NSString*) itemID
-                  onSuccess:(void(^)(id result)) success
+                  onSuccess:(void(^)(NSDictionary* result)) success
                   onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 - (void) deleteLikeForItemType:(NSString*) itemType
                     forOwnerID:(NSString*) ownerID
                      forItemID:(NSString*) itemID
-                     onSuccess:(void(^)(id result)) success
+                     onSuccess:(void(^)(NSDictionary* result)) success
                      onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 

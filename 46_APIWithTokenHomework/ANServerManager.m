@@ -653,7 +653,7 @@
 - (void) addLikeForItemType:(NSString*) itemType
                  forOwnerID:(NSString*) ownerID
                   forItemID:(NSString*) itemID
-          onSuccess:(void(^)(id result)) success
+          onSuccess:(void(^)(NSDictionary* result)) success
           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
     
     
@@ -677,9 +677,10 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"likes.add JSON: %@", responseObject);
          
+         NSDictionary* result = [responseObject objectForKey:@"response"];
          
          if (success) {
-             success(responseObject);
+             success(result);
          }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -699,7 +700,7 @@
 - (void) deleteLikeForItemType:(NSString*) itemType
                     forOwnerID:(NSString*) ownerID
                      forItemID:(NSString*) itemID
-                     onSuccess:(void(^)(id result)) success
+                     onSuccess:(void(^)(NSDictionary* result)) success
                      onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
     
     
@@ -723,10 +724,12 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"likes.delete JSON: %@", responseObject);
          
+         NSDictionary* result = [responseObject objectForKey:@"response"];
          
          if (success) {
-             success(responseObject);
+             success(result);
          }
+         
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);

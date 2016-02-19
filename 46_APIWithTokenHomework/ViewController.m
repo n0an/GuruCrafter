@@ -177,17 +177,23 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-- (void) addLikeForPostID:(NSString*) postID {
+- (void) addLikeForPost:(ANPost*) post {
     
     [[ANServerManager sharedManager]
      addLikeForItemType:@"post"
      forOwnerID:iosDevCourseGroupID
-     forItemID:postID
-     onSuccess:^(id result) {
+     forItemID:post.postID
+     onSuccess:^(NSDictionary* result) {
          NSLog(@"Like added successfully!");
          
-         [self refreshWall];
+         NSString* likesCount = [[result objectForKey:@"likes"] stringValue];
          
+         post.likes = likesCount;
+         
+         post.isLikedByMyself = YES;
+         
+         [self.tableView reloadData];
+
      }
      onFailure:^(NSError *error, NSInteger statusCode)
      {
@@ -197,19 +203,24 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-- (void) deleteLikeForPostID:(NSString*) postID {
+- (void) deleteLikeForPost:(ANPost*) post {
     
     
     [[ANServerManager sharedManager]
      deleteLikeForItemType:@"post"
      forOwnerID:iosDevCourseGroupID
-     forItemID:postID
-     onSuccess:^(id result) {
+     forItemID:post.postID
+     onSuccess:^(NSDictionary* result) {
          NSLog(@"Like deleted successfully!");
          
-         [self refreshWall];
+         NSString* likesCount = [[result objectForKey:@"likes"] stringValue];
          
+         post.likes = likesCount;
+
+         post.isLikedByMyself = NO;
          
+         [self.tableView reloadData];
+
      }
      onFailure:^(NSError *error, NSInteger statusCode)
      {
@@ -462,17 +473,19 @@ static NSString* myVKAccountID = @"21743772";
 - (void) likeButtonPressedForPostID:(NSString*) postID {
     
     NSLog(@"Incoming postID = %@", postID);
-    BOOL isLikedByMyself = NO;
+//    BOOL isLikedByMyself = NO;
+    ANPost* clickedPost;
     for (ANPost* post in self.postsArray) {
         if ([postID isEqualToString:post.postID]) {
-            isLikedByMyself = post.isLikedByMyself;
+//            isLikedByMyself = post.isLikedByMyself;
+            clickedPost = post;
         }
     }
     
-    if (isLikedByMyself) {
-        [self deleteLikeForPostID:postID];
+    if (clickedPost.isLikedByMyself) {
+        [self deleteLikeForPost:clickedPost];
     } else {
-        [self addLikeForPostID:postID];
+        [self addLikeForPost:clickedPost];
     }
     
 
