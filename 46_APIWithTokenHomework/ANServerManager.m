@@ -514,14 +514,15 @@
     
     NSDictionary* params =
     [NSDictionary dictionaryWithObjectsAndKeys:
-     groupID,       @"owner_id",
-     postID,        @"post_id",
-     @(count),      @"count",
-     @(offset),     @"offset",
-     @"1",          @"need_likes",
-     @"1",          @"extended",
-     @"desc",       @"sort",
-     @"5.45",       @"v", nil];
+     groupID,                   @"owner_id",
+     postID,                    @"post_id",
+     @(count),                  @"count",
+     @(offset),                 @"offset",
+     @"1",                      @"need_likes",
+     @"1",                      @"extended",
+     @"desc",                   @"sort",
+     self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v", nil];
     
     
     
