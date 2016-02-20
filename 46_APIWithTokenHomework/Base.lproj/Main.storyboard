@@ -6,7 +6,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--iOSDevCourse-->
+        <!--View Controller-->
         <scene sceneID="0b6-l5-8XE">
             <objects>
                 <tableViewController id="hCH-qc-UiJ" customClass="ViewController" sceneMemberID="viewController">
@@ -217,7 +217,7 @@
                             <outlet property="delegate" destination="hCH-qc-UiJ" id="mpg-Gk-4gY"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="iOSDevCourse" id="a8D-h6-L2D"/>
+                    <navigationItem key="navigationItem" id="a8D-h6-L2D"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5bp-Qw-byE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -855,6 +855,8 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="QVt-oy-cuR">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="barTintColor" red="0.385073059" green="0.5745729745" blue="0.82465277780000001" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
