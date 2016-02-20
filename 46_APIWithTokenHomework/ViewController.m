@@ -44,7 +44,7 @@ typedef enum {
 @property (assign, nonatomic) BOOL loadingData;
 @property (assign, nonatomic) BOOL isLikedPost;
 
-@property (strong,nonatomic) NSMutableArray *postImageViewsSizesArray;
+//@property (strong,nonatomic) NSMutableArray *postImageViewsSizesArray;
 
 
 @end
@@ -61,7 +61,7 @@ static NSString* myVKAccountID = @"21743772";
     [super viewDidLoad];
     
     self.postsArray = [NSMutableArray array];
-    self.postImageViewsSizesArray = [NSMutableArray array];
+//    self.postImageViewsSizesArray = [NSMutableArray array];
     self.firstTimeAppear = YES;
     self.loadingData = YES;
     

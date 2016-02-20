@@ -59,7 +59,7 @@
 }
 
 
-
+#pragma mark - User methods
 
 - (void) authorizeUser:(void(^)(ANUser* user)) completion {
     
@@ -200,6 +200,7 @@
 }
 
 
+#pragma mark - Group wall methods
 
 - (void) getGroupWall:(NSString*) groupID
            withOffset:(NSInteger) offset
@@ -406,7 +407,7 @@
 }
 
 
-
+#pragma mark - Private messages methods
 
 - (void) getMessagesForUser:(NSString*) userID
            withOffset:(NSInteger) offset
@@ -501,7 +502,7 @@
 
 
 
-
+#pragma mark - Comments methods
 
 - (void) getCommentsForGroup:(NSString*) groupID
                       PostID:(NSString*) postID
@@ -652,6 +653,7 @@
     
 }
 
+#pragma mark - Likes add/delete methods
 
 - (void) addLikeForItemType:(NSString*) itemType
                  forOwnerID:(NSString*) ownerID
@@ -796,7 +798,7 @@
     
 }
 
-
+#pragma mark - Photos uploading methods
 
 - (void) getGroupAlbums:(NSString*) groupID
              withOffset:(NSInteger) offset
@@ -814,6 +816,7 @@
      groupID,                   @"owner_id",
      @(offset),                 @"offset",
      @(count),                  @"count",
+     @"1",                      @"need_covers",
      @"5.45",                   @"v",
      self.accessToken.token,    @"access_token",
      nil];
@@ -860,13 +863,7 @@
                    forPhotoAlbumID:(NSString*) albumID
                          onSuccess:(void(^)(ANUploadServer* uploadServer)) success
                          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
-    
-    
-//    if (![groupID hasPrefix:@"-"]) {
-//        groupID = [@"-" stringByAppendingString:groupID];
-//    }
-    
-    
+ 
     NSDictionary* params =
     [NSDictionary dictionaryWithObjectsAndKeys:
      groupID,                   @"group_id",
