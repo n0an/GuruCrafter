@@ -28,6 +28,8 @@
 		18639B831C6F13D1008B6632 /* ANMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B821C6F13D1008B6632 /* ANMessagesViewController.m */; };
 		18639B861C6F3EA4008B6632 /* ANMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B851C6F3EA4008B6632 /* ANMessageTableViewCell.m */; };
 		18639B891C6F4F52008B6632 /* ANMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B881C6F4F52008B6632 /* ANMessage.m */; };
+		1894D5591C78A4DD00285B12 /* ANPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1894D5581C78A4DD00285B12 /* ANPhotoAlbum.m */; };
+		1894D55C1C78AB1D00285B12 /* ANUploadServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1894D55B1C78AB1D00285B12 /* ANUploadServer.m */; };
 		18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */; };
 		18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */; };
 		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
@@ -96,6 +98,10 @@
 		18639B851C6F3EA4008B6632 /* ANMessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANMessageTableViewCell.m; sourceTree = "<group>"; };
 		18639B871C6F4F52008B6632 /* ANMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANMessage.h; sourceTree = "<group>"; };
 		18639B881C6F4F52008B6632 /* ANMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANMessage.m; sourceTree = "<group>"; };
+		1894D5571C78A4DD00285B12 /* ANPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoAlbum.h; sourceTree = "<group>"; };
+		1894D5581C78A4DD00285B12 /* ANPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoAlbum.m; sourceTree = "<group>"; };
+		1894D55A1C78AB1D00285B12 /* ANUploadServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANUploadServer.h; sourceTree = "<group>"; };
+		1894D55B1C78AB1D00285B12 /* ANUploadServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANUploadServer.m; sourceTree = "<group>"; };
 		18B1CF6B1C68E635008610CA /* ANAddPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAddPostViewController.h; sourceTree = "<group>"; };
 		18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddPostViewController.m; sourceTree = "<group>"; };
 		18C779A91C71D7DB006DAE38 /* ANNewPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANNewPostCell.h; sourceTree = "<group>"; };
@@ -232,6 +238,10 @@
 				18639B881C6F4F52008B6632 /* ANMessage.m */,
 				180404981C66309100876FFE /* ANAccessToken.h */,
 				180404991C66309100876FFE /* ANAccessToken.m */,
+				1894D5571C78A4DD00285B12 /* ANPhotoAlbum.h */,
+				1894D5581C78A4DD00285B12 /* ANPhotoAlbum.m */,
+				1894D55A1C78AB1D00285B12 /* ANUploadServer.h */,
+				1894D55B1C78AB1D00285B12 /* ANUploadServer.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -469,6 +479,7 @@
 				18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */,
 				180404961C66300200876FFE /* ANLoginViewController.m in Sources */,
 				180404241C662A6000876FFE /* ViewController.m in Sources */,
+				1894D5591C78A4DD00285B12 /* ANPhotoAlbum.m in Sources */,
 				1804049A1C66309100876FFE /* ANAccessToken.m in Sources */,
 				18038CD31C72013D00A33F3C /* ANCommentCell.m in Sources */,
 				1804048C1C662F2C00876FFE /* ANServerObject.m in Sources */,
@@ -480,6 +491,7 @@
 				180404891C662DE600876FFE /* ANServerManager.m in Sources */,
 				18038CD61C7208BB00A33F3C /* ANComment.m in Sources */,
 				180404211C662A6000876FFE /* AppDelegate.m in Sources */,
+				1894D55C1C78AB1D00285B12 /* ANUploadServer.m in Sources */,
 				180404901C662F5800876FFE /* ANUser.m in Sources */,
 				18639B891C6F4F52008B6632 /* ANMessage.m in Sources */,
 				1804041E1C662A6000876FFE /* main.m in Sources */,

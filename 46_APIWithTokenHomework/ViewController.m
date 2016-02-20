@@ -24,6 +24,8 @@
 
 #import "ANPostCommentsViewController.h"
 
+#import "ANPhotoAlbum.h"
+#import "ANUploadServer.h"
 
 typedef enum {
     ANTableViewSectionAddPost,
@@ -125,6 +127,40 @@ static NSString* myVKAccountID = @"21743772";
     
     [self performTransitionToPostDetails:btnIndexPath];
     
+}
+
+- (IBAction)actionCameraButtonPressed:(UIBarButtonItem*)sender {
+    
+    [[ANServerManager sharedManager] getGroupAlbums:iosDevCourseGroupID
+                                         withOffset:0
+                                              count:0
+          onSuccess:^(NSArray *photoAlbums) {
+              
+              NSLog(@"actionCameraButtonPressed");
+              for (ANPhotoAlbum* album in photoAlbums) {
+                  NSLog(@"photoAlbum id = %@, title = %@, size = %@", album.albumID, album.albumTitle, album.albumSize);
+                  
+                  [[ANServerManager sharedManager] getUploadServerForGroupID:iosDevCourseGroupID
+                         forPhotoAlbumID:album.albumID
+                               onSuccess:^(ANUploadServer* uploadServer) {
+                                   
+                                   NSLog(@"uploadServer = %@", uploadServer.uploadURL);
+                                   
+                               }
+                   
+                               onFailure:^(NSError *error, NSInteger statusCode) {
+                                   
+                               }];
+                  
+              }
+              
+              
+              
+              
+          }
+          onFailure:^(NSError *error, NSInteger statusCode) {
+              
+          }];
 }
 
 

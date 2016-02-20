@@ -17,6 +17,9 @@
 
 #import "ANMessage.h"
 #import "ANComment.h"
+#import "ANPhotoAlbum.h"
+
+#import "ANUploadServer.h"
 
 @interface ANServerManager ()
 
@@ -792,6 +795,114 @@
     
     
 }
+
+
+
+- (void) getGroupAlbums:(NSString*) groupID
+             withOffset:(NSInteger) offset
+                  count:(NSInteger) count
+              onSuccess:(void(^)(NSArray* photoAlbums)) success
+              onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"owner_id",
+     @(offset),                 @"offset",
+     @(count),                  @"count",
+     @"5.45",                   @"v",
+     self.accessToken.token,    @"access_token",
+     nil];
+    
+    
+    [self.requestOperationManager
+     GET:@"photos.getAlbums"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"photos.getAlbums JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+         
+         NSArray* items = [response objectForKey:@"items"];
+         
+         NSMutableArray* albumsArray = [NSMutableArray array];
+         
+         for (NSDictionary* dict in items) {
+             ANPhotoAlbum* photoAlbum = [[ANPhotoAlbum alloc] initWithServerResponse:dict];
+             [albumsArray addObject:photoAlbum];
+             
+         }
+         
+         
+         if (success) {
+             success(albumsArray);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
+
+- (void) getUploadServerForGroupID:(NSString*) groupID
+                   forPhotoAlbumID:(NSString*) albumID
+                         onSuccess:(void(^)(ANUploadServer* uploadServer)) success
+                         onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    
+//    if (![groupID hasPrefix:@"-"]) {
+//        groupID = [@"-" stringByAppendingString:groupID];
+//    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"group_id",
+     albumID,                   @"album_id",
+     self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v",
+     nil];
+    
+    
+    [self.requestOperationManager
+     GET:@"photos.getUploadServer"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"photos.getUploadServer JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+         
+         ANUploadServer* uploadServer = [[ANUploadServer alloc] initWithServerResponse:response];
+         
+         if (success) {
+             success(uploadServer);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
 
 
 

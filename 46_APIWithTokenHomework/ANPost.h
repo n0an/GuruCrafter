@@ -7,7 +7,7 @@
 //
 
 #import "ANServerObject.h"
-#import <UIKit/UIKit.h>
+//#import <UIKit/UIKit.h>
 
 @class ANUser;
 @class ANGroup;

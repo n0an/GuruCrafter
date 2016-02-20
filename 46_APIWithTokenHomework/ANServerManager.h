@@ -10,6 +10,7 @@
 
 @class ANUser;
 @class ANPost;
+@class ANUploadServer;
 
 @interface ANServerManager : NSObject
 
@@ -102,5 +103,15 @@
                     onSuccess:(void(^)(BOOL isLiked)) success
                     onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
+- (void) getGroupAlbums:(NSString*) groupID
+             withOffset:(NSInteger) offset
+                  count:(NSInteger) count
+              onSuccess:(void(^)(NSArray* photoAlbums)) success
+              onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+- (void) getUploadServerForGroupID:(NSString*) groupID
+                   forPhotoAlbumID:(NSString*) albumID
+                         onSuccess:(void(^)(ANUploadServer* uploadServer)) success
+                         onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 @end
