@@ -23,6 +23,12 @@
 @property (strong, nonatomic) NSString* maxRes;
 
 
+@property (strong, nonatomic) NSString* text;
+@property (strong, nonatomic) NSString* date;
+@property (strong, nonatomic) NSString* likesCount;
+@property (assign, nonatomic) BOOL isLikedByMyself;
+
+
 
 
 @end

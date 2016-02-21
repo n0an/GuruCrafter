@@ -27,7 +27,9 @@
         self.photo_1280 = [responseObject objectForKey:@"photo_1280"];
         self.photo_2560 = [responseObject objectForKey:@"photo_2560"];
         
-        if (self.photo_1280) {
+        if (self.photo_2560) {
+            self.maxRes = self.photo_2560;
+        } else if (self.photo_1280) {
             self.maxRes = self.photo_1280;
         } else if (self.photo_807) {
             self.maxRes = self.photo_807;
@@ -38,6 +40,22 @@
         } else {
             self.maxRes = self.photo_75;
         }
+        
+        
+        self.text = [responseObject objectForKey:@"text"];
+        
+        self.likesCount = [[[responseObject objectForKey:@"likes"] objectForKey:@"count"] stringValue];
+        
+        self.isLikedByMyself = !([[[responseObject objectForKey:@"likes"] objectForKey:@"user_likes"] boolValue]);
+        
+        NSDateFormatter *dateWithFormat = [[NSDateFormatter alloc] init];
+        [dateWithFormat setDateFormat:@"dd.MM.yyyy HH:mm"];
+        
+        NSTimeInterval Date = [[responseObject objectForKey:@"date"] intValue];
+        NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:Date];
+        
+        self.date = [dateWithFormat stringFromDate:dateValue];
+        
         
         
     }

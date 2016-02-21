@@ -12,8 +12,10 @@
 #import "ANPhotoCollectionViewCell.h"
 #import "ANPhoto.h"
 
+#import "ANPhotoDetailsViewController.h"
 
-@interface ANPhotosViewController ()
+
+@interface ANPhotosViewController () <UIScrollViewDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
 @end
@@ -78,6 +80,8 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString* photoIdentifier = @"photoCVCell";
@@ -90,12 +94,39 @@ static NSString* myVKAccountID = @"21743772";
     
     [photoCVCell.photoImageView setImageWithURL:photoURL];
     
-    
-    
-    
     return photoCVCell;
 }
 
+
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+ 
+    ANPhoto* selectedPhoto = [self.photosArray objectAtIndex:indexPath.row];
+    
+    ANPhotoDetailsViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPhotoDetailsViewController"];
+    vc.photo = selectedPhoto;
+    
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    
+    [self presentViewController:nav animated:YES completion:nil];
+    
+}
+
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+
+    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
+        NSLog(@"scrollViewDidScroll");
+        if (!self.loadingData)
+        {
+            self.loadingData = YES;
+            [self getPhotosFromServer];
+        }
+    }
+}
 
 
 @end

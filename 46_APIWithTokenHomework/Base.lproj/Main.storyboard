@@ -253,13 +253,13 @@
                                                 <constraint firstAttribute="width" constant="50" id="LHO-Pv-BTi"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2JA-uZ-Tki">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2JA-uZ-Tki">
                                             <rect key="frame" x="66" y="8" width="526" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sgt-cA-Y5F">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sgt-cA-Y5F">
                                             <rect key="frame" x="66" y="37" width="526" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -1134,9 +1134,89 @@
             </objects>
             <point key="canvasLocation" x="-733" y="986"/>
         </scene>
+        <!--Photo Details View Controller-->
+        <scene sceneID="r4g-Kg-IpT">
+            <objects>
+                <viewController storyboardIdentifier="ANPhotoDetailsViewController" id="rrl-da-3o9" customClass="ANPhotoDetailsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fTx-ty-W7I"/>
+                        <viewControllerLayoutGuide type="bottom" id="4el-Wz-nBe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="C5R-Yx-0Sb">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pwl-FH-zMv">
+                                <rect key="frame" x="20" y="562" width="464" height="18"/>
+                                <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="15"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ok3-hh-Jjd">
+                                <rect key="frame" x="492" y="560" width="88" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="88" id="5Uf-6R-ZKg"/>
+                                    <constraint firstAttribute="width" constant="88" id="82E-Fo-cNY"/>
+                                    <constraint firstAttribute="height" constant="22" id="qwb-a3-dyN"/>
+                                    <constraint firstAttribute="height" constant="22" id="sU4-g6-pmk"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="DevanagariSangamMN-Bold" family="Devanagari Sangam MN" pointSize="15"/>
+                                <inset key="titleEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="10" image="thumb-up_16"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="5Uf-6R-ZKg"/>
+                                        <exclude reference="sU4-g6-pmk"/>
+                                    </mask>
+                                </variation>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ojb-fr-TMB">
+                                <rect key="frame" x="180" y="236" width="240" height="128"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ojb-fr-TMB" firstAttribute="centerY" secondItem="C5R-Yx-0Sb" secondAttribute="centerY" id="29s-GM-ZSb"/>
+                            <constraint firstAttribute="trailing" secondItem="ok3-hh-Jjd" secondAttribute="trailing" constant="20" id="3Hb-bZ-4bs"/>
+                            <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="pwl-FH-zMv" secondAttribute="bottom" constant="12" id="7w8-lE-TtB"/>
+                            <constraint firstItem="pwl-FH-zMv" firstAttribute="leading" secondItem="C5R-Yx-0Sb" secondAttribute="leading" constant="20" id="89k-N8-Xsx"/>
+                            <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="pwl-FH-zMv" secondAttribute="bottom" constant="8" id="G3U-ul-tga"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="pwl-FH-zMv" secondAttribute="leading" id="KWD-Ov-GXD"/>
+                            <constraint firstItem="ok3-hh-Jjd" firstAttribute="leading" secondItem="pwl-FH-zMv" secondAttribute="trailing" constant="8" id="Pde-wH-ior"/>
+                            <constraint firstItem="ok3-hh-Jjd" firstAttribute="leading" secondItem="pwl-FH-zMv" secondAttribute="trailing" constant="8" id="XwQ-Wp-8HB"/>
+                            <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="ok3-hh-Jjd" secondAttribute="bottom" constant="55" id="ccQ-xO-59c"/>
+                            <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="ok3-hh-Jjd" secondAttribute="bottom" constant="18" id="dGs-qi-PfO"/>
+                            <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="pwl-FH-zMv" secondAttribute="bottom" constant="20" id="nGF-aJ-GmS"/>
+                            <constraint firstAttribute="trailing" secondItem="ok3-hh-Jjd" secondAttribute="trailing" constant="20" id="rjj-dA-IfL"/>
+                            <constraint firstItem="ojb-fr-TMB" firstAttribute="centerX" secondItem="C5R-Yx-0Sb" secondAttribute="centerX" id="wHC-w6-28F"/>
+                            <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="ok3-hh-Jjd" secondAttribute="bottom" constant="8" id="ybi-n7-XPS"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="KWD-Ov-GXD"/>
+                                <exclude reference="7w8-lE-TtB"/>
+                                <exclude reference="G3U-ul-tga"/>
+                                <exclude reference="ccQ-xO-59c"/>
+                                <exclude reference="ybi-n7-XPS"/>
+                                <exclude reference="3Hb-bZ-4bs"/>
+                                <exclude reference="Pde-wH-ior"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="likeButton" destination="ok3-hh-Jjd" id="TDo-7f-XPW"/>
+                        <outlet property="photoDescriptionLabel" destination="pwl-FH-zMv" id="T4g-ed-Qk0"/>
+                        <outlet property="photoImageView" destination="ojb-fr-TMB" id="0EY-Pc-o8L"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iXA-BB-Tvf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-733" y="1740"/>
+        </scene>
     </scenes>
     <resources>
         <image name="comment_16" width="16" height="16"/>
         <image name="like_16" width="16" height="16"/>
+        <image name="thumb-up_16" width="16" height="16"/>
     </resources>
 </document>

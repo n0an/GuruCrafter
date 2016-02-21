@@ -878,6 +878,7 @@
      @(offset),                 @"offset",
      @(count),                  @"count",
      @"1",                      @"rev",
+     @"1",                      @"extended",
      @"5.45",                   @"v",
      self.accessToken.token,    @"access_token",
      nil];
