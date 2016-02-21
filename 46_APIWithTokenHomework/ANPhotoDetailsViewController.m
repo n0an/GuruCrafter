@@ -12,6 +12,8 @@
 
 @interface ANPhotoDetailsViewController ()
 
+@property (assign, nonatomic) BOOL isLabelsVisible;
+
 @end
 
 @implementation ANPhotoDetailsViewController
@@ -19,7 +21,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.isLabelsVisible = NO;
     
+    /*
     CGFloat withPhoto = (CGFloat)self.photo.width;
     CGFloat heightPhoto = (CGFloat)self.photo.height;
 
@@ -46,25 +50,37 @@
     }
     
 //    self.photoImageView.frame = rectForPhoto;
-//    
 //    [self.view layoutSubviews];
+     
+     //    UIImageView* photoImage = [[UIImageView alloc] initWithFrame:rectForPhoto];
+     //
+     //    [photoImage setImageWithURL:photoURL];
+     //
+     //    photoImage.userInteractionEnabled = YES;
+     //    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
+     //
+     //    [photoImage addGestureRecognizer:tapGesture];
+     //
+     //    [self.view addSubview:photoImage];
+     
+     */
     
+    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
     
-    NSURL* photoURL = [NSURL URLWithString:self.photo.maxRes];
+    [self.photoImageView setImageWithURL:photoURL];
     
-//    [self.photoImageView setImageWithURL:photoURL];
-    
+    self.photoImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
+    [self.photoImageView addGestureRecognizer:tapGesture];
     
 
-    UIImageView* photoImage = [[UIImageView alloc] initWithFrame:rectForPhoto];
-
-    [photoImage setImageWithURL:photoURL];
-    
-    [self.view addSubview:photoImage];
-    
+    self.photoDescriptionLabel.hidden = YES;
+    self.likeButton.hidden = YES;
+    self.likeButton.userInteractionEnabled = NO;
     
     self.photoDescriptionLabel.text = self.photo.text;
     self.likeButton.titleLabel.text = self.photo.likesCount;
+    
     
     UIBarButtonItem* cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(actionCancel:)];
     
@@ -72,10 +88,10 @@
     
     [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
 
-    
-//    [self.navigationController.navigationBar setBackgroundColor:[UIColor blackColor]];
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
 
+    
+    
 }
 
 
@@ -86,5 +102,29 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void) actionOnTapImage: (UITapGestureRecognizer*) recognizer {
+    
+    if (self.isLabelsVisible == YES) {
+        self.isLabelsVisible = NO;
+        self.photoDescriptionLabel.hidden = YES;
+        self.likeButton.hidden = YES;
+    } else {
+        self.isLabelsVisible = YES;
+        self.photoDescriptionLabel.hidden = NO;
+        self.likeButton.hidden = NO;
+    }
+    
+
+}
+
+
+
+
 
 @end
+
+
+
+
+
+
