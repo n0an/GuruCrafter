@@ -20,6 +20,7 @@
 #import "ANPhotoAlbum.h"
 
 #import "ANUploadServer.h"
+#import "ANPhoto.h"
 
 @interface ANServerManager ()
 
@@ -843,6 +844,66 @@
          
          if (success) {
              success(albumsArray);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
+- (void) getPhotosForGroup:(NSString*) groupID
+                forAlbumID:(NSString*) albumID
+                withOffset:(NSInteger) offset
+                     count:(NSInteger) count
+                 onSuccess:(void(^)(NSArray* photos)) success
+                 onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"owner_id",
+     albumID,                   @"album_id",
+     @(offset),                 @"offset",
+     @(count),                  @"count",
+     @"1",                      @"rev",
+     @"5.45",                   @"v",
+     self.accessToken.token,    @"access_token",
+     nil];
+    
+    
+    [self.requestOperationManager
+     GET:@"photos.get"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"photos.get JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+         
+         NSArray* items = [response objectForKey:@"items"];
+         
+         NSMutableArray* photosArray = [NSMutableArray array];
+         
+         for (NSDictionary* dict in items) {
+             ANPhoto* photo = [[ANPhoto alloc] initWithServerResponse:dict];
+             [photosArray addObject:photo];
+             
+         }
+         
+         
+         if (success) {
+             success(photosArray);
          }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

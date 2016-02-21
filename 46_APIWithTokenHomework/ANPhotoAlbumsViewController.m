@@ -13,6 +13,8 @@
 
 #import "UIImageView+AFNetworking.h"
 
+#import "ANPhotosViewController.h"
+
 
 @interface ANPhotoAlbumsViewController ()
 
@@ -86,7 +88,7 @@ static NSString* myVKAccountID = @"21743772";
     ANPhotoAlbum* photoAlbum = [self.albumsArray objectAtIndex:indexPath.row];
     
     albumCVCell.albumTitleLabel.text = photoAlbum.albumTitle;
-    albumCVCell.albumSizeLabel.text = photoAlbum.albumTitle;
+    albumCVCell.albumSizeLabel.text = [NSString stringWithFormat:@"%@ photos", photoAlbum.albumSize];
     
     
     [albumCVCell.albumThumbImageView setImageWithURL:photoAlbum.albumThumbImageURL];
@@ -98,6 +100,25 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showPhotosInAlbum"]) {
+        ANPhotoAlbumCellCollectionViewCell* cell = (ANPhotoAlbumCellCollectionViewCell*) sender;
+        
+        NSIndexPath* path = [self.collectionView indexPathForCell:cell];
+        
+        ANPhotoAlbum* album = [self.albumsArray objectAtIndex:path.row];
+        
+        
+        ANPhotosViewController* vc = segue.destinationViewController;
+        
+        vc.albumID = album.albumID;
+        
+        NSLog(@"vc.allbumID = %@", vc.albumID);
+        
+    }
+}
 
 
 

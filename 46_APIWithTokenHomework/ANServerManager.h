@@ -109,6 +109,13 @@
               onSuccess:(void(^)(NSArray* photoAlbums)) success
               onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
+- (void) getPhotosForGroup:(NSString*) groupID
+           forAlbumID:(NSString*) albumID
+           withOffset:(NSInteger) offset
+                count:(NSInteger) count
+            onSuccess:(void(^)(NSArray* photos)) success
+            onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
 - (void) getUploadServerForGroupID:(NSString*) groupID
                    forPhotoAlbumID:(NSString*) albumID
                          onSuccess:(void(^)(ANUploadServer* uploadServer)) success

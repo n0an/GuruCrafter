@@ -24,6 +24,8 @@
 		180404961C66300200876FFE /* ANLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404951C66300200876FFE /* ANLoginViewController.m */; };
 		1804049A1C66309100876FFE /* ANAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404991C66309100876FFE /* ANAccessToken.m */; };
 		1804049D1C6630D000876FFE /* ANPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804049C1C6630D000876FFE /* ANPost.m */; };
+		181986031C79DD3000CE328C /* ANPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */; };
+		181986061C79E26800CE328C /* ANPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986051C79E26800CE328C /* ANPhotosViewController.m */; };
 		184818381C68B050005B4F1D /* ANGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 184818371C68B050005B4F1D /* ANGroup.m */; };
 		18639B831C6F13D1008B6632 /* ANMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B821C6F13D1008B6632 /* ANMessagesViewController.m */; };
 		18639B861C6F3EA4008B6632 /* ANMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B851C6F3EA4008B6632 /* ANMessageTableViewCell.m */; };
@@ -92,6 +94,10 @@
 		180404991C66309100876FFE /* ANAccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAccessToken.m; sourceTree = "<group>"; };
 		1804049B1C6630D000876FFE /* ANPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPost.h; sourceTree = "<group>"; };
 		1804049C1C6630D000876FFE /* ANPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPost.m; sourceTree = "<group>"; };
+		181986011C79DD3000CE328C /* ANPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoCollectionViewCell.h; sourceTree = "<group>"; };
+		181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoCollectionViewCell.m; sourceTree = "<group>"; };
+		181986041C79E26800CE328C /* ANPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotosViewController.h; sourceTree = "<group>"; };
+		181986051C79E26800CE328C /* ANPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotosViewController.m; sourceTree = "<group>"; };
 		184818361C68B050005B4F1D /* ANGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANGroup.h; sourceTree = "<group>"; };
 		184818371C68B050005B4F1D /* ANGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANGroup.m; sourceTree = "<group>"; };
 		18639B811C6F13D1008B6632 /* ANMessagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANMessagesViewController.h; sourceTree = "<group>"; };
@@ -268,6 +274,8 @@
 				180404231C662A6000876FFE /* ViewController.m */,
 				1878CB731C78EB2E005D5AF4 /* ANPhotoAlbumsViewController.h */,
 				1878CB741C78EB2E005D5AF4 /* ANPhotoAlbumsViewController.m */,
+				181986041C79E26800CE328C /* ANPhotosViewController.h */,
+				181986051C79E26800CE328C /* ANPhotosViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -277,6 +285,8 @@
 			children = (
 				1878CB6F1C78EA29005D5AF4 /* ANPhotoAlbumCellCollectionViewCell.h */,
 				1878CB701C78EA29005D5AF4 /* ANPhotoAlbumCellCollectionViewCell.m */,
+				181986011C79DD3000CE328C /* ANPhotoCollectionViewCell.h */,
+				181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */,
 			);
 			name = "CollectionView Cells";
 			sourceTree = "<group>";
@@ -498,7 +508,9 @@
 				18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */,
 				180404961C66300200876FFE /* ANLoginViewController.m in Sources */,
 				180404241C662A6000876FFE /* ViewController.m in Sources */,
+				181986031C79DD3000CE328C /* ANPhotoCollectionViewCell.m in Sources */,
 				1894D5591C78A4DD00285B12 /* ANPhotoAlbum.m in Sources */,
+				181986061C79E26800CE328C /* ANPhotosViewController.m in Sources */,
 				1804049A1C66309100876FFE /* ANAccessToken.m in Sources */,
 				18038CD31C72013D00A33F3C /* ANCommentCell.m in Sources */,
 				1804048C1C662F2C00876FFE /* ANServerObject.m in Sources */,
