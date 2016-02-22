@@ -12,5 +12,7 @@
 
 - (IBAction)actionCameraButtonPressed:(UIBarButtonItem*)sender;
 
+- (IBAction)actionVideoButtonPressed:(UIBarButtonItem*)sender;
+
 @end
 

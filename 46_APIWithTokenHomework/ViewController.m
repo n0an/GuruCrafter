@@ -154,14 +154,35 @@ static NSString* myVKAccountID = @"21743772";
                   
               }
               
-              
-              
-              
           }
           onFailure:^(NSError *error, NSInteger statusCode) {
               
           }];
 }
+
+
+
+- (IBAction)actionVideoButtonPressed:(UIBarButtonItem*)sender {
+    /*
+    [[ANServerManager sharedManager] getVideoAlbumsForGroupID:iosDevCourseGroupID
+       withOffset:0
+            count:20
+        onSuccess:^(NSArray *videoAlbums) {
+            
+            NSLog(@"videoAlbums = %@", videoAlbums);
+            
+            
+            
+                
+        }
+     
+        onFailure:^(NSError *error, NSInteger statusCode) {
+            
+        }];
+     */
+    
+}
+
 
 
 #pragma mark - API
@@ -211,13 +232,7 @@ static NSString* myVKAccountID = @"21743772";
         
     }
     
-    
-    
-    
-    
-    
-    
-    
+ 
 }
 
 
@@ -303,7 +318,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 - (void) deleteLikeForPost:(ANPost*) post {
-    
     
     [[ANServerManager sharedManager]
      deleteLikeForItemType:@"post"
@@ -498,9 +512,6 @@ static NSString* myVKAccountID = @"21743772";
 
 
 #pragma mark - Gestures
-
-
-
 
 - (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
     

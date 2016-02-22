@@ -23,6 +23,9 @@
 #import "ANPhoto.h"
 #import "ANParsedUploadServer.h"
 
+#import "ANVideoAlbum.h"
+#import "ANVideo.h"
+
 @interface ANServerManager ()
 
 @property (strong, nonatomic) AFHTTPRequestOperationManager* requestOperationManager;
@@ -1036,6 +1039,132 @@
     
     
 }
+
+
+
+#pragma mark - Video API methods
+
+
+- (void) getVideoAlbumsForGroupID:(NSString*) groupID
+                       withOffset:(NSInteger) offset
+                            count:(NSInteger) count
+                        onSuccess:(void(^)(NSArray* videoAlbums)) success
+                        onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"owner_id",
+     @(offset),                 @"offset",
+     @(count),                  @"count",
+     @"1",                      @"extended",
+     @"5.45",                   @"v",
+     self.accessToken.token,    @"access_token",
+     nil];
+    
+    
+    [self.requestOperationManager
+     GET:@"video.getAlbums"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"video.getAlbums JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+         
+         NSArray* items = [response objectForKey:@"items"];
+         
+         NSMutableArray* albumsArray = [NSMutableArray array];
+         
+         for (NSDictionary* dict in items) {
+             ANVideoAlbum* videoAlbum = [[ANVideoAlbum alloc] initWithServerResponse:dict];
+             [albumsArray addObject:videoAlbum];
+             
+         }
+         
+         
+         
+         if (success) {
+             success(albumsArray);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
+- (void) getVideosForGroup:(NSString*) groupID
+                forAlbumID:(NSString*) albumID
+                withOffset:(NSInteger) offset
+                     count:(NSInteger) count
+                 onSuccess:(void(^)(NSArray* videos)) success
+                 onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"owner_id",
+     albumID,                   @"album_id",
+     @(offset),                 @"offset",
+     @(count),                  @"count",
+     @"1",                      @"extended",
+     @"5.45",                   @"v",
+     self.accessToken.token,    @"access_token",
+     nil];
+    
+    
+    [self.requestOperationManager
+     GET:@"video.get"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"video.get JSON: %@", responseObject);
+         
+         NSDictionary* response = [responseObject objectForKey:@"response"];
+         
+         NSArray* items = [response objectForKey:@"items"];
+         
+         NSMutableArray* videosArray = [NSMutableArray array];
+         
+         for (NSDictionary* dict in items) {
+             ANVideo* video = [[ANVideo alloc] initWithServerResponse:dict];
+             [videosArray addObject:video];
+             
+         }
+         
+         
+         if (success) {
+             success(videosArray);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
+
+
+
 
 
 

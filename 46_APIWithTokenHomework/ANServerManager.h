@@ -133,5 +133,11 @@
                              onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
+- (void) getVideoAlbumsForGroupID:(NSString*) groupID
+                       withOffset:(NSInteger) offset
+                            count:(NSInteger) count
+                        onSuccess:(void(^)(NSArray* videoAlbums)) success
+                        onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
 
 @end

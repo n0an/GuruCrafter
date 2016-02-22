@@ -19,8 +19,8 @@
         NSDateFormatter *dateWithFormat = [[NSDateFormatter alloc] init];
         [dateWithFormat setDateFormat:@"dd.MM.yyyy HH:mm"];
         
-        NSTimeInterval Date = [[responseObject objectForKey:@"date"] intValue];
-        NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:Date];
+        NSTimeInterval rawDate = [[responseObject objectForKey:@"date"] intValue];
+        NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:rawDate];
         self.messageDate = [dateWithFormat stringFromDate:dateValue];
         
         self.authorID = [[responseObject objectForKey:@"from_id"] stringValue];
