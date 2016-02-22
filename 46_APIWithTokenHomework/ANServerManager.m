@@ -21,6 +21,7 @@
 
 #import "ANUploadServer.h"
 #import "ANPhoto.h"
+#import "ANParsedUploadServer.h"
 
 @interface ANServerManager ()
 
@@ -961,6 +962,80 @@
     
 }
 
+
+- (void) getUploadJSONStringForServerURL:(NSString*) uploadServerURL
+        fileToUpload:(NSData*) fileData
+          onSuccess:(void(^)(ANParsedUploadServer* parsedUploadServer)) success
+          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+
+    
+    AFHTTPRequestOperationManager* requestManager = [AFHTTPRequestOperationManager manager];
+    requestManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+    
+    
+    [requestManager
+     POST:uploadServerURL parameters:nil
+     constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+         [formData appendPartWithFileData:fileData name:@"file1" fileName:@"file1.jpg" mimeType:@"image/jpeg"];
+     }
+     
+     success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+         NSLog(@"POST SAVE JSON: %@", responseObject);
+         
+         ANParsedUploadServer* parsedUploadServer = [[ANParsedUploadServer alloc] initWithServerResponse:responseObject];
+         
+         if (success) {
+             success(parsedUploadServer);
+         }
+
+     }
+     
+     failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+         failure(error, operation.response.statusCode);
+     }];
+    
+}
+
+
+
+- (void) uploadPhotosToGroupWithServer:(ANParsedUploadServer*) parsedUploadServer
+                   onSuccess:(void(^)(id result)) success
+                   onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     parsedUploadServer.groupID,    @"group_id",
+     parsedUploadServer.albumID,    @"album_id",
+     parsedUploadServer.server,     @"server",
+     parsedUploadServer.photosList, @"photos_list",
+     parsedUploadServer.hashCode,   @"hash",
+     self.accessToken.token,        @"access_token",
+     @"5.45",                       @"v",
+     nil];
+    
+    
+    [self.requestOperationManager
+     POST:@"photos.save"
+     parameters:params
+     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+         NSLog(@"photos.save JSON: %@", responseObject);
+         
+         
+         if (success) {
+             success(responseObject);
+         }
+         
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, operation.response.statusCode);
+             
+         }
+     }];
+    
+    
+}
 
 
 

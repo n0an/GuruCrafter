@@ -14,4 +14,7 @@
 
 @property (weak, nonatomic) IBOutlet UICollectionView* collectionView;
 
+
+- (IBAction)actionAddButtonPressed:(UIBarButtonItem*)sender;
+
 @end

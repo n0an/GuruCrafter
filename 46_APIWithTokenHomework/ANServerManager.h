@@ -11,6 +11,7 @@
 @class ANUser;
 @class ANPost;
 @class ANUploadServer;
+@class ANParsedUploadServer;
 
 @interface ANServerManager : NSObject
 
@@ -120,5 +121,17 @@
                    forPhotoAlbumID:(NSString*) albumID
                          onSuccess:(void(^)(ANUploadServer* uploadServer)) success
                          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+- (void) getUploadJSONStringForServerURL:(NSString*) uploadServerURL
+                            fileToUpload:(NSData*) fileData
+                               onSuccess:(void(^)(ANParsedUploadServer* parsedUploadServer)) success
+                               onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
+- (void) uploadPhotosToGroupWithServer:(ANParsedUploadServer*) parsedUploadServer
+                             onSuccess:(void(^)(id result)) success
+                             onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
 
 @end

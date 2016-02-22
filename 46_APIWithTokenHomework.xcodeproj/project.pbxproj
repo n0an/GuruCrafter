@@ -28,6 +28,7 @@
 		181986061C79E26800CE328C /* ANPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986051C79E26800CE328C /* ANPhotosViewController.m */; };
 		184818381C68B050005B4F1D /* ANGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 184818371C68B050005B4F1D /* ANGroup.m */; };
 		1855714A1C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185571491C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m */; };
+		185AB5AF1C7B03D7002F36E5 /* ANParsedUploadServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185AB5AE1C7B03D7002F36E5 /* ANParsedUploadServer.m */; };
 		18639B831C6F13D1008B6632 /* ANMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B821C6F13D1008B6632 /* ANMessagesViewController.m */; };
 		18639B861C6F3EA4008B6632 /* ANMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B851C6F3EA4008B6632 /* ANMessageTableViewCell.m */; };
 		18639B891C6F4F52008B6632 /* ANMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18639B881C6F4F52008B6632 /* ANMessage.m */; };
@@ -103,6 +104,8 @@
 		184818371C68B050005B4F1D /* ANGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANGroup.m; sourceTree = "<group>"; };
 		185571481C7A123E00B5C8F4 /* ANPhotoDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoDetailsViewController.h; sourceTree = "<group>"; };
 		185571491C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoDetailsViewController.m; sourceTree = "<group>"; };
+		185AB5AD1C7B03D7002F36E5 /* ANParsedUploadServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANParsedUploadServer.h; sourceTree = "<group>"; };
+		185AB5AE1C7B03D7002F36E5 /* ANParsedUploadServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANParsedUploadServer.m; sourceTree = "<group>"; };
 		18639B811C6F13D1008B6632 /* ANMessagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANMessagesViewController.h; sourceTree = "<group>"; };
 		18639B821C6F13D1008B6632 /* ANMessagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANMessagesViewController.m; sourceTree = "<group>"; };
 		18639B841C6F3EA4008B6632 /* ANMessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANMessageTableViewCell.h; sourceTree = "<group>"; };
@@ -194,7 +197,6 @@
 			children = (
 				1804048D1C662F3B00876FFE /* Models */,
 				180404971C66305C00876FFE /* Controllers */,
-				1878CB721C78EA39005D5AF4 /* CollectionView Cells */,
 				18D84FAC1C6754100090BF78 /* Cells */,
 				1804041F1C662A6000876FFE /* AppDelegate.h */,
 				180404201C662A6000876FFE /* AppDelegate.m */,
@@ -258,6 +260,8 @@
 				1894D5581C78A4DD00285B12 /* ANPhotoAlbum.m */,
 				1894D55A1C78AB1D00285B12 /* ANUploadServer.h */,
 				1894D55B1C78AB1D00285B12 /* ANUploadServer.m */,
+				185AB5AD1C7B03D7002F36E5 /* ANParsedUploadServer.h */,
+				185AB5AE1C7B03D7002F36E5 /* ANParsedUploadServer.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -299,6 +303,7 @@
 		18D84FAC1C6754100090BF78 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				1878CB721C78EA39005D5AF4 /* CollectionView Cells */,
 				18038CD11C72013D00A33F3C /* ANCommentCell.h */,
 				18038CD21C72013D00A33F3C /* ANCommentCell.m */,
 				18C779A91C71D7DB006DAE38 /* ANNewPostCell.h */,
@@ -527,6 +532,7 @@
 				18639B831C6F13D1008B6632 /* ANMessagesViewController.m in Sources */,
 				180404891C662DE600876FFE /* ANServerManager.m in Sources */,
 				18038CD61C7208BB00A33F3C /* ANComment.m in Sources */,
+				185AB5AF1C7B03D7002F36E5 /* ANParsedUploadServer.m in Sources */,
 				180404211C662A6000876FFE /* AppDelegate.m in Sources */,
 				1894D55C1C78AB1D00285B12 /* ANUploadServer.m in Sources */,
 				1878CB751C78EB2E005D5AF4 /* ANPhotoAlbumsViewController.m in Sources */,

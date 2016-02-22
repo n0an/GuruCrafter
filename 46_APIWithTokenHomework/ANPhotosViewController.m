@@ -13,11 +13,16 @@
 #import "ANPhoto.h"
 
 #import "ANPhotoDetailsViewController.h"
+#import "ANUploadServer.h"
+#import "ANParsedUploadServer.h"
 
 
-@interface ANPhotosViewController () <UIScrollViewDelegate>
+@interface ANPhotosViewController () <UIScrollViewDelegate, UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
+
+@property (strong, nonatomic) UIImage* selectedImage;
+
 @end
 
 static NSInteger requestCount = 20;
@@ -43,6 +48,26 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+#pragma mark - Actions
+
+- (IBAction)actionAddButtonPressed:(UIBarButtonItem*)sender {
+    
+    NSLog(@"actionAddButtonPressed");
+    
+    UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+    
+    imagePicker.delegate = self;
+    
+    imagePicker.allowsEditing = YES;
+    
+    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    
+    [self presentViewController:imagePicker animated:YES completion:nil];
+
+    
+}
+
+
 #pragma mark - API
 
 - (void) getPhotosFromServer {
@@ -65,14 +90,68 @@ static NSString* myVKAccountID = @"21743772";
                  
              }
              onFailure:^(NSError *error, NSInteger statusCode) {
-                 
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
              }];
     
 }
 
+#pragma mark -- API methods for uploading photos to group album
+/**
+ 1. Getting Upload Server - getting URL of server
+ 2. Getting ParsedServer parameters using URL - getting Server ID, Hash, Photos_list string, Album ID and Group ID
+ 3. Trigger Upload using ParsedServer
+ */
+
+- (void) uploadSelectedImageToServer {
+    
+    NSData* selectedImageData = UIImageJPEGRepresentation(self.selectedImage, 1.0f);
+    
+    [[ANServerManager sharedManager] getUploadServerForGroupID:iosDevCourseGroupID
+       forPhotoAlbumID:self.albumID
+             onSuccess:^(ANUploadServer *uploadServer) {
+                 
+                 [self getParsedUploadServerForUploadServer:uploadServer andImageData:selectedImageData];
+                 
+             }
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+             }];
+    
+}
+
+- (void) getParsedUploadServerForUploadServer:(ANUploadServer*) uploadServer andImageData:(NSData*)imageData {
+    
+    [[ANServerManager sharedManager] getUploadJSONStringForServerURL:uploadServer.uploadURL
+        fileToUpload:imageData
+           onSuccess:^(ANParsedUploadServer *parsedUploadServer) {
+               
+               NSLog(@"parsedUploadServer = %@", parsedUploadServer);
+               
+               [self uploadPhotosToServer:parsedUploadServer];
+               
+           } onFailure:^(NSError *error, NSInteger statusCode) {
+               NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+           }];
+
+}
+
+
+- (void) uploadPhotosToServer:(ANParsedUploadServer*) parsedUploadServer {
+    [[ANServerManager sharedManager] uploadPhotosToGroupWithServer:parsedUploadServer
+         onSuccess:^(id result) {
+             
+             NSLog(@"result = %@", result);
+
+         }
+         onFailure:^(NSError *error, NSInteger statusCode) {
+             
+             NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+         }];
+}
+
+
 
 #pragma mark - UICollectionViewDataSource
-
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
@@ -112,6 +191,27 @@ static NSString* myVKAccountID = @"21743772";
     
     [self presentViewController:nav animated:YES completion:nil];
     
+}
+
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    
+    NSLog(@"didFinishPickingMediaWithInfo = %@", info);
+    
+    self.selectedImage = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    [self uploadSelectedImageToServer];
+    
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    NSLog(@"imagePickerControllerDidCancel");
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 
