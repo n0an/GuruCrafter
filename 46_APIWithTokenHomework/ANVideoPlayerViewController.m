@@ -7,7 +7,7 @@
 //
 
 #import "ANVideoPlayerViewController.h"
-#import <AVFoundation/AVFoundation.h>
+#import "ANVideo.h"
 
 @interface ANVideoPlayerViewController ()
 
@@ -15,18 +15,34 @@
 
 @implementation ANVideoPlayerViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSLog(@"ANVideoPlayerViewController videoURL = %@", self.videoURL);
+    NSLog(@"ANVideoPlayerViewController videoPlayerURLString = %@", self.selectedVideo.videoPlayerURLString);
+    
 
+    NSURL* urlVideo = [NSURL URLWithString:self.selectedVideo.videoPlayerURLString];
     
-    self.player = [[AVPlayer alloc] initWithURL:self.videoURL];
+    NSURLRequest* requestToYoutube = [NSURLRequest requestWithURL:urlVideo];
     
-    [self.player play];
+    [self.playerWebView loadRequest:requestToYoutube];
+    
+    self.titleLabel.text = self.selectedVideo.title;
+    self.descriptionLabel.text = self.selectedVideo.videoDescription;
+    self.likesCountLabel.text = self.selectedVideo.likesCount;
+    self.viewsCountLabel.text = self.selectedVideo.views;
+    self.dateLabel.text = [NSString stringWithFormat:@"Added on %@", self.selectedVideo.date];
     
     
+    
+    
+    
+    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(actionCancelPressed:)];
+    
+    self.navigationItem.leftBarButtonItem = cancelButton;
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,14 +50,14 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#pragma mark - Actions
+
+- (void) actionCancelPressed:(UIBarButtonItem*) sender {
+    NSLog(@"actionCancelPressed");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
-*/
+
+
 
 @end

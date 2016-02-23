@@ -202,16 +202,21 @@ static NSString* myVKAccountID = @"21743772";
     if ([segue.identifier isEqualToString:@"showVideo"]) {
         
         NSIndexPath* selectedIndexPath = [self.tableView indexPathForSelectedRow];
-//        NSIndexPath* selectedIndexPath = [self.tableView indexPathsForSelectedRows][0];
         
         ANVideo* selectedVideo = [self.videosArray objectAtIndex:selectedIndexPath.row];
         
-        NSURL* videoURL = [NSURL URLWithString:selectedVideo.videoPlayerURLString];
+//        NSURL* videoURL = [NSURL URLWithString:selectedVideo.videoPlayerURLString];
+        
+
+        UINavigationController* nav = segue.destinationViewController;
+        
+        ANVideoPlayerViewController* vc = (ANVideoPlayerViewController*)nav.topViewController;
+        
+//        vc.videoURL = videoURL;
+        vc.selectedVideo = selectedVideo;
         
         
-        ANVideoPlayerViewController* vc = segue.destinationViewController;
-        vc.videoURL = videoURL;
-        
+ 
     }
 }
 

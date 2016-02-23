@@ -7,11 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AVKit/AVKit.h>
 
-@interface ANVideoPlayerViewController : AVPlayerViewController
+@class ANVideo;
 
-@property (strong, nonatomic) NSURL* videoURL;
+@interface ANVideoPlayerViewController : UIViewController
+
+@property (strong, nonatomic) ANVideo* selectedVideo;
+
+@property (weak, nonatomic) IBOutlet UIWebView* playerWebView;
+@property (weak, nonatomic) IBOutlet UILabel* titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel* descriptionLabel;
+@property (weak, nonatomic) IBOutlet UILabel* likesCountLabel;
+@property (weak, nonatomic) IBOutlet UILabel* viewsCountLabel;
+@property (weak, nonatomic) IBOutlet UILabel* dateLabel;
+
+
+
 
 
 @end
