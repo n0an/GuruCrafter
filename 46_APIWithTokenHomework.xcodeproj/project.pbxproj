@@ -28,6 +28,7 @@
 		18153D481C7B6C960063FD81 /* ANVideoAlbumCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18153D471C7B6C960063FD81 /* ANVideoAlbumCVCell.m */; };
 		181986031C79DD3000CE328C /* ANPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */; };
 		181986061C79E26800CE328C /* ANPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986051C79E26800CE328C /* ANPhotosViewController.m */; };
+		183BA6D51C7C4DBD0038FF74 /* ANVideosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183BA6D41C7C4DBD0038FF74 /* ANVideosViewController.m */; };
 		184818381C68B050005B4F1D /* ANGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 184818371C68B050005B4F1D /* ANGroup.m */; };
 		1855714A1C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185571491C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m */; };
 		185AB5AF1C7B03D7002F36E5 /* ANParsedUploadServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185AB5AE1C7B03D7002F36E5 /* ANParsedUploadServer.m */; };
@@ -42,6 +43,7 @@
 		18AB7AC91C7B5F8200F3B32E /* ANVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AB7AC81C7B5F8200F3B32E /* ANVideo.m */; };
 		18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */; };
 		18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */; };
+		18D447951C7C5ECB0078A7F7 /* ANVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D447941C7C5ECB0078A7F7 /* ANVideoCell.m */; };
 		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
 		18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8591C68896400C1204F /* ANPhoto.m */; };
 		18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F7DA581C70CEC90027A836 /* ANNewMessageCell.m */; };
@@ -108,6 +110,8 @@
 		181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoCollectionViewCell.m; sourceTree = "<group>"; };
 		181986041C79E26800CE328C /* ANPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotosViewController.h; sourceTree = "<group>"; };
 		181986051C79E26800CE328C /* ANPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotosViewController.m; sourceTree = "<group>"; };
+		183BA6D31C7C4DBD0038FF74 /* ANVideosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideosViewController.h; sourceTree = "<group>"; };
+		183BA6D41C7C4DBD0038FF74 /* ANVideosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideosViewController.m; sourceTree = "<group>"; };
 		184818361C68B050005B4F1D /* ANGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANGroup.h; sourceTree = "<group>"; };
 		184818371C68B050005B4F1D /* ANGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANGroup.m; sourceTree = "<group>"; };
 		185571481C7A123E00B5C8F4 /* ANPhotoDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoDetailsViewController.h; sourceTree = "<group>"; };
@@ -136,6 +140,8 @@
 		18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddPostViewController.m; sourceTree = "<group>"; };
 		18C779A91C71D7DB006DAE38 /* ANNewPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANNewPostCell.h; sourceTree = "<group>"; };
 		18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANNewPostCell.m; sourceTree = "<group>"; };
+		18D447931C7C5ECB0078A7F7 /* ANVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideoCell.h; sourceTree = "<group>"; };
+		18D447941C7C5ECB0078A7F7 /* ANVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideoCell.m; sourceTree = "<group>"; };
 		18D84FA91C67540D0090BF78 /* ANPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostCell.h; sourceTree = "<group>"; };
 		18D84FAA1C67540D0090BF78 /* ANPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCell.m; sourceTree = "<group>"; };
 		18E8D8581C68896400C1204F /* ANPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhoto.h; sourceTree = "<group>"; };
@@ -303,6 +309,8 @@
 				185571491C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m */,
 				18153D431C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.h */,
 				18153D441C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.m */,
+				183BA6D31C7C4DBD0038FF74 /* ANVideosViewController.h */,
+				183BA6D41C7C4DBD0038FF74 /* ANVideosViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -334,6 +342,8 @@
 				18D84FAA1C67540D0090BF78 /* ANPostCell.m */,
 				18639B841C6F3EA4008B6632 /* ANMessageTableViewCell.h */,
 				18639B851C6F3EA4008B6632 /* ANMessageTableViewCell.m */,
+				18D447931C7C5ECB0078A7F7 /* ANVideoCell.h */,
+				18D447941C7C5ECB0078A7F7 /* ANVideoCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -534,7 +544,9 @@
 				18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */,
 				18038CD01C71FE7900A33F3C /* ANPostCommentsViewController.m in Sources */,
 				1855714A1C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m in Sources */,
+				18D447951C7C5ECB0078A7F7 /* ANVideoCell.m in Sources */,
 				18AB7AC91C7B5F8200F3B32E /* ANVideo.m in Sources */,
+				183BA6D51C7C4DBD0038FF74 /* ANVideosViewController.m in Sources */,
 				1804049D1C6630D000876FFE /* ANPost.m in Sources */,
 				18639B861C6F3EA4008B6632 /* ANMessageTableViewCell.m in Sources */,
 				18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */,

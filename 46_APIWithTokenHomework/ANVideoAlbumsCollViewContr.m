@@ -12,6 +12,8 @@
 #import "ANVideoAlbumCVCell.h"
 #import "UIImageView+AFNetworking.h"
 
+#import "ANVideosViewController.h"
+
 
 @interface ANVideoAlbumsCollViewContr ()
 
@@ -36,14 +38,6 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     self.videoAlbumsArray = [NSMutableArray array];
     self.loadingData = YES;
     
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Register cell classes
-//    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
-//    [self.collectionView registerClass:[ANVideoAlbumCVCell class] forCellWithReuseIdentifier:reuseIdentifier];
-
-    // Do any additional setup after loading the view.
     
     [self getAlbumsFromServer];
 }
@@ -51,6 +45,29 @@ static NSString * const reuseIdentifier = @"videoCVCell";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - Actions
+
+- (void) actionCellTapped:(UITapGestureRecognizer*) recognizer {
+    
+    
+    NSLog(@"TAP WORKS!!");
+    
+    ANVideoAlbumCVCell* clickedCell = (ANVideoAlbumCVCell*)recognizer.view;
+    
+    NSIndexPath* clickedIndexPath = [self.collectionView indexPathForCell:clickedCell];
+    
+    ANVideoAlbum* clickedAlbum = [self.videoAlbumsArray objectAtIndex:clickedIndexPath.row];
+    
+    ANVideosViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANVideosViewController"];
+    
+    vc.videoAlbum = clickedAlbum;
+    
+    [self.navigationController pushViewController:vc animated:YES];
+    
+    
 }
 
 
@@ -107,6 +124,11 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     videoAlbumCell.dateLabel.text = [NSString stringWithFormat:@"Updated on %@", videoAlbum.date];
 
     [videoAlbumCell.albumImageView setImageWithURL:videoAlbum.albumThumbImageURL];
+    
+//    videoAlbumCell.albumImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionCellTapped:)];
+    
+    [videoAlbumCell addGestureRecognizer:tapGesture];
     
     
     return videoAlbumCell;

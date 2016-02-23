@@ -18,18 +18,14 @@
         
         self.videoID = [[responseObject objectForKey:@"id"] stringValue];
         self.title = [responseObject objectForKey:@"title"];
-        
-        self.duration = [[responseObject objectForKey:@"duration"] stringValue];
-
+ 
         self.videoDescription = [responseObject objectForKey:@"description"];
 
-        NSDateFormatter *dateWithFormat = [[NSDateFormatter alloc] init];
-        [dateWithFormat setDateFormat:@"dd.MM.yyyy HH:mm"];
+        NSInteger rawDuration = [[responseObject objectForKey:@"duration"] integerValue];
+        self.duration = [self processDuration:rawDuration];
         
         NSTimeInterval rawDate = [[responseObject objectForKey:@"date"] intValue];
-        NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:rawDate];
-        
-        self.date = [dateWithFormat stringFromDate:dateValue];
+        self.date = [self processDate:rawDate];
 
         self.videoPlayerURLString = [responseObject objectForKey:@"player"];
         
@@ -41,7 +37,7 @@
         self.views = [[responseObject objectForKey:@"views"] stringValue];
         self.comments = [[responseObject objectForKey:@"comments"] stringValue];
 
-        NSString* urlString = [responseObject objectForKey:@"photo_320"];
+        NSString* urlString = [responseObject objectForKey:@"photo_130"];
         
         if (urlString) {
             self.videoThumbImageURL = [NSURL URLWithString:urlString];
@@ -51,6 +47,34 @@
     }
     return self;
     
+}
+
+
+- (NSString*) processDate:(NSTimeInterval) rawDate {
+    
+    NSDateFormatter *dateWithFormat = [[NSDateFormatter alloc] init];
+    [dateWithFormat setDateFormat:@"dd.MM.yyyy HH:mm"];
+    
+    NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:rawDate];
+    
+    return [dateWithFormat stringFromDate:dateValue];
+    
+}
+
+- (NSString*) processDuration:(NSInteger) rawTime {
+    
+    NSUInteger h = rawTime / 3600;
+    NSUInteger m = (rawTime / 60) % 60;
+    NSUInteger s = rawTime % 60;
+    
+    NSString* processedTime;
+    if (rawTime < 3600) {
+        processedTime = [NSString stringWithFormat:@"%02lu:%02lu",(unsigned long)m, (unsigned long)s];
+    } else {
+        processedTime = [NSString stringWithFormat:@"%lu:%02lu:%02lu", (unsigned long)h, (unsigned long)m, (unsigned long)s];;
+    }
+
+    return processedTime;
 }
 
 

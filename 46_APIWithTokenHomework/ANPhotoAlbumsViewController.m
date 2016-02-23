@@ -38,6 +38,7 @@ static NSString* myVKAccountID = @"21743772";
     
     self.loadingData = YES;
     
+    
     [self getAlbumsFromServer];
     
 }
