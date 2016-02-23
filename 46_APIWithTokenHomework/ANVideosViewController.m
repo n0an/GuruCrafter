@@ -13,6 +13,7 @@
 #import "UIImageView+AFNetworking.h"
 
 #import "ANVideoCell.h"
+#import "ANVideoPlayerViewController.h"
 
 @interface ANVideosViewController () <UIScrollViewDelegate>
 
@@ -193,6 +194,26 @@ static NSString* myVKAccountID = @"21743772";
     }
 }
 
+
+#pragma mark - Segue
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showVideo"]) {
+        
+        NSIndexPath* selectedIndexPath = [self.tableView indexPathForSelectedRow];
+//        NSIndexPath* selectedIndexPath = [self.tableView indexPathsForSelectedRows][0];
+        
+        ANVideo* selectedVideo = [self.videosArray objectAtIndex:selectedIndexPath.row];
+        
+        NSURL* videoURL = [NSURL URLWithString:selectedVideo.videoPlayerURLString];
+        
+        
+        ANVideoPlayerViewController* vc = segue.destinationViewController;
+        vc.videoURL = videoURL;
+        
+    }
+}
 
 
 @end

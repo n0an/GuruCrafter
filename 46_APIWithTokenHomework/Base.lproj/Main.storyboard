@@ -237,7 +237,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5bp-Qw-byE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-96" y="96"/>
+            <point key="canvasLocation" x="-424" y="96"/>
         </scene>
         <!--Post Comments View Controller-->
         <scene sceneID="Agh-wr-HMp">
@@ -586,7 +586,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RkQ-Jj-iXm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="692" y="891"/>
+            <point key="canvasLocation" x="1416" y="96"/>
         </scene>
         <!--Photo Albums View Controller-->
         <scene sceneID="x7p-2h-Egw">
@@ -723,7 +723,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9bj-zT-T3H" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-96" y="986"/>
+            <point key="canvasLocation" x="-232" y="908"/>
         </scene>
         <!--Adding Post-->
         <scene sceneID="Nmw-No-GIP">
@@ -788,7 +788,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4uM-20-FJZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="692" y="96"/>
+            <point key="canvasLocation" x="1416" y="832"/>
         </scene>
         <!--Videos View Controller-->
         <scene sceneID="w4L-uJ-YNg">
@@ -871,7 +871,7 @@
                                                         <constraint firstAttribute="width" constant="172" id="due-1n-BCK"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="TamilSangamMN" family="Tamil Sangam MN" pointSize="15"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                     <variation key="default">
                                                         <mask key="constraints">
@@ -927,6 +927,7 @@
                                             <outlet property="titleLabel" destination="9Fb-L3-fdg" id="g2k-5T-yWB"/>
                                             <outlet property="videoThumbImageVIew" destination="J3R-ia-3hP" id="hdu-cQ-ZFt"/>
                                             <outlet property="viewsCountLabel" destination="UKI-3n-s6U" id="6dl-2y-uCc"/>
+                                            <segue destination="Zqm-Hl-HP9" kind="presentation" identifier="showVideo" id="0Uv-vf-IIz"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -950,7 +951,15 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PTd-DC-81n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-96" y="-1386"/>
+            <point key="canvasLocation" x="-296" y="-1418"/>
+        </scene>
+        <!--AV Player View Controller-->
+        <scene sceneID="bFx-kV-9z8">
+            <objects>
+                <avPlayerViewController videoGravity="AVLayerVideoGravityResizeAspect" id="Zqm-Hl-HP9" customClass="ANVideoPlayerViewController" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="z4v-go-gs8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="592" y="-1418"/>
         </scene>
         <!--Video Albums Coll View Contr-->
         <scene sceneID="Gpg-0I-4AT">
@@ -1046,7 +1055,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PK5-2B-Qrt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-96" y="-675"/>
+            <point key="canvasLocation" x="-296" y="-675"/>
         </scene>
         <!--Messages View Controller-->
         <scene sceneID="qIM-RU-eLU">
@@ -1255,7 +1264,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vks-3G-Si1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="692" y="-675"/>
+            <point key="canvasLocation" x="592" y="-675"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="MSa-Qm-GZ5">
@@ -1277,7 +1286,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tAE-G7-msG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-916" y="96"/>
+            <point key="canvasLocation" x="-1316" y="96"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="sbV-Vn-taa">
@@ -1318,7 +1327,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ld1-c3-so0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1416" y="891"/>
+            <point key="canvasLocation" x="592" y="96"/>
         </scene>
         <!--Photos View Controller-->
         <scene sceneID="l62-QZ-YTS">
@@ -1405,7 +1414,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SrR-nf-09t" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-733" y="986"/>
+            <point key="canvasLocation" x="592" y="908"/>
         </scene>
         <!--Photo Details View Controller-->
         <scene sceneID="r4g-Kg-IpT">
@@ -1510,7 +1519,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iXA-BB-Tvf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-733" y="1740"/>
+            <point key="canvasLocation" x="592" y="1628"/>
         </scene>
     </scenes>
     <resources>
