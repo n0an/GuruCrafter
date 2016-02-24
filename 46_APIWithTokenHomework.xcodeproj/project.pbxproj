@@ -24,8 +24,11 @@
 		180404961C66300200876FFE /* ANLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404951C66300200876FFE /* ANLoginViewController.m */; };
 		1804049A1C66309100876FFE /* ANAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 180404991C66309100876FFE /* ANAccessToken.m */; };
 		1804049D1C6630D000876FFE /* ANPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804049C1C6630D000876FFE /* ANPost.m */; };
+		18153D451C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.m in Sources */ = {isa = PBXBuildFile; fileRef = 18153D441C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.m */; };
+		18153D481C7B6C960063FD81 /* ANVideoAlbumCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18153D471C7B6C960063FD81 /* ANVideoAlbumCVCell.m */; };
 		181986031C79DD3000CE328C /* ANPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */; };
 		181986061C79E26800CE328C /* ANPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986051C79E26800CE328C /* ANPhotosViewController.m */; };
+		183BA6D51C7C4DBD0038FF74 /* ANVideosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183BA6D41C7C4DBD0038FF74 /* ANVideosViewController.m */; };
 		184818381C68B050005B4F1D /* ANGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 184818371C68B050005B4F1D /* ANGroup.m */; };
 		1855714A1C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185571491C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m */; };
 		185AB5AF1C7B03D7002F36E5 /* ANParsedUploadServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185AB5AE1C7B03D7002F36E5 /* ANParsedUploadServer.m */; };
@@ -36,8 +39,12 @@
 		1878CB751C78EB2E005D5AF4 /* ANPhotoAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1878CB741C78EB2E005D5AF4 /* ANPhotoAlbumsViewController.m */; };
 		1894D5591C78A4DD00285B12 /* ANPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1894D5581C78A4DD00285B12 /* ANPhotoAlbum.m */; };
 		1894D55C1C78AB1D00285B12 /* ANUploadServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1894D55B1C78AB1D00285B12 /* ANUploadServer.m */; };
+		18AB7AC61C7B58E200F3B32E /* ANVideoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AB7AC51C7B58E200F3B32E /* ANVideoAlbum.m */; };
+		18AB7AC91C7B5F8200F3B32E /* ANVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AB7AC81C7B5F8200F3B32E /* ANVideo.m */; };
 		18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */; };
 		18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */; };
+		18D3CE5B1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D3CE5A1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m */; };
+		18D447951C7C5ECB0078A7F7 /* ANVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D447941C7C5ECB0078A7F7 /* ANVideoCell.m */; };
 		18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D84FAA1C67540D0090BF78 /* ANPostCell.m */; };
 		18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8591C68896400C1204F /* ANPhoto.m */; };
 		18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F7DA581C70CEC90027A836 /* ANNewMessageCell.m */; };
@@ -96,10 +103,16 @@
 		180404991C66309100876FFE /* ANAccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAccessToken.m; sourceTree = "<group>"; };
 		1804049B1C6630D000876FFE /* ANPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPost.h; sourceTree = "<group>"; };
 		1804049C1C6630D000876FFE /* ANPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPost.m; sourceTree = "<group>"; };
+		18153D431C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideoAlbumsCollViewContr.h; sourceTree = "<group>"; };
+		18153D441C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideoAlbumsCollViewContr.m; sourceTree = "<group>"; };
+		18153D461C7B6C960063FD81 /* ANVideoAlbumCVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideoAlbumCVCell.h; sourceTree = "<group>"; };
+		18153D471C7B6C960063FD81 /* ANVideoAlbumCVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideoAlbumCVCell.m; sourceTree = "<group>"; };
 		181986011C79DD3000CE328C /* ANPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoCollectionViewCell.h; sourceTree = "<group>"; };
 		181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoCollectionViewCell.m; sourceTree = "<group>"; };
 		181986041C79E26800CE328C /* ANPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotosViewController.h; sourceTree = "<group>"; };
 		181986051C79E26800CE328C /* ANPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotosViewController.m; sourceTree = "<group>"; };
+		183BA6D31C7C4DBD0038FF74 /* ANVideosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideosViewController.h; sourceTree = "<group>"; };
+		183BA6D41C7C4DBD0038FF74 /* ANVideosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideosViewController.m; sourceTree = "<group>"; };
 		184818361C68B050005B4F1D /* ANGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANGroup.h; sourceTree = "<group>"; };
 		184818371C68B050005B4F1D /* ANGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANGroup.m; sourceTree = "<group>"; };
 		185571481C7A123E00B5C8F4 /* ANPhotoDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoDetailsViewController.h; sourceTree = "<group>"; };
@@ -120,10 +133,18 @@
 		1894D5581C78A4DD00285B12 /* ANPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoAlbum.m; sourceTree = "<group>"; };
 		1894D55A1C78AB1D00285B12 /* ANUploadServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANUploadServer.h; sourceTree = "<group>"; };
 		1894D55B1C78AB1D00285B12 /* ANUploadServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANUploadServer.m; sourceTree = "<group>"; };
+		18AB7AC41C7B58E200F3B32E /* ANVideoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideoAlbum.h; sourceTree = "<group>"; };
+		18AB7AC51C7B58E200F3B32E /* ANVideoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideoAlbum.m; sourceTree = "<group>"; };
+		18AB7AC71C7B5F8200F3B32E /* ANVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideo.h; sourceTree = "<group>"; };
+		18AB7AC81C7B5F8200F3B32E /* ANVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideo.m; sourceTree = "<group>"; };
 		18B1CF6B1C68E635008610CA /* ANAddPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAddPostViewController.h; sourceTree = "<group>"; };
 		18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddPostViewController.m; sourceTree = "<group>"; };
 		18C779A91C71D7DB006DAE38 /* ANNewPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANNewPostCell.h; sourceTree = "<group>"; };
 		18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANNewPostCell.m; sourceTree = "<group>"; };
+		18D3CE591C7C7CD900C09C5D /* ANVideoPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideoPlayerViewController.h; sourceTree = "<group>"; };
+		18D3CE5A1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideoPlayerViewController.m; sourceTree = "<group>"; };
+		18D447931C7C5ECB0078A7F7 /* ANVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideoCell.h; sourceTree = "<group>"; };
+		18D447941C7C5ECB0078A7F7 /* ANVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideoCell.m; sourceTree = "<group>"; };
 		18D84FA91C67540D0090BF78 /* ANPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostCell.h; sourceTree = "<group>"; };
 		18D84FAA1C67540D0090BF78 /* ANPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostCell.m; sourceTree = "<group>"; };
 		18E8D8581C68896400C1204F /* ANPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhoto.h; sourceTree = "<group>"; };
@@ -262,6 +283,10 @@
 				1894D55B1C78AB1D00285B12 /* ANUploadServer.m */,
 				185AB5AD1C7B03D7002F36E5 /* ANParsedUploadServer.h */,
 				185AB5AE1C7B03D7002F36E5 /* ANParsedUploadServer.m */,
+				18AB7AC41C7B58E200F3B32E /* ANVideoAlbum.h */,
+				18AB7AC51C7B58E200F3B32E /* ANVideoAlbum.m */,
+				18AB7AC71C7B5F8200F3B32E /* ANVideo.h */,
+				18AB7AC81C7B5F8200F3B32E /* ANVideo.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -285,6 +310,12 @@
 				181986051C79E26800CE328C /* ANPhotosViewController.m */,
 				185571481C7A123E00B5C8F4 /* ANPhotoDetailsViewController.h */,
 				185571491C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m */,
+				18153D431C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.h */,
+				18153D441C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.m */,
+				183BA6D31C7C4DBD0038FF74 /* ANVideosViewController.h */,
+				183BA6D41C7C4DBD0038FF74 /* ANVideosViewController.m */,
+				18D3CE591C7C7CD900C09C5D /* ANVideoPlayerViewController.h */,
+				18D3CE5A1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -296,6 +327,8 @@
 				1878CB701C78EA29005D5AF4 /* ANPhotoAlbumCellCollectionViewCell.m */,
 				181986011C79DD3000CE328C /* ANPhotoCollectionViewCell.h */,
 				181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */,
+				18153D461C7B6C960063FD81 /* ANVideoAlbumCVCell.h */,
+				18153D471C7B6C960063FD81 /* ANVideoAlbumCVCell.m */,
 			);
 			name = "CollectionView Cells";
 			sourceTree = "<group>";
@@ -314,6 +347,8 @@
 				18D84FAA1C67540D0090BF78 /* ANPostCell.m */,
 				18639B841C6F3EA4008B6632 /* ANMessageTableViewCell.h */,
 				18639B851C6F3EA4008B6632 /* ANMessageTableViewCell.m */,
+				18D447931C7C5ECB0078A7F7 /* ANVideoCell.h */,
+				18D447941C7C5ECB0078A7F7 /* ANVideoCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -512,18 +547,25 @@
 			files = (
 				1878CB711C78EA29005D5AF4 /* ANPhotoAlbumCellCollectionViewCell.m in Sources */,
 				18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */,
+				18D3CE5B1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m in Sources */,
 				18038CD01C71FE7900A33F3C /* ANPostCommentsViewController.m in Sources */,
 				1855714A1C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m in Sources */,
+				18D447951C7C5ECB0078A7F7 /* ANVideoCell.m in Sources */,
+				18AB7AC91C7B5F8200F3B32E /* ANVideo.m in Sources */,
+				183BA6D51C7C4DBD0038FF74 /* ANVideosViewController.m in Sources */,
 				1804049D1C6630D000876FFE /* ANPost.m in Sources */,
 				18639B861C6F3EA4008B6632 /* ANMessageTableViewCell.m in Sources */,
 				18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */,
 				180404961C66300200876FFE /* ANLoginViewController.m in Sources */,
 				180404241C662A6000876FFE /* ViewController.m in Sources */,
+				18153D481C7B6C960063FD81 /* ANVideoAlbumCVCell.m in Sources */,
 				181986031C79DD3000CE328C /* ANPhotoCollectionViewCell.m in Sources */,
 				1894D5591C78A4DD00285B12 /* ANPhotoAlbum.m in Sources */,
+				18153D451C7B63B30063FD81 /* ANVideoAlbumsCollViewContr.m in Sources */,
 				181986061C79E26800CE328C /* ANPhotosViewController.m in Sources */,
 				1804049A1C66309100876FFE /* ANAccessToken.m in Sources */,
 				18038CD31C72013D00A33F3C /* ANCommentCell.m in Sources */,
+				18AB7AC61C7B58E200F3B32E /* ANVideoAlbum.m in Sources */,
 				1804048C1C662F2C00876FFE /* ANServerObject.m in Sources */,
 				18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */,
 				18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */,

@@ -129,39 +129,7 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-- (IBAction)actionCameraButtonPressed:(UIBarButtonItem*)sender {
-    
-    [[ANServerManager sharedManager] getGroupAlbums:iosDevCourseGroupID
-                                         withOffset:0
-                                              count:0
-          onSuccess:^(NSArray *photoAlbums) {
-              
-              NSLog(@"actionCameraButtonPressed");
-              for (ANPhotoAlbum* album in photoAlbums) {
-                  NSLog(@"photoAlbum id = %@, title = %@, size = %@", album.albumID, album.albumTitle, album.albumSize);
-                  
-                  [[ANServerManager sharedManager] getUploadServerForGroupID:iosDevCourseGroupID
-                         forPhotoAlbumID:album.albumID
-                               onSuccess:^(ANUploadServer* uploadServer) {
-                                   
-                                   NSLog(@"uploadServer = %@", uploadServer.uploadURL);
-                                   
-                               }
-                   
-                               onFailure:^(NSError *error, NSInteger statusCode) {
-                                   
-                               }];
-                  
-              }
-              
-              
-              
-              
-          }
-          onFailure:^(NSError *error, NSInteger statusCode) {
-              
-          }];
-}
+
 
 
 #pragma mark - API
@@ -211,13 +179,7 @@ static NSString* myVKAccountID = @"21743772";
         
     }
     
-    
-    
-    
-    
-    
-    
-    
+ 
 }
 
 
@@ -303,7 +265,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 - (void) deleteLikeForPost:(ANPost*) post {
-    
     
     [[ANServerManager sharedManager]
      deleteLikeForItemType:@"post"
@@ -498,9 +459,6 @@ static NSString* myVKAccountID = @"21743772";
 
 
 #pragma mark - Gestures
-
-
-
 
 - (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
     
