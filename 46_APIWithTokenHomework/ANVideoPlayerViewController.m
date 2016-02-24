@@ -22,8 +22,11 @@
     
     NSLog(@"ANVideoPlayerViewController videoPlayerURLString = %@", self.selectedVideo.videoPlayerURLString);
     
+    NSString* newString = [self.selectedVideo.videoPlayerURLString stringByAppendingString:@"&showinfo=0"];
+    
+    NSURL* urlVideo = [NSURL URLWithString:newString];
 
-    NSURL* urlVideo = [NSURL URLWithString:self.selectedVideo.videoPlayerURLString];
+//    NSURL* urlVideo = [NSURL URLWithString:self.selectedVideo.videoPlayerURLString];
     
     NSURLRequest* requestToYoutube = [NSURLRequest requestWithURL:urlVideo];
     
@@ -34,9 +37,6 @@
     self.likesCountLabel.text = self.selectedVideo.likesCount;
     self.viewsCountLabel.text = self.selectedVideo.views;
     self.dateLabel.text = [NSString stringWithFormat:@"Added on %@", self.selectedVideo.date];
-    
-    
-    
     
     
     UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(actionCancelPressed:)];
