@@ -18,9 +18,11 @@
 #import "ANPhotoAddingViewController.h"
 
 
-@interface ANPhotosViewController () <UIScrollViewDelegate>
+@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
+
+@property (strong, nonatomic) UIRefreshControl* refreshControl;
 
 @end
 
@@ -37,6 +39,12 @@ static NSString* myVKAccountID = @"21743772";
     self.photosArray = [NSMutableArray array];
     
     self.loadingData = YES;
+    
+    UIRefreshControl* refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
+    [self.collectionView addSubview:refreshControl];
+    
+    self.refreshControl = refreshControl;
     
     [self getPhotosFromServer];
 }
@@ -74,6 +82,43 @@ static NSString* myVKAccountID = @"21743772";
              }];
     
 }
+
+
+
+- (void) refreshPhotos {
+    
+    if (self.loadingData == NO) {
+        self.loadingData = YES;
+        
+        
+        [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
+                forAlbumID:self.albumID
+                withOffset:0
+                     count:MAX(requestCount, [self.photosArray count])
+                 onSuccess:^(NSArray *photos) {
+                     
+                     if ([photos count] > 0) {
+                         [self.photosArray removeAllObjects];
+                         [self.photosArray addObjectsFromArray:photos];
+                         
+                         [self.collectionView reloadData];
+                     }
+                     
+                     self.loadingData = NO;
+                     [self.refreshControl endRefreshing];
+                     
+                     
+                 }
+                 onFailure:^(NSError *error, NSInteger statusCode) {
+                     NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+
+                 }];
+        
+    }
+    
+    
+}
+
 
 
 
@@ -141,8 +186,17 @@ static NSString* myVKAccountID = @"21743772";
         ANPhotoAddingViewController* vc = segue.destinationViewController;
         
         vc.albumID = self.albumID;
+        vc.delegate = self;
         
     }
+}
+
+
+#pragma mark - +++ ANPhotoAddingDelegate +++
+
+- (void) photoDidFinishUploading {
+
+    [self refreshPhotos];
 }
 
 

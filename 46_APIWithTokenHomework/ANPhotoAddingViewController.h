@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ANPhotoAddingDelegate;
+
+
 @interface ANPhotoAddingViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* uploadBarButton;
@@ -19,11 +22,22 @@
 
 @property (strong, nonatomic) NSString* albumID;
 
+@property (weak, nonatomic) id <ANPhotoAddingDelegate> delegate;
+
 
 - (IBAction)actionCameraButtonPressed:(UIBarButtonItem*)sender;
 - (IBAction)actionFolderButtonPressed:(UIBarButtonItem*)sender;
 - (IBAction)actionUploadButtonPressed:(UIBarButtonItem*)sender;
 
 
+
+@end
+
+
+@protocol ANPhotoAddingDelegate <NSObject>
+
+@required
+
+- (void) photoDidFinishUploading;
 
 @end

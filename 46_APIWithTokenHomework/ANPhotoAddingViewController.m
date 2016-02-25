@@ -112,7 +112,6 @@ static NSString* myVKAccountID = @"21743772";
     self.waitView.hidden = NO;
     
     
-    
 }
 
 
@@ -167,10 +166,11 @@ static NSString* myVKAccountID = @"21743772";
                                                              
                                                              self.waitView.hidden = YES;
 
-//                                                             self.photoPreviewImageView.image = nil;
                                                              self.hintLabel.hidden = NO;
                                                              self.hintLabel.text = @"Photo uploaded successfully!\n You can upload more photos now.";
                                                              self.uploadBarButton.enabled = NO;
+                                                             
+                                                             [self.delegate photoDidFinishUploading];
                                                              
                                                          }
                                                          onFailure:^(NSError *error, NSInteger statusCode) {
@@ -178,9 +178,6 @@ static NSString* myVKAccountID = @"21743772";
                                                              NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
                                                          }];
 }
-
-
-
 
 
 
