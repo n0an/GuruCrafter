@@ -15,13 +15,14 @@
 #import "ANPhotoDetailsViewController.h"
 #import "ANUploadServer.h"
 #import "ANParsedUploadServer.h"
+#import "ANPhotoAddingViewController.h"
 
 
-@interface ANPhotosViewController () <UIScrollViewDelegate, UINavigationControllerDelegate,UIImagePickerControllerDelegate>
+@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
 
-@property (strong, nonatomic) UIImage* selectedImage;
+@property (strong, nonatomic) UIRefreshControl* refreshControl;
 
 @end
 
@@ -39,6 +40,12 @@ static NSString* myVKAccountID = @"21743772";
     
     self.loadingData = YES;
     
+    UIRefreshControl* refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
+    [self.collectionView addSubview:refreshControl];
+    
+    self.refreshControl = refreshControl;
+    
     [self getPhotosFromServer];
 }
 
@@ -47,25 +54,6 @@ static NSString* myVKAccountID = @"21743772";
     // Dispose of any resources that can be recreated.
 }
 
-
-#pragma mark - Actions
-
-- (IBAction)actionAddButtonPressed:(UIBarButtonItem*)sender {
-    
-    NSLog(@"actionAddButtonPressed");
-    
-    UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
-    
-    imagePicker.delegate = self;
-    
-    imagePicker.allowsEditing = YES;
-    
-    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    
-    [self presentViewController:imagePicker animated:YES completion:nil];
-
-    
-}
 
 
 #pragma mark - API
@@ -95,59 +83,42 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-#pragma mark -- API methods for uploading photos to group album
-/**
- 1. Getting Upload Server - getting URL of server
- 2. Getting ParsedServer parameters using URL - getting Server ID, Hash, Photos_list string, Album ID and Group ID
- 3. Trigger Upload using ParsedServer
- */
 
-- (void) uploadSelectedImageToServer {
+
+- (void) refreshPhotos {
     
-    NSData* selectedImageData = UIImageJPEGRepresentation(self.selectedImage, 1.0f);
+    if (self.loadingData == NO) {
+        self.loadingData = YES;
+        
+        
+        [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
+                forAlbumID:self.albumID
+                withOffset:0
+                     count:MAX(requestCount, [self.photosArray count])
+                 onSuccess:^(NSArray *photos) {
+                     
+                     if ([photos count] > 0) {
+                         [self.photosArray removeAllObjects];
+                         [self.photosArray addObjectsFromArray:photos];
+                         
+                         [self.collectionView reloadData];
+                     }
+                     
+                     self.loadingData = NO;
+                     [self.refreshControl endRefreshing];
+                     
+                     
+                 }
+                 onFailure:^(NSError *error, NSInteger statusCode) {
+                     NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+
+                 }];
+        
+    }
     
-    [[ANServerManager sharedManager] getUploadServerForGroupID:iosDevCourseGroupID
-       forPhotoAlbumID:self.albumID
-             onSuccess:^(ANUploadServer *uploadServer) {
-                 
-                 [self getParsedUploadServerForUploadServer:uploadServer andImageData:selectedImageData];
-                 
-             }
-             onFailure:^(NSError *error, NSInteger statusCode) {
-                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-             }];
     
 }
 
-- (void) getParsedUploadServerForUploadServer:(ANUploadServer*) uploadServer andImageData:(NSData*)imageData {
-    
-    [[ANServerManager sharedManager] getUploadJSONStringForServerURL:uploadServer.uploadURL
-        fileToUpload:imageData
-           onSuccess:^(ANParsedUploadServer *parsedUploadServer) {
-               
-               NSLog(@"parsedUploadServer = %@", parsedUploadServer);
-               
-               [self uploadPhotosToServer:parsedUploadServer];
-               
-           } onFailure:^(NSError *error, NSInteger statusCode) {
-               NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-           }];
-
-}
-
-
-- (void) uploadPhotosToServer:(ANParsedUploadServer*) parsedUploadServer {
-    [[ANServerManager sharedManager] uploadPhotosToGroupWithServer:parsedUploadServer
-         onSuccess:^(id result) {
-             
-             NSLog(@"result = %@", result);
-
-         }
-         onFailure:^(NSError *error, NSInteger statusCode) {
-             
-             NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-         }];
-}
 
 
 
@@ -194,28 +165,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-#pragma mark - UIImagePickerControllerDelegate
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    
-    NSLog(@"didFinishPickingMediaWithInfo = %@", info);
-    
-    self.selectedImage = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-    
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    
-    [self uploadSelectedImageToServer];
-    
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    NSLog(@"imagePickerControllerDidCancel");
-    
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 
     if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
@@ -226,6 +175,28 @@ static NSString* myVKAccountID = @"21743772";
             [self getPhotosFromServer];
         }
     }
+}
+
+
+#pragma mark - Segue
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"addNewPhoto"]) {
+        
+        ANPhotoAddingViewController* vc = segue.destinationViewController;
+        
+        vc.albumID = self.albumID;
+        vc.delegate = self;
+        
+    }
+}
+
+
+#pragma mark - +++ ANPhotoAddingDelegate +++
+
+- (void) photoDidFinishUploading {
+
+    [self refreshPhotos];
 }
 
 
