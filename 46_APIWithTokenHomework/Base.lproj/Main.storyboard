@@ -1597,14 +1597,32 @@
                                     </mask>
                                 </variation>
                             </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="02e-eZ-IBN">
+                                <rect key="frame" x="240" y="259" width="120" height="37"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="rja-0v-PY6">
+                                        <rect key="frame" x="0.0" y="0.0" width="37" height="37"/>
+                                    </activityIndicatorView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wait Please" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jhh-oU-cGb">
+                                        <rect key="frame" x="37" y="0.0" width="83" height="37"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="02e-eZ-IBN" firstAttribute="centerX" secondItem="ch0-S0-YLV" secondAttribute="centerX" id="3Mz-pH-ue0"/>
+                            <constraint firstItem="02e-eZ-IBN" firstAttribute="centerY" secondItem="j9q-h1-LKd" secondAttribute="centerY" id="45n-TC-m5N"/>
                             <constraint firstAttribute="trailing" secondItem="9Ie-FX-ibl" secondAttribute="trailing" id="Bfq-ty-RFP"/>
                             <constraint firstItem="w2Z-5X-FfV" firstAttribute="top" secondItem="9Ie-FX-ibl" secondAttribute="bottom" id="J6z-Zo-hee"/>
+                            <constraint firstItem="02e-eZ-IBN" firstAttribute="centerX" secondItem="j9q-h1-LKd" secondAttribute="centerX" id="L3m-Uu-eEm"/>
                             <constraint firstItem="ch0-S0-YLV" firstAttribute="leading" secondItem="j9q-h1-LKd" secondAttribute="leading" id="Oy2-xD-atu"/>
                             <constraint firstItem="97c-Gk-wGP" firstAttribute="centerX" secondItem="j9q-h1-LKd" secondAttribute="centerX" id="ZaL-Mt-eLX"/>
                             <constraint firstItem="9Ie-FX-ibl" firstAttribute="top" secondItem="ch0-S0-YLV" secondAttribute="bottom" id="ahs-0f-SZf"/>
+                            <constraint firstItem="ch0-S0-YLV" firstAttribute="top" secondItem="02e-eZ-IBN" secondAttribute="bottom" constant="-116" id="bv7-RK-97U"/>
                             <constraint firstItem="ch0-S0-YLV" firstAttribute="top" secondItem="j9q-h1-LKd" secondAttribute="top" id="k0z-Bl-hI5"/>
                             <constraint firstItem="97c-Gk-wGP" firstAttribute="centerY" secondItem="j9q-h1-LKd" secondAttribute="centerY" id="ltB-ni-iSM"/>
                             <constraint firstItem="97c-Gk-wGP" firstAttribute="centerX" secondItem="j9q-h1-LKd" secondAttribute="centerX" id="oAl-bP-frd"/>
@@ -1614,8 +1632,10 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="bv7-RK-97U"/>
                                 <exclude reference="ZaL-Mt-eLX"/>
                                 <exclude reference="xVf-11-jZ0"/>
+                                <exclude reference="3Mz-pH-ue0"/>
                             </mask>
                         </variation>
                     </view>
@@ -1627,9 +1647,11 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="cameraButton" destination="76y-Pd-ceO" id="NVF-kx-SdH"/>
                         <outlet property="hintLabel" destination="97c-Gk-wGP" id="gBI-sb-SyU"/>
                         <outlet property="photoPreviewImageView" destination="ch0-S0-YLV" id="gzI-Tp-oTW"/>
                         <outlet property="uploadBarButton" destination="mHV-v2-zQN" id="dFJ-ix-OhB"/>
+                        <outlet property="waitView" destination="02e-eZ-IBN" id="Ia0-B6-UDp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="isc-ty-u4p" userLabel="First Responder" sceneMemberID="firstResponder"/>

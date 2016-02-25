@@ -11,8 +11,11 @@
 @interface ANPhotoAddingViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* uploadBarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem* cameraButton;
 @property (weak, nonatomic) IBOutlet UIImageView* photoPreviewImageView;
 @property (weak, nonatomic) IBOutlet UILabel* hintLabel;
+
+@property (weak, nonatomic) IBOutlet UIStackView* waitView;
 
 @property (strong, nonatomic) NSString* albumID;
 

@@ -26,8 +26,17 @@ static NSString* myVKAccountID = @"21743772";
     
     NSLog(@"ANPhotoAddingViewController self.albumID = %@", self.albumID);
     
+    self.waitView.hidden = YES;
+    
     self.uploadBarButton.enabled = NO;
     self.hintLabel.hidden = NO;
+    
+    if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        self.cameraButton.enabled = NO;
+        [self showAlertNoCameraDeviceFound];
+    }
+    
+    
     
 }
 
@@ -37,12 +46,44 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+#pragma mark - Helper Methods
+
+- (void) showAlertNoCameraDeviceFound {
+    
+    UIAlertController* alertNoCamera =
+    [UIAlertController alertControllerWithTitle:@"Error"
+                                        message:@"Device has no camera"
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* yesAction =
+    [UIAlertAction actionWithTitle:@"OK"
+                             style:UIAlertActionStyleDefault
+                           handler:^(UIAlertAction * _Nonnull action) {
+                               [alertNoCamera dismissViewControllerAnimated:YES completion:nil];
+                           }];
+    
+    [alertNoCamera addAction:yesAction];
+    
+    [self presentViewController:alertNoCamera animated:YES completion:nil];
+    
+    
+}
 
 
 #pragma mark - Actions
 
 - (IBAction)actionCameraButtonPressed:(UIBarButtonItem*)sender {
     NSLog(@"actionCameraButtonPressed");
+    
+    UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+    
+    imagePicker.delegate = self;
+    
+    imagePicker.allowsEditing = YES;
+    
+    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    
+    [self presentViewController:imagePicker animated:YES completion:nil];
     
     
 }
@@ -67,6 +108,8 @@ static NSString* myVKAccountID = @"21743772";
     
     [self uploadSelectedImageToServer];
 
+    self.photoPreviewImageView.image = nil;
+    self.waitView.hidden = NO;
     
     
     
@@ -75,7 +118,7 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
-#pragma mark -- API methods for uploading photos to group album
+#pragma mark - API methods for uploading photos to group album
 /**
  1. Getting Upload Server - getting URL of server
  2. Getting ParsedServer parameters using URL - getting Server ID, Hash, Photos_list string, Album ID and Group ID
@@ -122,8 +165,9 @@ static NSString* myVKAccountID = @"21743772";
                                                              
                                                              NSLog(@"result = %@", result);
                                                              
-                                                             
-                                                             self.photoPreviewImageView.image = nil;
+                                                             self.waitView.hidden = YES;
+
+//                                                             self.photoPreviewImageView.image = nil;
                                                              self.hintLabel.hidden = NO;
                                                              self.hintLabel.text = @"Photo uploaded successfully!\n You can upload more photos now.";
                                                              self.uploadBarButton.enabled = NO;
@@ -150,12 +194,13 @@ static NSString* myVKAccountID = @"21743772";
     
     self.selectedImage = [info objectForKey:@"UIImagePickerControllerEditedImage"];
     
+    if (self.selectedImage) {
+        self.photoPreviewImageView.image = self.selectedImage;
+        self.hintLabel.hidden = YES;
+        self.uploadBarButton.enabled = YES;
+    }
+    
     [picker dismissViewControllerAnimated:YES completion:nil];
-    
-    self.photoPreviewImageView.image = self.selectedImage;
-    self.hintLabel.hidden = YES;
-    self.uploadBarButton.enabled = YES;
-    
     
 }
 
