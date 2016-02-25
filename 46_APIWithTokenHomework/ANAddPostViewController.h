@@ -18,7 +18,7 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
 
-@property (strong, nonatomic) id <ANAddPostDelegate> delegate;
+@property (weak, nonatomic) id <ANAddPostDelegate> delegate;
 
 - (IBAction)actionSend:(UIBarButtonItem *)sender;
 - (IBAction)actionCancel:(UIBarButtonItem *)sender;
