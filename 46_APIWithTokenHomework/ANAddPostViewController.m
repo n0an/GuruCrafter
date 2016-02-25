@@ -22,7 +22,7 @@
     if ([self.postMessageTextView.text length] == 0) {
         self.sendButton.enabled = NO;
     }
-    
+    self.automaticallyAdjustsScrollViewInsets = NO;
     self.postMessageTextView.layer.cornerRadius = 10;
     
 }
