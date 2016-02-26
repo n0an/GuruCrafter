@@ -69,7 +69,9 @@ static NSString* myVKAccountID = @"21743772";
                  
                  if ([videos count] > 0) {
                      
-                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                     dispatch_queue_t highQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+                     
+                     dispatch_async(highQueue, ^{
                          [self.videosArray addObjectsFromArray:videos];
                          
                          NSMutableArray* newPaths = [NSMutableArray array];
@@ -78,7 +80,7 @@ static NSString* myVKAccountID = @"21743772";
                              [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
                          }
                          
-                         dispatch_sync(dispatch_get_main_queue(), ^{
+                         dispatch_async(dispatch_get_main_queue(), ^{
                              [self.tableView beginUpdates];
                              [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
                              [self.tableView endUpdates];
