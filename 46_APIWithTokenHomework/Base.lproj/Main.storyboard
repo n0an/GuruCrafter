@@ -618,13 +618,13 @@
                                                         <constraint firstAttribute="width" constant="50" id="k4k-ci-8Vg"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BvH-iZ-cIc">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="FirstName LastName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BvH-iZ-cIc">
                                                     <rect key="frame" x="66" y="8" width="526" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R1d-X8-DiQ">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="07 Feb 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R1d-X8-DiQ">
                                                     <rect key="frame" x="66" y="37" width="526" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -736,8 +736,8 @@
                                                     <exclude reference="VSg-dj-SY3"/>
                                                     <exclude reference="Qug-ka-H6C"/>
                                                     <exclude reference="f7o-22-e6B"/>
-                                                    <exclude reference="rWr-lO-U7s"/>
                                                     <exclude reference="1hz-Jy-7br"/>
+                                                    <exclude reference="rWr-lO-U7s"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
@@ -784,8 +784,8 @@
                                                     </constraints>
                                                     <variation key="default">
                                                         <mask key="constraints">
-                                                            <exclude reference="NtI-F4-WeF"/>
                                                             <exclude reference="FSb-Sp-y5a"/>
+                                                            <exclude reference="NtI-F4-WeF"/>
                                                         </mask>
                                                     </variation>
                                                 </imageView>
@@ -861,9 +861,9 @@
                                                 <mask key="constraints">
                                                     <exclude reference="e6a-b2-3Ih"/>
                                                     <exclude reference="8sL-YS-03Z"/>
-                                                    <exclude reference="sUO-El-nbJ"/>
-                                                    <exclude reference="ESD-Na-9Ca"/>
                                                     <exclude reference="52g-QQ-c40"/>
+                                                    <exclude reference="ESD-Na-9Ca"/>
+                                                    <exclude reference="sUO-El-nbJ"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
@@ -945,6 +945,7 @@
                         <outlet property="messageTextField" destination="tjG-Rq-ujY" id="lXU-WI-4Bq"/>
                         <outlet property="sendButton" destination="eAL-re-egK" id="75Q-Cb-Wpl"/>
                         <outlet property="tableView" destination="pWS-LS-tlJ" id="IcF-QW-1R0"/>
+                        <outlet property="toolBarView" destination="xuf-m0-VbV" id="aFV-Wg-LUI"/>
                         <outlet property="toolbarViewToBottomConstraint" destination="9y4-Ef-M9f" id="qOZ-Uy-rd5"/>
                     </connections>
                 </viewController>

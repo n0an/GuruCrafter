@@ -40,6 +40,11 @@ typedef enum {
 
 @property (strong, nonatomic) UIRefreshControl* refreshControl;
 
+@property (assign, nonatomic) UIEdgeInsets initialInsets;
+@property (assign, nonatomic) CGPoint initialContentOffset;
+
+@property (assign, nonatomic) BOOL isFirstTimeAfterLoading;
+
 @end
 
 
@@ -59,7 +64,6 @@ static NSString* myVKAccountID = @"21743772";
     self.sendButton.layer.cornerRadius = 10;
     self.sendButton.enabled = NO;
 
-    
     self.commentsArray = [NSMutableArray array];
     
     self.loadingData = YES;
@@ -76,6 +80,10 @@ static NSString* myVKAccountID = @"21743772";
     
     self.navigationItem.title = [NSString stringWithFormat:@"Post #%@", self.postID];
     
+    
+    UITapGestureRecognizer* tapGestureOnTableView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionTapOnTableView)];
+    
+    [self.tableView addGestureRecognizer:tapGestureOnTableView];
 
 }
 
@@ -93,7 +101,7 @@ static NSString* myVKAccountID = @"21743772";
      selector:@selector(keyboardWillHide:)
      name:UIKeyboardWillHideNotification
      object:nil];
-    
+
     
 }
 
@@ -169,6 +177,14 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
+- (void) actionTapOnTableView {
+    
+    NSLog(@"actionTapOnTableView");
+
+    [self.messageTextField resignFirstResponder];
+    
+}
+
 
 
 #pragma mark - Notifications actions
@@ -188,10 +204,43 @@ static NSString* myVKAccountID = @"21743772";
                          
                      } completion:nil];
     
+    
+    
+    /****** TABLEVIEW CONTENT OFFSET AFTER KEYBOARD BECOME/RESIGN FIRST RESPONDER
+     *
+     *       Need to troubleshoot tableview content offset
+     *
+     
+    CGSize keyboardSize = keyboardRect.size;
+    
+//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, keyboardSize.height, 0);
+//    self.initialInsets = self.tableView.contentInset;
+    
+//    self.tableView.contentInset = contentInsets;
+//    self.tableView.scrollIndicatorInsets = contentInsets;
+    
+    
+    if (self.isFirstTimeAfterLoading) {
+        self.initialContentOffset  = self.tableView.contentOffset;
+        self.isFirstTimeAfterLoading = NO;
+    }
+    
+//    NSLog(@"self.tableView.contentOffset = {%f, %f}", self.tableView.contentOffset.x, self.tableView.contentOffset.y);
+//    
+//    NSLog(@"self.initialContentOffset = {%f, %f}", self.initialContentOffset.x, self.initialContentOffset.y);
+    
+    CGPoint scrollPoint = CGPointMake(0, self.toolBarView.frame.origin.y - keyboardSize.height - self.initialContentOffset.y);
+    NSLog(@"scrollPoint = %f, %f", scrollPoint.x, scrollPoint.y);
+
+    [self.tableView setContentOffset:scrollPoint animated:YES];
+*/
+    
 }
 
 - (void) keyboardWillHide:(NSNotification*) notification {
     
+
+
     [UIView animateWithDuration:0.3f
                           delay:0.f
                         options:UIViewAnimationOptionCurveEaseIn
@@ -202,6 +251,21 @@ static NSString* myVKAccountID = @"21743772";
                          [self.view layoutIfNeeded];
                          
                      } completion:nil];
+    
+    /****** TABLEVIEW CONTENT OFFSET AFTER KEYBOARD BECOME/RESIGN FIRST RESPONDER
+     *
+     *       Need to troubleshoot tableview content offset
+     *
+     
+     //    self.tableView.contentInset = self.initialInsets;
+     //
+     //    self.tableView.scrollIndicatorInsets = self.initialInsets;
+     
+     NSLog(@"self.initialContentOffset = {%f, %f}", self.initialContentOffset.x, self.initialContentOffset.y);
+     
+     [self.tableView setContentOffset:self.initialContentOffset animated:YES];
+     
+     */
     
 }
 
@@ -236,8 +300,7 @@ static NSString* myVKAccountID = @"21743772";
                    
                }
                self.loadingData = NO;
-
-   
+               
           }
            onFailure:^(NSError *error, NSInteger statusCode) {
               
@@ -270,6 +333,7 @@ static NSString* myVKAccountID = @"21743772";
                        [self.refreshControl endRefreshing];
                        
                        self.loadingData = NO;
+                       
                    }
                    
                }
@@ -424,7 +488,6 @@ static NSString* myVKAccountID = @"21743772";
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     
     static NSString *postIdentifier =       @"postCell";
     static NSString *separatorIdentifier =  @"separatorCell";
