@@ -18,9 +18,6 @@
 
 @end
 
-static NSInteger postsInRequest = 20;
-static NSString* iosDevCourseGroupID = @"58860049";
-static NSString* myVKAccountID = @"21743772";
 
 @implementation ANAddPostViewController
 
@@ -183,12 +180,6 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
-    
-    NSLog(@"textViewShouldEndEditing");
-    
-    return YES;
-}
 
 
 

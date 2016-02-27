@@ -140,12 +140,20 @@ static NSString* myVKAccountID = @"21743772";
            onSuccess:^(NSArray *comments) {
                
                if ([comments count] > 0) {
+                   NSInteger sectionToInsert;
+                   if (self.newCommentSectionActivated == activatedNO) {
+                       sectionToInsert = ANTableViewSectionNewCommentOrComments;
+                   } else {
+                       sectionToInsert = ANTableViewSectionComments;
+                   }
+                   
+                   
                    [self.commentsArray addObjectsFromArray:comments];
                    
                    NSMutableArray* newPaths = [NSMutableArray array];
                    
                    for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
-                       [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:2]];
+                       [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:sectionToInsert]];
                    }
                    
                    [self.tableView beginUpdates];
@@ -563,8 +571,8 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated = activatedNO);
-    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated = activatedYES);
+    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated == activatedNO);
+    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated == activatedYES);
     
     NSLog(@"indexPath.section = %d, indexPath.row = %d", indexPath.section, indexPath.row);
     
