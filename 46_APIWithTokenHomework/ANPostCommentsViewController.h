@@ -10,7 +10,22 @@
 
 @class ANPost;
 
-@interface ANPostCommentsViewController : UITableViewController
+@interface ANPostCommentsViewController : UIViewController
+
+
+@property (weak, nonatomic) IBOutlet UITableView* tableView;
+
+@property (weak, nonatomic) IBOutlet UITextField* messageTextField;;
+@property (weak, nonatomic) IBOutlet UIButton* sendButton;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* toolbarViewToBottomConstraint;
+
+
+- (IBAction)actionSendButtonPressed:(UIButton*)sender;
+- (IBAction)actionMsgTxtFieldEditingChanged:(UITextField*)sender;
+
+
+
 
 @property (strong, nonatomic) NSString* groupID;
 @property (strong, nonatomic) NSString* postID;

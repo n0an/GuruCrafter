@@ -23,28 +23,22 @@
 typedef enum {
     ANTableViewSectionPostInfo,
     ANTableViewSectionSeparator,
-    ANTableViewSectionNewCommentOrComments,
     ANTableViewSectionComments
 
 } ANTableViewSection;
 
-typedef enum {
-    activatedYES = 4,
-    activatedNO = 3
 
-} ANNewCommentSectionActivated;
-
-
-@interface ANPostCommentsViewController () <UIScrollViewDelegate, ANNewMessageDelegate, ANPostCellDelegate>
+@interface ANPostCommentsViewController () <UITextFieldDelegate, UIScrollViewDelegate, ANNewMessageDelegate, ANPostCellDelegate>
 
 @property (strong, nonatomic) NSMutableArray* commentsArray;
 @property (assign, nonatomic) BOOL loadingData;
-@property (assign, nonatomic) NSInteger sectionsCount;
-@property (assign, nonatomic) ANNewCommentSectionActivated newCommentSectionActivated;
+
 
 @property (strong, nonatomic) ANPostCell* postCell;
 
 @property (assign, nonatomic) BOOL isLikedPost;
+
+@property (strong, nonatomic) UIRefreshControl* refreshControl;
 
 @end
 
@@ -62,8 +56,9 @@ static NSString* myVKAccountID = @"21743772";
     
     [super viewDidLoad];
     
-    self.newCommentSectionActivated = activatedNO;
-    self.sectionsCount = 3;
+    self.sendButton.layer.cornerRadius = 10;
+    self.sendButton.enabled = NO;
+
     
     self.commentsArray = [NSMutableArray array];
     
@@ -73,6 +68,9 @@ static NSString* myVKAccountID = @"21743772";
     
     UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(refreshComments) forControlEvents:UIControlEventValueChanged];
+    
+    [self.tableView addSubview:refresh];
+    
     self.refreshControl = refresh;
     
     
@@ -81,28 +79,75 @@ static NSString* myVKAccountID = @"21743772";
 
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWillShow:)
+     name:UIKeyboardWillShowNotification
+     object:nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWillHide:)
+     name:UIKeyboardWillHideNotification
+     object:nil];
+    
+    
+}
+
+- (void) dealloc {
+    
+    [[NSNotificationCenter defaultCenter]  removeObserver:self];
+}
+
+
+
+#pragma mark - Helper Methods
+
+- (void) prepareAndSendMessage {
+    
+    NSString* messageToSend = self.messageTextField.text;
+    
+    [self addComment:messageToSend];
+    
+    self.sendButton.enabled = NO;
+    
+    self.messageTextField.text = nil;
+    
+    [self.messageTextField resignFirstResponder];
+}
+
+
+
 
 #pragma mark - Actions
 
-- (void)actionComposePressed:(UIButton*)sender {
-    NSLog(@"actionComposePressed");
-    
-    if (self.newCommentSectionActivated == activatedNO) {
-    
-        self.newCommentSectionActivated = activatedYES;
-        self.sectionsCount = 4;
-        
-    } else {
-        
-        self.sectionsCount = self.newCommentSectionActivated = activatedNO;
-        self.sectionsCount = 3;
 
+- (IBAction)actionSendButtonPressed:(UIButton*)sender {
+    
+    NSLog(@"actionSendButtonPressed");
+    
+    if ([self.messageTextField.text length] > 0) {
+        
+        [self prepareAndSendMessage];
+        
     }
     
+}
+
+
+- (IBAction)actionMsgTxtFieldEditingChanged:(UITextField*)sender {
+
+    NSLog(@"actionMsgTxtFieldEditingChanged");
     
-    [self.tableView reloadData];
-    
-    
+    if ([self.messageTextField.text length] > 0) {
+        self.sendButton.enabled = YES;
+    } else {
+        self.sendButton.enabled = NO;
+    }
+
 }
 
 
@@ -126,6 +171,41 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
+#pragma mark - Notifications actions
+
+- (void) keyboardWillShow:(NSNotification*) notification {
+    
+    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView animateWithDuration:0.3f
+                          delay:0.f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         self.toolbarViewToBottomConstraint.constant = keyboardRect.size.height;
+                         
+                         [self.view layoutIfNeeded];
+                         
+                     } completion:nil];
+    
+}
+
+- (void) keyboardWillHide:(NSNotification*) notification {
+    
+    [UIView animateWithDuration:0.3f
+                          delay:0.f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         self.toolbarViewToBottomConstraint.constant = 0;
+                         
+                         [self.view layoutIfNeeded];
+                         
+                     } completion:nil];
+    
+}
+
+
 
 
 #pragma mark - API
@@ -140,20 +220,13 @@ static NSString* myVKAccountID = @"21743772";
            onSuccess:^(NSArray *comments) {
                
                if ([comments count] > 0) {
-                   NSInteger sectionToInsert;
-                   if (self.newCommentSectionActivated == activatedNO) {
-                       sectionToInsert = ANTableViewSectionNewCommentOrComments;
-                   } else {
-                       sectionToInsert = ANTableViewSectionComments;
-                   }
-                   
                    
                    [self.commentsArray addObjectsFromArray:comments];
                    
                    NSMutableArray* newPaths = [NSMutableArray array];
                    
                    for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
-                       [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:sectionToInsert]];
+                       [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:ANTableViewSectionComments]];
                    }
                    
                    [self.tableView beginUpdates];
@@ -199,7 +272,6 @@ static NSString* myVKAccountID = @"21743772";
                        self.loadingData = NO;
                    }
                    
-
                }
                onFailure:^(NSError *error, NSInteger statusCode) {
                    
@@ -221,11 +293,7 @@ static NSString* myVKAccountID = @"21743772";
               onSuccess:^(id result) {
                   
                   NSLog(@"COMMENT ADDED");
-                  
-                  self.sectionsCount = 3;
-                  self.newCommentSectionActivated = NO;
-                  
-                  self.loadingData = YES;
+
                   [self refreshComments];
                   
               }
@@ -263,15 +331,10 @@ static NSString* myVKAccountID = @"21743772";
                      comment.likes = likesCount;
                      
                      NSInteger index = [self.commentsArray indexOfObject:comment];
-                     NSInteger section;
                      
-                     if (self.newCommentSectionActivated == activatedYES) {
-                         section = 3;
-                     } else {
-                         section = 2;
-                     }
+
                      
-                     changingInxPath = [NSIndexPath indexPathForRow:index inSection:section];
+                     changingInxPath = [NSIndexPath indexPathForRow:index inSection:ANTableViewSectionComments];
                      NSLog(@"changingInxPath = %@", changingInxPath);
                  }
              }
@@ -343,28 +406,15 @@ static NSString* myVKAccountID = @"21743772";
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.sectionsCount;
+    return 3;
 }
 
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    
-    if (self.newCommentSectionActivated == activatedYES) {
-        if (section == ANTableViewSectionComments) {
-            return [self.commentsArray count];
-        } else {
-            return 1;
-        }
-        
-    } else {
-        
-        if (section == ANTableViewSectionNewCommentOrComments) {
-            return [self.commentsArray count];
-        } else {
-            return 1;
-        }
+    if (section == ANTableViewSectionComments) {
+        return [self.commentsArray count];
     }
     
     return 1;
@@ -380,9 +430,6 @@ static NSString* myVKAccountID = @"21743772";
     static NSString *separatorIdentifier =  @"separatorCell";
     static NSString *commentIdentifier =    @"commentCell";
     
-    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated == activatedNO);
-    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated == activatedYES);
-    BOOL commentsSection = commentsSecComposeHide || commentsSecComposeShow;
 
     if (indexPath.section == ANTableViewSectionPostInfo) { // *** POST CELL
         
@@ -465,40 +512,9 @@ static NSString* myVKAccountID = @"21743772";
             separatorCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:separatorIdentifier];
         }
         
-        UIButton* addCommentButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
-        addCommentButton.showsTouchWhenHighlighted = YES;
-        
-        [addCommentButton addTarget:self action:@selector(actionComposePressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        CGFloat width = tableView.frame.size.width;
-        
-        CGRect rect = CGRectMake(width - 25, 5, 20, 20);
-        
-        addCommentButton.frame = rect;
-        
-        [separatorCell.contentView addSubview:addCommentButton];
-
-        
         return separatorCell;
         
-        
-        
-    } else if (self.newCommentSectionActivated == activatedYES && indexPath.section == ANTableViewSectionNewCommentOrComments) { // *** NEW COMMENT SECTION
-        
-        static NSString* newMessageIdentifier = @"newMessageCell";
-        
-        ANNewMessageCell* newMessageCell = [tableView dequeueReusableCellWithIdentifier:newMessageIdentifier];
-        
-        if (!newMessageCell) {
-            newMessageCell = [[ANNewMessageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:newMessageIdentifier];
-        }
-        
-        newMessageCell.delegate = self;
-        
-        return newMessageCell;
-
-    } else if (commentsSection) { // *** COMMENTS SECTION
-        
+    } else if (indexPath.section == ANTableViewSectionComments) { // *** COMMENTS SECTION
         
         ANCommentCell* commentCell = [tableView dequeueReusableCellWithIdentifier:commentIdentifier];
         
@@ -522,8 +538,6 @@ static NSString* myVKAccountID = @"21743772";
 
         commentCell.dateLabel.text = comment.date;
         
-        
-//        NSString* likesBtnLabelText = [NSString stringWithFormat:@"Likes: %@", comment.likes];
         
         [commentCell.likeButton setTitle:comment.likes forState:UIControlStateNormal];
         [commentCell.likeButton addTarget:self action:@selector(actionLikeCommentPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -553,7 +567,7 @@ static NSString* myVKAccountID = @"21743772";
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 1) {
-        return 30;
+        return 10;
     }
     
     return UITableViewAutomaticDimension;
@@ -562,7 +576,7 @@ static NSString* myVKAccountID = @"21743772";
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1) {
-        return 30;
+        return 10;
     }
     return UITableViewAutomaticDimension; // Auto Layout elements in the cell
 }
@@ -570,14 +584,12 @@ static NSString* myVKAccountID = @"21743772";
 
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    BOOL commentsSecComposeHide =   (indexPath.section == ANTableViewSectionNewCommentOrComments) && (self.newCommentSectionActivated == activatedNO);
-    BOOL commentsSecComposeShow =   (indexPath.section == ANTableViewSectionComments) && (self.newCommentSectionActivated == activatedYES);
-    
+
     NSLog(@"indexPath.section = %d, indexPath.row = %d", indexPath.section, indexPath.row);
     
     
-    if (commentsSecComposeHide || commentsSecComposeShow) {
+    if (indexPath.section == ANTableViewSectionComments) {
+
         ANComment* comment = [self.commentsArray objectAtIndex:indexPath.row];
         NSLog(@"comment.author = %@", comment.author.firstName);
 
@@ -617,6 +629,27 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
+
+
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    if ([self.messageTextField.text length] > 0) {
+        
+        [self prepareAndSendMessage];
+        
+    } else {
+        
+        [textField resignFirstResponder];
+    }
+
+
+    return YES;
+}
+
+
 #pragma mark - +++ ANNewMessageDelegate +++
 - (void) sendButtonPressedWithMessage:(NSString*) message {
     NSLog(@"sendButtonPressedWithMessage");
@@ -640,6 +673,9 @@ static NSString* myVKAccountID = @"21743772";
     }
     
 }
+
+
+
 
 
 @end
