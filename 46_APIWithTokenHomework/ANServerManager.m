@@ -32,6 +32,8 @@
 
 @property (strong, nonatomic) ANAccessToken* accessToken;
 
+@property (strong, nonatomic) dispatch_queue_t srvManagerQueue;
+
 @end
 
 
@@ -59,6 +61,12 @@
         NSURL* url = [NSURL URLWithString:@"https://api.vk.com/method/"];
         
         self.requestOperationManager = [[AFHTTPRequestOperationManager manager] initWithBaseURL:url];
+        
+
+        dispatch_queue_attr_t appQueueAttributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, QOS_CLASS_DEFAULT, 0);
+        self.srvManagerQueue = dispatch_queue_create("com.anovoselov.iosdevcourse", appQueueAttributes);
+        
+        
     }
     return self;
 }
@@ -127,24 +135,31 @@
      GET:@"users.get"
      parameters:params
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
-//         NSLog(@"JSON: %@", responseObject);
-         
-         NSArray* dictsArray = [responseObject objectForKey:@"response"];
-         
-         if ([dictsArray count] > 0) {
-             ANUser* user = [[ANUser alloc] initWithServerResponse:[dictsArray firstObject]];
-             if (success) {
-                 success(user);
-             }
+         NSLog(@"users.get JSON: %@", responseObject);
+
+         dispatch_async(self.srvManagerQueue, ^{
              
-         } else {
-             if (failure) {
-                 failure(nil, operation.response.statusCode);
+             NSArray* dictsArray = [responseObject objectForKey:@"response"];
+             
+             if ([dictsArray count] > 0) {
+                 ANUser* user = [[ANUser alloc] initWithServerResponse:[dictsArray firstObject]];
+                 
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     if (success) {
+                         success(user);
+                     }
+                 });
+                 
+                 
+                 
+             } else {
+                 if (failure) {
+                     failure(nil, operation.response.statusCode);
+                 }
              }
-         }
+         });
          
-         
-         
+
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
          
@@ -237,58 +252,67 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"getGroupWall JSON: %@", responseObject);
          
-         NSDictionary* response = [responseObject objectForKey:@"response"];
-         
-         NSArray* profiles = [response objectForKey:@"profiles"];
-         NSArray* wall = [response objectForKey:@"items"];
-         NSArray* groups = [response objectForKey:@"groups"];
-
-         
-         // *** WE HAVE ONLY ONE GROUP - iOSDevCourse group. Getting it to object
-         
-         ANGroup* group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
-
-         
-         
-         // *** CREATING AUTHORS PROFILES ARRAY
-         NSMutableArray* authorsArray = [NSMutableArray array];
-         
-         for (NSDictionary* dict in profiles) {
-             ANUser* author = [[ANUser alloc] initWithServerResponse:dict];
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
              
-             [authorsArray addObject:author];
-         }
-         
-         
-         // *** CREATING POSTS ARRAY, AND GETTING AUTHOR FOR EACH POST
-
-         
-         NSMutableArray* postsArray = [NSMutableArray array];
-         
-         for (NSDictionary* dict in wall) {
-             ANPost* post = [[ANPost alloc] initWithServerResponse:dict];
-             [postsArray addObject:post];
+             NSArray* profiles = [response objectForKey:@"profiles"];
+             NSArray* wall = [response objectForKey:@"items"];
+             NSArray* groups = [response objectForKey:@"groups"];
              
-             // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS POST
              
-             for (ANUser* author in authorsArray) {
+             // *** WE HAVE ONLY ONE GROUP - iOSDevCourse group. Getting it to object
+             
+             ANGroup* group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
+             
+             
+             
+             // *** CREATING AUTHORS PROFILES ARRAY
+             NSMutableArray* authorsArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in profiles) {
+                 ANUser* author = [[ANUser alloc] initWithServerResponse:dict];
                  
-                 if ([post.authorID hasPrefix:@"-"]) {
-                     post.fromGroup = group;
-                     continue;
-                 }
-                 
-                 if ([author.userID isEqualToString:post.authorID]) {
-                     post.author = author;
-                 }
+                 [authorsArray addObject:author];
              }
              
-         }
+             
+             // *** CREATING POSTS ARRAY, AND GETTING AUTHOR FOR EACH POST
+             
+             
+             NSMutableArray* postsArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in wall) {
+                 ANPost* post = [[ANPost alloc] initWithServerResponse:dict];
+                 [postsArray addObject:post];
+                 
+                 // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS POST
+                 
+                 for (ANUser* author in authorsArray) {
+                     
+                     if ([post.authorID hasPrefix:@"-"]) {
+                         post.fromGroup = group;
+                         continue;
+                     }
+                     
+                     if ([author.userID isEqualToString:post.authorID]) {
+                         post.author = author;
+                     }
+                 }
+                 
+             }
+             
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(postsArray);
+                 }
+             });
+             
+             
+             
+         });
          
          
-         if (success) {
-             success(postsArray);
-         }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
@@ -437,24 +461,28 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"messages.getHistory JSON: %@", responseObject);
          
-         NSDictionary* response = [responseObject objectForKey:@"response"];
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
+             
+             NSArray* itemsArray = [response objectForKey:@"items"];
+             
+             NSMutableArray* messagesArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in itemsArray) {
+                 ANMessage* message = [[ANMessage alloc] initWithServerResponse:dict];
+                 [messagesArray addObject:message];
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(messagesArray);
+                 }
+             });
+             
+             
+         });
+         
 
-         NSArray* itemsArray = [response objectForKey:@"items"];
-         
-         NSMutableArray* messagesArray = [NSMutableArray array];
-
-         for (NSDictionary* dict in itemsArray) {
-             ANMessage* message = [[ANMessage alloc] initWithServerResponse:dict];
-             [messagesArray addObject:message];
-         }
-         
-         if (success) {
-             success(messagesArray);
-         }
-         
-         
-         
-         
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
          
@@ -541,61 +569,63 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"wall.getComments JSON: %@", responseObject);
          
-         NSDictionary* response = [responseObject objectForKey:@"response"];
-
-         NSArray* profiles = [response objectForKey:@"profiles"];
-         NSArray* items = [response objectForKey:@"items"];
-         NSArray* groups = [response objectForKey:@"groups"];
-
-         // *** WE HAVE ONLY ONE GROUP - iOSDevCourse group. Getting it to object
-         
-         ANGroup* group;
-         if ([groups count] > 0) {
-             group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
-         }
-         
-         
-         
-         // *** CREATING AUTHORS PROFILES ARRAY
-         NSMutableArray* authorsArray = [NSMutableArray array];
-         
-         for (NSDictionary* dict in profiles) {
-             ANUser* author = [[ANUser alloc] initWithServerResponse:dict];
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
              
-             [authorsArray addObject:author];
-         }
-         
-         
-         // *** CREATING COMMENTS ARRAY, AND GETTING AUTHOR FOR EACH COMMENT
-         
-         NSMutableArray* comments = [NSMutableArray array];
-         
-         for (NSDictionary* dict in items) {
-             ANComment* comment = [[ANComment alloc] initWithServerResponse:dict];
-             [comments addObject:comment];
+             NSArray* profiles = [response objectForKey:@"profiles"];
+             NSArray* items = [response objectForKey:@"items"];
+             NSArray* groups = [response objectForKey:@"groups"];
              
-             // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS COMMENT
+             // *** WE HAVE ONLY ONE GROUP - iOSDevCourse group. Getting it to object
              
-             for (ANUser* author in authorsArray) {
-                 
-                 if ([comment.authorID hasPrefix:@"-"]) {
-                     comment.fromGroup = group;
-                     continue;
-                 }
-                 
-                 if ([author.userID isEqualToString:comment.authorID]) {
-                     comment.author = author;
-                 }
+             ANGroup* group;
+             if ([groups count] > 0) {
+                 group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
              }
              
-         }
-         
-         
-         if (success) {
-             success(comments);
-         }
+             
+             
+             // *** CREATING AUTHORS PROFILES ARRAY
+             NSMutableArray* authorsArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in profiles) {
+                 ANUser* author = [[ANUser alloc] initWithServerResponse:dict];
+                 
+                 [authorsArray addObject:author];
+             }
+             
+             
+             // *** CREATING COMMENTS ARRAY, AND GETTING AUTHOR FOR EACH COMMENT
+             
+             NSMutableArray* comments = [NSMutableArray array];
+             
+             for (NSDictionary* dict in items) {
+                 ANComment* comment = [[ANComment alloc] initWithServerResponse:dict];
+                 [comments addObject:comment];
+                 
+                 // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS COMMENT
+                 
+                 for (ANUser* author in authorsArray) {
+                     
+                     if ([comment.authorID hasPrefix:@"-"]) {
+                         comment.fromGroup = group;
+                         continue;
+                     }
+                     
+                     if ([author.userID isEqualToString:comment.authorID]) {
+                         comment.author = author;
+                     }
+                 }
+                 
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(comments);
+                 }
+             });
 
-         
+         });
 
      }
      
@@ -833,22 +863,29 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"photos.getAlbums JSON: %@", responseObject);
          
-         NSDictionary* response = [responseObject objectForKey:@"response"];
-         
-         NSArray* items = [response objectForKey:@"items"];
-         
-         NSMutableArray* albumsArray = [NSMutableArray array];
-         
-         for (NSDictionary* dict in items) {
-             ANPhotoAlbum* photoAlbum = [[ANPhotoAlbum alloc] initWithServerResponse:dict];
-             [albumsArray addObject:photoAlbum];
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
              
-         }
+             NSArray* items = [response objectForKey:@"items"];
+             
+             NSMutableArray* albumsArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in items) {
+                 ANPhotoAlbum* photoAlbum = [[ANPhotoAlbum alloc] initWithServerResponse:dict];
+                 [albumsArray addObject:photoAlbum];
+                 
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(albumsArray);
+                 }
+             });
+             
+             
+
+         });
          
-         
-         if (success) {
-             success(albumsArray);
-         }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
@@ -894,22 +931,28 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"photos.get JSON: %@", responseObject);
          
-         NSDictionary* response = [responseObject objectForKey:@"response"];
-         
-         NSArray* items = [response objectForKey:@"items"];
-         
-         NSMutableArray* photosArray = [NSMutableArray array];
-         
-         for (NSDictionary* dict in items) {
-             ANPhoto* photo = [[ANPhoto alloc] initWithServerResponse:dict];
-             [photosArray addObject:photo];
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
              
-         }
+             NSArray* items = [response objectForKey:@"items"];
+             
+             NSMutableArray* photosArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in items) {
+                 ANPhoto* photo = [[ANPhoto alloc] initWithServerResponse:dict];
+                 [photosArray addObject:photo];
+                 
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(photosArray);
+                 }
+             });
+             
+             
+         });
          
-         
-         if (success) {
-             success(photosArray);
-         }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
@@ -1073,23 +1116,29 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"video.getAlbums JSON: %@", responseObject);
          
-         NSDictionary* response = [responseObject objectForKey:@"response"];
-         
-         NSArray* items = [response objectForKey:@"items"];
-         
-         NSMutableArray* albumsArray = [NSMutableArray array];
-         
-         for (NSDictionary* dict in items) {
-             ANVideoAlbum* videoAlbum = [[ANVideoAlbum alloc] initWithServerResponse:dict];
-             [albumsArray addObject:videoAlbum];
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
              
-         }
+             NSArray* items = [response objectForKey:@"items"];
+             
+             NSMutableArray* albumsArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in items) {
+                 ANVideoAlbum* videoAlbum = [[ANVideoAlbum alloc] initWithServerResponse:dict];
+                 [albumsArray addObject:videoAlbum];
+                 
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(albumsArray);
+                 }
+             });
+             
+             
+         });
          
          
-         
-         if (success) {
-             success(albumsArray);
-         }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
@@ -1134,22 +1183,28 @@
      success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
          NSLog(@"video.get JSON: %@", responseObject);
          
-         NSDictionary* response = [responseObject objectForKey:@"response"];
-         
-         NSArray* items = [response objectForKey:@"items"];
-         
-         NSMutableArray* videosArray = [NSMutableArray array];
-         
-         for (NSDictionary* dict in items) {
-             ANVideo* video = [[ANVideo alloc] initWithServerResponse:dict];
-             [videosArray addObject:video];
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
              
-         }
+             NSArray* items = [response objectForKey:@"items"];
+             
+             NSMutableArray* videosArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in items) {
+                 ANVideo* video = [[ANVideo alloc] initWithServerResponse:dict];
+                 [videosArray addObject:video];
+                 
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(videosArray);
+                 }
+
+             });
+             
+         });
          
-         
-         if (success) {
-             success(videosArray);
-         }
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);

@@ -140,7 +140,7 @@ static NSString* myVKAccountID = @"21743772";
     
     ANPhoto* photo = [self.photosArray objectAtIndex:indexPath.row];
     
-    NSURL* photoURL = [NSURL URLWithString:photo.photo_604];
+    NSURL* photoURL = [NSURL URLWithString:photo.photo_130];
     
     [photoCVCell.photoImageView setImageWithURL:photoURL];
     

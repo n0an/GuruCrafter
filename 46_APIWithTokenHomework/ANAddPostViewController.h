@@ -18,6 +18,9 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* textViewToBottomConstraint;
+
+
 @property (weak, nonatomic) id <ANAddPostDelegate> delegate;
 
 - (IBAction)actionSend:(UIBarButtonItem *)sender;
