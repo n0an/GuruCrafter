@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'AB1DA2EED1F423AF1967E68E'
-               BlueprintName = 'CCBottomRefreshControl'
+               BlueprintIdentifier = '32738BB80DF64FB4ADC6BE5D'
+               BlueprintName = 'SWRevealViewController'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libCCBottomRefreshControl.a'>
+               BuildableName = 'libSWRevealViewController.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

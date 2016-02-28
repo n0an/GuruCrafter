@@ -27,6 +27,9 @@
 #import "ANPhotoAlbum.h"
 #import "ANUploadServer.h"
 
+#import <SWRevealViewController.h>
+
+
 typedef enum {
     ANTableViewSectionAddPost,
     ANTableViewSectionWall,
@@ -60,6 +63,16 @@ static NSInteger firstRowCount = 3;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.menuRevealBarButton setTarget: self.revealViewController];
+        [self.menuRevealBarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
+    
+    
     
     self.postsArray = [NSMutableArray array];
 //    self.postImageViewsSizesArray = [NSMutableArray array];
