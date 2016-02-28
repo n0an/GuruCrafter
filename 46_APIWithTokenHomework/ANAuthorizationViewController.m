@@ -62,6 +62,10 @@
     
 }
 
+//- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+//    return UIInterfaceOrientationMaskPortrait;
+//}
+
 
 
 
