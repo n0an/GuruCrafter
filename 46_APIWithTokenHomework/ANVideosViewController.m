@@ -162,7 +162,38 @@ static NSString* myVKAccountID = @"21743772";
     videoCell.viewsCountLabel.text = [NSString stringWithFormat:@"%@ views", video.views];
     videoCell.dateLabel.text = [NSString stringWithFormat:@"Added on: %@", video.date];
     
-    [videoCell.videoThumbImageVIew setImageWithURL:video.videoThumbImageURL];
+//    [videoCell.videoThumbImageVIew setImageWithURL:video.videoThumbImageURL];
+    
+    
+    
+    
+    NSURLRequest* videoThumbRequest = [NSURLRequest requestWithURL:video.videoThumbImageURL];
+    
+    __block UIImageView* weakVideoThumbImageView = videoCell.videoThumbImageVIew;
+    
+    [videoCell.videoThumbImageVIew
+     setImageWithURLRequest:videoThumbRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         
+         
+         [UIView transitionWithView:weakVideoThumbImageView
+                           duration:0.3f
+                            options:UIViewAnimationOptionTransitionCrossDissolve
+                         animations:^{
+                             weakVideoThumbImageView.image = image;
+                         }
+                         completion:nil];
+         
+         
+     }
+     failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+         
+     }];
+    
+    
+    
+    
     
     
     return videoCell;

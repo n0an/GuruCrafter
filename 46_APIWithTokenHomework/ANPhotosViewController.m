@@ -142,7 +142,32 @@ static NSString* myVKAccountID = @"21743772";
     
     NSURL* photoURL = [NSURL URLWithString:photo.photo_130];
     
-    [photoCVCell.photoImageView setImageWithURL:photoURL];
+    NSURLRequest* request = [NSURLRequest requestWithURL:photoURL];
+    
+    __weak ANPhotoCollectionViewCell* weakPhotoCVCell = photoCVCell;
+    
+    photoCVCell.photoImageView.image = nil;
+    
+    [photoCVCell.photoImageView
+     setImageWithURLRequest:request
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         
+         [UIView transitionWithView:weakPhotoCVCell.photoImageView
+                           duration:0.3f
+                            options:UIViewAnimationOptionTransitionCrossDissolve
+                         animations:^{
+                             weakPhotoCVCell.photoImageView.image = image;
+                         } completion:nil];
+         
+     }
+     failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+         
+     }];
+    
+    
+    
+    
     
     return photoCVCell;
 }
