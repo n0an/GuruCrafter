@@ -398,7 +398,10 @@ static NSInteger firstRowCount = 3;
          **********************
          */
         
-        // * If post contains no photos - set all ImageViews height to 0, and return cell immediately
+        
+            /*-- PART 1. CHECKINGS --
+             */
+                //  If post contains no photos - set all ImageViews height to 0 (collapsing all Gallery ImageViews), and return cell immediately
         if ([post.attachmentsArray count] == 0) {
             postCell.gallerySecondRowTopConstraint.constant = 0;
             
@@ -410,79 +413,86 @@ static NSInteger firstRowCount = 3;
         }
         
         
-        
-//        [postCell layoutIfNeeded]; // ?????
-        
-        
-        
-        //** Calculation of Gallery ImageViews Maximum Sizes (depending on count of photos)
-        CGFloat maxRequiredSizeOfImageInFirstRow = 0;
-        CGFloat maxRequiredSizeOfImageInSecondRow = 0;
-        
-        if ([post.attachmentsArray count] <= firstRowCount) { //** If we have less than 3 photos - user only ONE row of Gallery
-            
-            NSLog(@"self.tableView.frame width = %f", self.tableView.frame.size.width);
-            
-            maxRequiredSizeOfImageInFirstRow = (CGRectGetWidth(self.tableView.frame) - 16 - 4 * ([post.attachmentsArray count] - 1))/ [post.attachmentsArray count];
-            
-            maxRequiredSizeOfImageInFirstRow = MIN(maxRequiredSizeOfImageInFirstRow, 400); // ????
-            
-            
-        } else { //** If we have more than 3 photos - use TWO rows of Gallery
-            
-            maxRequiredSizeOfImageInFirstRow = (CGRectGetWidth(self.tableView.frame) - 16 - 4 * (firstRowCount - 1)) / 3.f;
-            
-            maxRequiredSizeOfImageInSecondRow =
-            (CGRectGetWidth(self.tableView.frame) - 16 - 4 * ([post.attachmentsArray count] - firstRowCount - 1)) / ([post.attachmentsArray count] - firstRowCount);
-            
-            maxRequiredSizeOfImageInSecondRow = MIN(maxRequiredSizeOfImageInSecondRow, 400); // ????
-        }
-
-        
-        
-        
-        UIImage* placeHolderImage = [[UIImage alloc] init];
-        
-        CGFloat maxHeigthOfRow = 0;
-        CGFloat fullWidthFirstRow = 0;
-        CGFloat fullWidthSecondRow = 0;
-        
-        
-        
-        // *********^^^^^^^ MEGA LOOP FOR STARTS HERE ^^^^^^^****************
-        for (int i = 0; i < [post.attachmentsArray count]; i++) {
-            
+                //  Check of attachments array before start main loop. If occasionally, there's photo with width or height equals to 0 - remove this photo from attachments array
+        for (int i = 0; i < [post.attachmentsArray count]; ) {
             ANPhoto* photo = [post.attachmentsArray objectAtIndex:i];
-            
-            // ** If occasionally, there's photo with width or height equals to 0 - remove this photo from attachments array and immediately jump to the next iteration of loop cycle
-            
             if (photo.width == 0 || photo.height == 0){
                 NSMutableArray* tmpArray = [NSMutableArray arrayWithArray:post.attachmentsArray];
                 [tmpArray removeObject:photo];
                 post.attachmentsArray = tmpArray;
                 continue;
             }
+            i++;
+        }
+
+        
+        
+            /*-- PART 2. CALCULATIONS OF MAXIMUM SIZES FOR SQUARE GALLERY IMAGEVIEWS --
+             */
+
+                //  Calculation of Gallery ImageViews Maximum Sizes (depending on count of photos)
+                //TODO: use Portrait Landscape idioms instead fixing to 400
+                //TODO: limit sized in both rows
+        CGFloat maxRequiredSizeOfImageInFirstRow = 0;
+        CGFloat maxRequiredSizeOfImageInSecondRow = 0;
+        
+        if ([post.attachmentsArray count] <= firstRowCount) { // If we have 3 or less photos - use only ONE row of Gallery
+            
+            NSLog(@"self.tableView.frame width = %f", self.tableView.frame.size.width);
+            
+            maxRequiredSizeOfImageInFirstRow = (CGRectGetWidth(self.tableView.frame) - 16 - 4 * ([post.attachmentsArray count] - 1))/ [post.attachmentsArray count];
+            
+            maxRequiredSizeOfImageInFirstRow = MIN(maxRequiredSizeOfImageInFirstRow, 400); // Limit to 400 even in landscape mode of iphone
+   
+        } else { //** If we have more than 3 photos - use TWO rows of Gallery
+            
+            maxRequiredSizeOfImageInFirstRow = (CGRectGetWidth(self.tableView.frame) - 16 - 4 * (firstRowCount - 1)) / 3;
+            
+            maxRequiredSizeOfImageInSecondRow =
+            (CGRectGetWidth(self.tableView.frame) - 16 - 4 * ([post.attachmentsArray count] - firstRowCount - 1)) / ([post.attachmentsArray count] - firstRowCount);
+            
+            maxRequiredSizeOfImageInSecondRow = MIN(maxRequiredSizeOfImageInSecondRow, 400); // Limit to 400 even in landscape mode of iphone
+
+        }
+
+        
+        
+            /*-- PART 3. LOOP THROUGH PHOTOS IN ATTACHMENTS ARRAY AND HANDLE EACH PHOTO --
+             */
+        
+        UIImage* placeHolderImage = [[UIImage alloc] init];
+        
+        CGFloat maxHeigthFirstRow = 0;
+        CGFloat fullWidthFirstRow = 0;
+        CGFloat fullWidthSecondRow = 0;
+        
+        // *********^^^^^^^ MAIN LOOP FOR STARTS HERE ^^^^^^^****************
+        for (int i = 0; i < ([post.attachmentsArray count]) && (i < firstRowCount * 2); i++) {
+            
+            ANPhoto* photo = [post.attachmentsArray objectAtIndex:i];
+            
+            // * 1. Calculating width and height of current photo, according to calculated maxSize of square ImageView. If there's portrait photo - currentHeight = maxSize, if album oriented - currentWidth = maxSize
             
             CGFloat ratio = (CGFloat)photo.width / photo.height;
             
-            CGFloat height;
-            CGFloat width;
+            CGFloat heightOfCurrentPhoto;
+            CGFloat widthOfCurrentPhoto;
             
             if (ratio < 1) { // ** Portrait oriented photo
                 
                 if (i < firstRowCount) { // *** First Row of Gallery
                     
-                    height = maxRequiredSizeOfImageInFirstRow;
+                    heightOfCurrentPhoto = maxRequiredSizeOfImageInFirstRow;
                     
-                    width = height * ratio;
-                    fullWidthFirstRow += width;
+                    widthOfCurrentPhoto = heightOfCurrentPhoto * ratio;
+                    fullWidthFirstRow += widthOfCurrentPhoto;
                     
                 } else { // *** Second Row of Gallery
                     
-                    height = maxRequiredSizeOfImageInSecondRow;
+                    heightOfCurrentPhoto = maxRequiredSizeOfImageInSecondRow;
                     
-                    width = height * ratio;
-                    fullWidthSecondRow += width;
+                    widthOfCurrentPhoto = heightOfCurrentPhoto * ratio;
+                    fullWidthSecondRow += widthOfCurrentPhoto;
                 }
                 
                 
@@ -490,46 +500,47 @@ static NSInteger firstRowCount = 3;
                 
                 if (i < firstRowCount) { // *** First Row of Gallery
                     
-                    width = maxRequiredSizeOfImageInFirstRow;
-                    fullWidthFirstRow += width;
+                    widthOfCurrentPhoto = maxRequiredSizeOfImageInFirstRow;
+                    fullWidthFirstRow += widthOfCurrentPhoto;
                     
                 } else { // *** Second Row of Gallery
                     
-                    width = maxRequiredSizeOfImageInSecondRow;
-                    fullWidthSecondRow += width;
+                    widthOfCurrentPhoto = maxRequiredSizeOfImageInSecondRow;
+                    fullWidthSecondRow += widthOfCurrentPhoto;
                     
                 }
                 
-                height = width / ratio;
+                heightOfCurrentPhoto = widthOfCurrentPhoto / ratio;
             }
             
             
-            
-            if (height > maxHeigthOfRow && i < firstRowCount) {
-                maxHeigthOfRow = height;
+            // * 2. Calculating height of FirstRow to get know value for gallerySecondRowTopConstraint
+            if (heightOfCurrentPhoto > maxHeigthFirstRow && i < firstRowCount) {
+                maxHeigthFirstRow = heightOfCurrentPhoto;
             }
             
+            // * 3. Setting width and height constraints for current photo and setting frame
             NSLayoutConstraint* photoHightConstraint = [postCell.photoHeights objectAtIndex:i];
-            photoHightConstraint.constant = height;
+            photoHightConstraint.constant = heightOfCurrentPhoto;
             
             NSLayoutConstraint* photoWidthConstraint = [postCell.photoWidths objectAtIndex:i];
-            photoWidthConstraint.constant = width;
+            photoWidthConstraint.constant = widthOfCurrentPhoto;
             
             
             UIImageView* currentImageView = [postCell.glryImageViews objectAtIndex:i];
             
-            currentImageView.frame = CGRectMake(CGRectGetMinX(currentImageView.frame),
-                                                CGRectGetMinY(currentImageView.frame),
-                                                width, height);
+            CGPoint currentImageViewOrigin = currentImageView.frame.origin;
             
+            currentImageView.frame = CGRectMake(currentImageViewOrigin.x,
+                                                currentImageViewOrigin.y,
+                                                widthOfCurrentPhoto, heightOfCurrentPhoto);
             
-            
+            // * 4. Loading and setting image
             NSURL* urlPhoto = [NSURL URLWithString:photo.photo_604];
             
             NSURLRequest* photoRequest = [NSURLRequest requestWithURL:urlPhoto];
             
             __block UIImageView* weakCurrentImageView = currentImageView;
-            
             
             [currentImageView setImageWithURLRequest:photoRequest
                                     placeholderImage:placeHolderImage
@@ -542,19 +553,18 @@ static NSInteger firstRowCount = 3;
                                              failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                                  NSLog(@"%@", [error localizedDescription]);
                                              }];
-            
-            
         }
         
+        // *********$$$$$$$$ MAIN LOOP FOR ENDS HERE $$$$$$$****************
         
         
-        // *********$$$$$$$$ MEGA LOOP FOR ENDS HERE $$$$$$$****************
+            /*-- PART 4. LAST PREPARATIONS, SETTING GLOBAL GALLERY INSETS, COLLAPSING UNUSED IMAGEVIEWS --
+             */
         
+                //  Setting top constraint for second row
+        postCell.gallerySecondRowTopConstraint.constant = maxHeigthFirstRow + 12.f; // 12 = 8 + 4 - indents (see main.storyboard)
         
-        postCell.gallerySecondRowTopConstraint.constant = maxHeigthOfRow + 16.f;
-        
-        
-        // ** For unused Gallery Image Views - setting widhts and heights to 0. Collapsing unused imageviews.
+                //  For unused Gallery Image Views - setting widhts and heights to 0. Collapsing unused imageviews.
         for (int i = (int)[post.attachmentsArray count]; i < [postCell.photoWidths count]; i++) {
             
             NSLayoutConstraint* photoHightConstraint = [postCell.photoHeights objectAtIndex:i];
@@ -568,50 +578,41 @@ static NSInteger firstRowCount = 3;
             unusedImageView.frame = CGRectMake(CGRectGetMinX(unusedImageView.frame),
                                                 CGRectGetMinY(unusedImageView.frame),
                                                 0.f, 0.f);
-
-
+        }
+        
+                //  Centering Gallery
+        
+        CGFloat indentsCountFirstRow, indentsCountSecondRow;
+        
+        if ([post.attachmentsArray count] <= firstRowCount) {
+            
+            indentsCountFirstRow = [post.attachmentsArray count] - 1;
+            
+            postCell.gallerySecondRowLeadingConstraint.constant = 0;
+            
+        } else {
+            
+            indentsCountFirstRow = firstRowCount - 1;
+            indentsCountSecondRow = [post.attachmentsArray count] - firstRowCount - 1;
+            
+            postCell.gallerySecondRowLeadingConstraint.constant = (CGRectGetWidth(tableView.frame) - 4 * indentsCountSecondRow - fullWidthSecondRow) / 2;
             
         }
         
+        postCell.galleryFirstRowLeadingConstraint.constant = (CGRectGetWidth(tableView.frame) - 4 * indentsCountFirstRow - fullWidthFirstRow) / 2;
         
         
         
-        
-        
-        
-        
-        /**********************************
-         *   OLD WAY TO SHOW IMAGES IN POST
-         **********************************
-         
-        // *** ADDING IMAGES
-        // **** IF ONLY ONE PHOTO. PLACING IT TO MAIN IMAGEVIEW
-        postCell.postImageView.image = nil;
-        
-        if (post.postMainImageURL) {
-            [postCell.postImageView setImageWithURL:post.postMainImageURL];
-        }
-        
-        // **** IF THERE'RE MANY PHOTOS - PLACE THE FIRST ONE TO THE MAIN IMAGEVIEW, THEN
-        // **** TAKE THE FOLLOWING 3, AND FILL GALLERY BY THEM
-        postCell.galleryImageViewFirst.image = nil;
-        postCell.galleryImageViewSecond.image = nil;
-        postCell.galleryImageViewThird.image = nil;
-        
-        if ([post.attachmentsArray count] > 1) {
-            for (int i = 1; i < MIN(4, [post.attachmentsArray count]) ; i++) {
-                ANPhoto* photo = [post.attachmentsArray objectAtIndex:i];
-                NSURL* photoURL = [NSURL URLWithString:photo.photo_604];
-                
-                UIImageView* imageView = [postCell.galleryImageViews objectAtIndex:i-1];
-                
-                [imageView setImageWithURL:photoURL];
-                
-            }
-        }
-        */
-        
+        [postCell layoutIfNeeded];
 
+        /*
+         ****************************************
+         *      END OF SHOW IMAGES IN POST      *
+         ****************************************
+         */
+        
+        
+        
         
         return postCell;
     }
