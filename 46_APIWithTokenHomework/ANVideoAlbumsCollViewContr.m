@@ -14,6 +14,8 @@
 
 #import "ANVideosViewController.h"
 
+#import <SWRevealViewController.h>
+
 
 @interface ANVideoAlbumsCollViewContr ()
 
@@ -34,6 +36,17 @@ static NSString * const reuseIdentifier = @"videoCVCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.menuRevealBarButton setTarget: self.revealViewController];
+        [self.menuRevealBarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
+
+    
+    
     
     self.videoAlbumsArray = [NSMutableArray array];
     self.loadingData = YES;
