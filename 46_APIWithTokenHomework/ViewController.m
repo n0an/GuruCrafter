@@ -40,7 +40,7 @@ typedef enum {
 
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
 
-@property (assign, nonatomic) BOOL firstTimeAppear;
+//@property (assign, nonatomic) BOOL firstTimeAppear;
 
 @property (strong, nonatomic) NSMutableArray* postsArray;
 
@@ -73,10 +73,8 @@ static NSInteger firstRowCount = 3;
     }
     
     
-    
     self.postsArray = [NSMutableArray array];
-//    self.postImageViewsSizesArray = [NSMutableArray array];
-    self.firstTimeAppear = YES;
+//    self.firstTimeAppear = YES;
     self.loadingData = YES;
     
 
@@ -87,19 +85,33 @@ static NSInteger firstRowCount = 3;
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
     
-    
-    [[ANServerManager sharedManager] authorizeUser:^(ANUser *user) {
+    if ([ANServerManager sharedManager].currentUser == nil) {
         
-        NSLog(@"AUTHORIZED!");
-        NSLog(@"%@ %@", user.firstName, user.lastName);
-        
-        ANServerManager* serverManager = [ANServerManager sharedManager];
-        serverManager.currentUser = user;
+        [[ANServerManager sharedManager] authorizeUser:^(ANUser *user) {
+            
+            NSLog(@"AUTHORIZED!");
+            NSLog(@"%@ %@", user.firstName, user.lastName);
+            
+            ANServerManager* serverManager = [ANServerManager sharedManager];
+            serverManager.currentUser = user;
+            
+            self.loadingData = NO;
+            [self getPostsFromServer];
+            
+        }];
+
+    } else {
         
         self.loadingData = NO;
+        
+        ANUser* loginedUser = [[ANServerManager sharedManager] currentUser];
+        
+        NSLog(@"%@ %@", loginedUser.firstName, loginedUser.lastName);
+        
         [self getPostsFromServer];
-
-    }];
+    }
+    
+    
     
     
 }
