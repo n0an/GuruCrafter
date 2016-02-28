@@ -91,11 +91,33 @@ static NSString* myVKAccountID = @"21743772";
     albumCVCell.albumTitleLabel.text = photoAlbum.albumTitle;
     albumCVCell.albumSizeLabel.text = [NSString stringWithFormat:@"%@ photos", photoAlbum.albumSize];
     
+
     
-    [albumCVCell.albumThumbImageView setImageWithURL:photoAlbum.albumThumbImageURL];
+    NSURLRequest* albumThumbRequest = [NSURLRequest requestWithURL:photoAlbum.albumThumbImageURL];
     
+    __block UIImageView* weakAlbumThumbImageView = albumCVCell.albumThumbImageView;
     
-    
+    [albumCVCell.albumThumbImageView
+     setImageWithURLRequest:albumThumbRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         
+         
+         [UIView transitionWithView:weakAlbumThumbImageView
+                           duration:0.3f
+                            options:UIViewAnimationOptionTransitionCrossDissolve
+                         animations:^{
+                             weakAlbumThumbImageView.image = image;
+                         }
+                         completion:nil];
+         
+         
+     }
+     failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+         
+     }];
+
+
     
     return albumCVCell;
 }
