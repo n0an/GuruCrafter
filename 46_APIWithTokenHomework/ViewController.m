@@ -72,11 +72,7 @@ static NSInteger firstRowCount = 3;
         [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
     }
     
-    
     self.postsArray = [NSMutableArray array];
-//    self.firstTimeAppear = YES;
-    self.loadingData = YES;
-    
 
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
@@ -85,34 +81,15 @@ static NSInteger firstRowCount = 3;
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
     
-    if ([ANServerManager sharedManager].currentUser == nil) {
-        
-        [[ANServerManager sharedManager] authorizeUser:^(ANUser *user) {
-            
-            NSLog(@"AUTHORIZED!");
-            NSLog(@"%@ %@", user.firstName, user.lastName);
-            
-            ANServerManager* serverManager = [ANServerManager sharedManager];
-            serverManager.currentUser = user;
-            
-            self.loadingData = NO;
-            [self getPostsFromServer];
-            
-        }];
+    
+    ANUser* loginedUser = [[ANServerManager sharedManager] currentUser];
+    
+    NSLog(@"%@ %@", loginedUser.firstName, loginedUser.lastName);
+    
+    self.loadingData = YES;
 
-    } else {
-        
-        self.loadingData = NO;
-        
-        ANUser* loginedUser = [[ANServerManager sharedManager] currentUser];
-        
-        NSLog(@"%@ %@", loginedUser.firstName, loginedUser.lastName);
-        
-        [self getPostsFromServer];
-    }
-    
-    
-    
+    [self getPostsFromServer];
+       
     
 }
 
@@ -163,6 +140,49 @@ static NSInteger firstRowCount = 3;
 
 - (void) getPostsFromServer {
     
+    
+    [[ANServerManager sharedManager]
+     getGroupWall:@"58860049"
+     withOffset:[self.postsArray count]
+     count:postsInRequest
+     onSuccess:^(NSArray *posts) {
+         
+         if ([posts count] > 0) {
+             
+             dispatch_queue_t highQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+             
+             dispatch_async(highQueue, ^{
+                 [self.postsArray addObjectsFromArray:posts];
+                 
+                 NSMutableArray* newPaths = [NSMutableArray array];
+                 
+                 for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
+                     [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+                 }
+                 
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [self.tableView beginUpdates];
+                     [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                     [self.tableView endUpdates];
+                     
+                     
+                     self.loadingData = NO;
+                 });
+                 
+                 
+             });
+         }
+         
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+     }];
+
+    
+    
+    /*
     if (self.loadingData == NO) {
         self.loadingData = YES;
         
@@ -207,6 +227,7 @@ static NSInteger firstRowCount = 3;
         
         
     }
+     */
     
  
 }
@@ -719,6 +740,7 @@ static NSInteger firstRowCount = 3;
     if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= self.tableView.contentSize.height - scrollView.frame.size.height) {
         if (!self.loadingData)
         {
+            self.loadingData = YES;
             [self getPostsFromServer];
         }
     }
