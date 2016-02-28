@@ -23,48 +23,6 @@
 
     self.isLabelsVisible = NO;
     
-    /*
-    CGFloat withPhoto = (CGFloat)self.photo.width;
-    CGFloat heightPhoto = (CGFloat)self.photo.height;
-
-    CGFloat ratio = withPhoto / heightPhoto;
-    
-    CGFloat newWith, newHeight;
-    CGRect rectForPhoto;
-    
-    if (ratio >= 1) {
-        newWith = CGRectGetWidth(self.view.frame);
-        newHeight = newWith / ratio;
-        
-        CGFloat verticalCenter = CGRectGetMidY(self.view.frame);
-        
-        rectForPhoto = CGRectMake(0, verticalCenter -newHeight/2, newWith, newHeight);
-        
-    } else {
-        newHeight = CGRectGetHeight(self.view.frame) - 100;
-        newWith = newHeight * ratio;
-        
-        CGFloat horizontalCenter = CGRectGetMidX(self.view.frame);
-        
-        rectForPhoto = CGRectMake(horizontalCenter - newWith/2, 0, newWith, newHeight);
-    }
-    
-//    self.photoImageView.frame = rectForPhoto;
-//    [self.view layoutSubviews];
-     
-     //    UIImageView* photoImage = [[UIImageView alloc] initWithFrame:rectForPhoto];
-     //
-     //    [photoImage setImageWithURL:photoURL];
-     //
-     //    photoImage.userInteractionEnabled = YES;
-     //    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
-     //
-     //    [photoImage addGestureRecognizer:tapGesture];
-     //
-     //    [self.view addSubview:photoImage];
-     
-     */
-    
     NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
     
     [self.photoImageView setImageWithURL:photoURL];
@@ -86,12 +44,21 @@
     
     self.navigationItem.leftBarButtonItem = cancel;
     
+    
+    UIBarButtonItem* nextButton = [[UIBarButtonItem alloc] initWithTitle:@">" style:UIBarButtonItemStylePlain target:self action:@selector(actionNextPressed:)];
+    
+    UIBarButtonItem* previousButton = [[UIBarButtonItem alloc] initWithTitle:@"<" style:UIBarButtonItemStylePlain target:self action:@selector(actionPreviousPressed:)];
+    
+    UIBarButtonItem* fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
+    fixedSpace.width = 50;
+    
+
+    self.navigationItem.rightBarButtonItems = @[nextButton, fixedSpace, previousButton];
+    
     [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
 
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
 
-    
-    
 }
 
 
@@ -101,6 +68,27 @@
 - (void) actionCancel:(UIBarButtonItem*) sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+- (void) actionNextPressed:(UIBarButtonItem*) sender {
+    NSLog(@"actionNextPressed");
+    
+    // Send message to delegate, to get Next photo from album
+    
+    [self.delegate iteratePhoto:ANPhotoIterationDirectionNext];
+    
+}
+
+- (void) actionPreviousPressed:(UIBarButtonItem*) sender {
+    NSLog(@"actionPreviousPressed");
+    
+    // Send message to delegate, to get Previous photo from album
+
+    [self.delegate iteratePhoto:ANPhotoIterationDirectionPrevious];
+    
+}
+
+
 
 - (void) actionOnTapImage: (UITapGestureRecognizer*) recognizer {
     
@@ -116,6 +104,8 @@
     
 
 }
+
+
 
 
 

@@ -18,7 +18,7 @@
 #import "ANPhotoAddingViewController.h"
 
 
-@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate>
+@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate, ANPhotoViewerDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
 
@@ -223,6 +223,20 @@ static NSString* myVKAccountID = @"21743772";
 
     [self refreshPhotos];
 }
+
+#pragma mark - +++ ANPhotoViewerDelegate +++
+
+- (ANPhoto*) iteratePhoto:(ANPhotoIterationDirection) nextOrPreviousPhoto {
+    
+    if (nextOrPreviousPhoto == ANPhotoIterationDirectionNext) {
+        
+    } else {
+        
+    }
+    
+}
+
+
 
 
 @end
