@@ -162,10 +162,7 @@ static NSString* myVKAccountID = @"21743772";
     videoCell.viewsCountLabel.text = [NSString stringWithFormat:@"%@ views", video.views];
     videoCell.dateLabel.text = [NSString stringWithFormat:@"Added on: %@", video.date];
     
-//    [videoCell.videoThumbImageVIew setImageWithURL:video.videoThumbImageURL];
-    
-    
-    
+
     
     NSURLRequest* videoThumbRequest = [NSURLRequest requestWithURL:video.videoThumbImageURL];
     
