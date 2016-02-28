@@ -12,4 +12,7 @@
 
 @property (weak, nonatomic) IBOutlet UICollectionView* collectionView;
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem* menuRevealBarButton;
+
+
 @end

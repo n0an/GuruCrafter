@@ -27,6 +27,9 @@
 #import "ANPhotoAlbum.h"
 #import "ANUploadServer.h"
 
+#import <SWRevealViewController.h>
+
+
 typedef enum {
     ANTableViewSectionAddPost,
     ANTableViewSectionWall,
@@ -37,15 +40,10 @@ typedef enum {
 
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
 
-@property (assign, nonatomic) BOOL firstTimeAppear;
-
 @property (strong, nonatomic) NSMutableArray* postsArray;
 
 @property (assign, nonatomic) BOOL loadingData;
 @property (assign, nonatomic) BOOL isLikedPost;
-
-//@property (strong,nonatomic) NSMutableArray *postImageViewsSizesArray;
-
 
 @end
 
@@ -61,33 +59,30 @@ static NSInteger firstRowCount = 3;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.postsArray = [NSMutableArray array];
-//    self.postImageViewsSizesArray = [NSMutableArray array];
-    self.firstTimeAppear = YES;
-    self.loadingData = YES;
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.menuRevealBarButton setTarget: self.revealViewController];
+        [self.menuRevealBarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
     
+    self.postsArray = [NSMutableArray array];
 
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-
-
+    
     UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
     
+    ANUser* loginedUser = [[ANServerManager sharedManager] currentUser];
     
-    [[ANServerManager sharedManager] authorizeUser:^(ANUser *user) {
-        
-        NSLog(@"AUTHORIZED!");
-        NSLog(@"%@ %@", user.firstName, user.lastName);
-        
-        ANServerManager* serverManager = [ANServerManager sharedManager];
-        serverManager.currentUser = user;
-        
-        self.loadingData = NO;
-        [self getPostsFromServer];
+    NSLog(@"%@ %@", loginedUser.firstName, loginedUser.lastName);
+    
+    self.loadingData = YES;
 
-    }];
-    
+    [self getPostsFromServer];
+       
     
 }
 
@@ -138,50 +133,45 @@ static NSInteger firstRowCount = 3;
 
 - (void) getPostsFromServer {
     
-    if (self.loadingData == NO) {
-        self.loadingData = YES;
-        
-        [[ANServerManager sharedManager]
-         getGroupWall:@"58860049"
-         withOffset:[self.postsArray count]
-         count:postsInRequest
-         onSuccess:^(NSArray *posts) {
+    [[ANServerManager sharedManager]
+     getGroupWall:@"58860049"
+     withOffset:[self.postsArray count]
+     count:postsInRequest
+     onSuccess:^(NSArray *posts) {
+         
+         if ([posts count] > 0) {
              
-             if ([posts count] > 0) {
+             dispatch_queue_t highQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+             
+             dispatch_async(highQueue, ^{
+                 [self.postsArray addObjectsFromArray:posts];
                  
-                 dispatch_queue_t highQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
-
-                 dispatch_async(highQueue, ^{
-                     [self.postsArray addObjectsFromArray:posts];
-                     
-                     NSMutableArray* newPaths = [NSMutableArray array];
-                     
-                     for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                         [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
-                     }
-                     
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [self.tableView beginUpdates];
-                         [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-                         [self.tableView endUpdates];
-                         
-                         
-                         self.loadingData = NO;
-                     });
+                 NSMutableArray* newPaths = [NSMutableArray array];
+                 
+                 for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
+                     [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+                 }
+                 
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [self.tableView beginUpdates];
+                     [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                     [self.tableView endUpdates];
                      
                      
+                     self.loadingData = NO;
                  });
-             }
-             
-             
+                 
+                 
+             });
          }
-         onFailure:^(NSError *error, NSInteger statusCode) {
-             NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-             
-         }];
-        
-        
-    }
+         
+         
+     }
+     onFailure:^(NSError *error, NSInteger statusCode) {
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         
+     }];
+
     
  
 }
@@ -694,6 +684,7 @@ static NSInteger firstRowCount = 3;
     if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= self.tableView.contentSize.height - scrollView.frame.size.height) {
         if (!self.loadingData)
         {
+            self.loadingData = YES;
             [self getPostsFromServer];
         }
     }
@@ -711,10 +702,6 @@ static NSInteger firstRowCount = 3;
         
     }
 }
-
-
-
-
 
 
 

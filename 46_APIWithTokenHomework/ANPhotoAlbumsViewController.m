@@ -15,6 +15,8 @@
 
 #import "ANPhotosViewController.h"
 
+#import <SWRevealViewController.h>
+
 
 @interface ANPhotoAlbumsViewController ()
 
@@ -33,6 +35,17 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.menuRevealBarButton setTarget: self.revealViewController];
+        [self.menuRevealBarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
+    
+    
     
     self.albumsArray = [NSMutableArray array];
     

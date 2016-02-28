@@ -14,5 +14,9 @@
 
 - (IBAction)actionVideoButtonPressed:(UIBarButtonItem*)sender;
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem* menuRevealBarButton;
+
+
+
 @end
 

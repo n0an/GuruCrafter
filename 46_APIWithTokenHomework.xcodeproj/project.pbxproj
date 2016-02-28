@@ -28,6 +28,7 @@
 		18153D481C7B6C960063FD81 /* ANVideoAlbumCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18153D471C7B6C960063FD81 /* ANVideoAlbumCVCell.m */; };
 		181986031C79DD3000CE328C /* ANPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */; };
 		181986061C79E26800CE328C /* ANPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181986051C79E26800CE328C /* ANPhotosViewController.m */; };
+		182C3D9A1C8351E700FFE386 /* ANAuthorizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 182C3D991C8351E700FFE386 /* ANAuthorizationViewController.m */; };
 		182D339E1C7F7CD2005E7D2A /* ANPhotoAddingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 182D339D1C7F7CD2005E7D2A /* ANPhotoAddingViewController.m */; };
 		183BA6D51C7C4DBD0038FF74 /* ANVideosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183BA6D41C7C4DBD0038FF74 /* ANVideosViewController.m */; };
 		184818381C68B050005B4F1D /* ANGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 184818371C68B050005B4F1D /* ANGroup.m */; };
@@ -43,6 +44,7 @@
 		18AB7AC61C7B58E200F3B32E /* ANVideoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AB7AC51C7B58E200F3B32E /* ANVideoAlbum.m */; };
 		18AB7AC91C7B5F8200F3B32E /* ANVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AB7AC81C7B5F8200F3B32E /* ANVideo.m */; };
 		18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */; };
+		18B7A2071C831F0000126FB1 /* ANSideBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B7A2061C831F0000126FB1 /* ANSideBarViewController.m */; };
 		18C779AB1C71D7DB006DAE38 /* ANNewPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */; };
 		18D3CE5B1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D3CE5A1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m */; };
 		18D447951C7C5ECB0078A7F7 /* ANVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D447941C7C5ECB0078A7F7 /* ANVideoCell.m */; };
@@ -112,6 +114,8 @@
 		181986021C79DD3000CE328C /* ANPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoCollectionViewCell.m; sourceTree = "<group>"; };
 		181986041C79E26800CE328C /* ANPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotosViewController.h; sourceTree = "<group>"; };
 		181986051C79E26800CE328C /* ANPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotosViewController.m; sourceTree = "<group>"; };
+		182C3D981C8351E700FFE386 /* ANAuthorizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAuthorizationViewController.h; sourceTree = "<group>"; };
+		182C3D991C8351E700FFE386 /* ANAuthorizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAuthorizationViewController.m; sourceTree = "<group>"; };
 		182D339C1C7F7CD2005E7D2A /* ANPhotoAddingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoAddingViewController.h; sourceTree = "<group>"; };
 		182D339D1C7F7CD2005E7D2A /* ANPhotoAddingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoAddingViewController.m; sourceTree = "<group>"; };
 		183BA6D31C7C4DBD0038FF74 /* ANVideosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideosViewController.h; sourceTree = "<group>"; };
@@ -142,6 +146,8 @@
 		18AB7AC81C7B5F8200F3B32E /* ANVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANVideo.m; sourceTree = "<group>"; };
 		18B1CF6B1C68E635008610CA /* ANAddPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAddPostViewController.h; sourceTree = "<group>"; };
 		18B1CF6C1C68E635008610CA /* ANAddPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddPostViewController.m; sourceTree = "<group>"; };
+		18B7A2051C831F0000126FB1 /* ANSideBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANSideBarViewController.h; sourceTree = "<group>"; };
+		18B7A2061C831F0000126FB1 /* ANSideBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANSideBarViewController.m; sourceTree = "<group>"; };
 		18C779A91C71D7DB006DAE38 /* ANNewPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANNewPostCell.h; sourceTree = "<group>"; };
 		18C779AA1C71D7DB006DAE38 /* ANNewPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANNewPostCell.m; sourceTree = "<group>"; };
 		18D3CE591C7C7CD900C09C5D /* ANVideoPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANVideoPlayerViewController.h; sourceTree = "<group>"; };
@@ -297,6 +303,10 @@
 		180404971C66305C00876FFE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				182C3D981C8351E700FFE386 /* ANAuthorizationViewController.h */,
+				182C3D991C8351E700FFE386 /* ANAuthorizationViewController.m */,
+				18B7A2051C831F0000126FB1 /* ANSideBarViewController.h */,
+				18B7A2061C831F0000126FB1 /* ANSideBarViewController.m */,
 				180404941C66300200876FFE /* ANLoginViewController.h */,
 				180404951C66300200876FFE /* ANLoginViewController.m */,
 				180404221C662A6000876FFE /* ViewController.h */,
@@ -592,6 +602,7 @@
 				18D84FAB1C67540D0090BF78 /* ANPostCell.m in Sources */,
 				18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */,
 				18B1CF6D1C68E635008610CA /* ANAddPostViewController.m in Sources */,
+				18B7A2071C831F0000126FB1 /* ANSideBarViewController.m in Sources */,
 				184818381C68B050005B4F1D /* ANGroup.m in Sources */,
 				18639B831C6F13D1008B6632 /* ANMessagesViewController.m in Sources */,
 				180404891C662DE600876FFE /* ANServerManager.m in Sources */,
@@ -602,6 +613,7 @@
 				1878CB751C78EB2E005D5AF4 /* ANPhotoAlbumsViewController.m in Sources */,
 				180404901C662F5800876FFE /* ANUser.m in Sources */,
 				18639B891C6F4F52008B6632 /* ANMessage.m in Sources */,
+				182C3D9A1C8351E700FFE386 /* ANAuthorizationViewController.m in Sources */,
 				1804041E1C662A6000876FFE /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
