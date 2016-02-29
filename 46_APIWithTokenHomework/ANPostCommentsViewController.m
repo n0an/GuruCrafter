@@ -294,7 +294,7 @@ static NSString* myVKAccountID = @"21743772";
                    }
                    
                    [self.tableView beginUpdates];
-                   [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                   [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationBottom];
                    [self.tableView endUpdates];
                    
                    
@@ -330,17 +330,17 @@ static NSString* myVKAccountID = @"21743772";
                        
                        [self.tableView reloadData];
                        
-                       [self.refreshControl endRefreshing];
-                       
-                       self.loadingData = NO;
-                       
                    }
+                   [self.refreshControl endRefreshing];
+                   
+                   self.loadingData = NO;
                    
                }
                onFailure:^(NSError *error, NSInteger statusCode) {
                    
                    NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                   
+                   [self.refreshControl endRefreshing];
+
                }];
 
     }

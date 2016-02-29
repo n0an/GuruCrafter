@@ -17,10 +17,12 @@
 #import <SWRevealViewController.h>
 
 
-@interface ANVideoAlbumsCollViewContr ()
+@interface ANVideoAlbumsCollViewContr () <UIScrollViewDelegate>
 
 @property (strong, nonatomic) NSMutableArray* videoAlbumsArray;
 @property (assign, nonatomic) BOOL loadingData;
+
+@property (strong, nonatomic) UIRefreshControl* refreshControl;
 
 @end
 
@@ -46,13 +48,20 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     }
 
     
-    
-    
     self.videoAlbumsArray = [NSMutableArray array];
     self.loadingData = YES;
     
     
     [self getAlbumsFromServer];
+    
+    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
+    [refresh addTarget:self action:@selector(refreshAlbums) forControlEvents:UIControlEventValueChanged];
+    
+    [self.collectionView addSubview:refresh];
+    
+    self.refreshControl = refresh;
+
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -98,7 +107,17 @@ static NSString * const reuseIdentifier = @"videoCVCell";
                     if ([videoAlbums count] > 0) {
                         [self.videoAlbumsArray addObjectsFromArray:videoAlbums];
                         
-                        [self.collectionView reloadData];
+                        NSMutableArray *newPaths = [NSMutableArray array];
+                        
+                        for (int i = (int)[self.videoAlbumsArray count] - (int)[videoAlbums count]; i < [self.videoAlbumsArray count]; i++) {
+                            
+                            [newPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                        }
+                        
+                        [self.collectionView insertItemsAtIndexPaths:newPaths];
+                        
+                        // [self.collectionView reloadData];
+
                     }
                     
                     self.loadingData = NO;
@@ -106,9 +125,49 @@ static NSString * const reuseIdentifier = @"videoCVCell";
                 }
 
                 onFailure:^(NSError *error, NSInteger statusCode) {
-                    
+                    NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
                 }];
 
+    
+}
+
+- (void) refreshAlbums {
+    
+    if (self.loadingData == NO) {
+        self.loadingData = YES;
+        
+        [[ANServerManager sharedManager] getVideoAlbumsForGroupID:iosDevCourseGroupID
+               withOffset:0
+                    count:MAX(requestCount, [self.videoAlbumsArray count])
+                onSuccess:^(NSArray *videoAlbums) {
+                    
+                    NSLog(@"videoAlbums = %@", videoAlbums);
+                    
+                    if ([videoAlbums count] > 0) {
+                        
+                        [self.videoAlbumsArray removeAllObjects];
+                        
+                        [self.videoAlbumsArray addObjectsFromArray:videoAlbums];
+                        
+                        [self.collectionView reloadData];
+                   
+                    }
+                    
+                    [self.refreshControl endRefreshing];
+                    
+                    self.loadingData = NO;
+                    
+                }
+
+                onFailure:^(NSError *error, NSInteger statusCode) {
+                    NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                    [self.refreshControl endRefreshing];
+                }];
+
+        
+    }
+    
+    
     
 }
 
@@ -186,6 +245,26 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     NSLog(@"shouldSelectItemAtIndexPath");
     return YES;
 }
+
+
+
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
+        NSLog(@"scrollViewDidScroll");
+        if (!self.loadingData)
+        {
+            self.loadingData = YES;
+            [self getAlbumsFromServer];
+        }
+    }
+}
+
+
+
 
 
 
