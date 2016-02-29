@@ -41,6 +41,6 @@ typedef enum {
 
 @required
 
-- (ANPhoto*) iteratePhoto:(ANPhotoIterationDirection) nextOrPreviousPhoto;
+- (ANPhoto*) iteratePhoto:(ANPhotoIterationDirection) iterationDirection;
 
 @end

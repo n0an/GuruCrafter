@@ -21,11 +21,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [self settingImage];
+    
     self.isLabelsVisible = NO;
-    
-    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
-    
-    [self.photoImageView setImageWithURL:photoURL];
     
     self.photoImageView.userInteractionEnabled = YES;
     UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
@@ -36,8 +34,7 @@
     self.likeButton.hidden = YES;
     self.likeButton.userInteractionEnabled = NO;
     
-    self.photoDescriptionLabel.text = self.photo.text;
-    self.likeButton.titleLabel.text = self.photo.likesCount;
+    
     
     
     UIBarButtonItem* cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(actionCancel:)];
@@ -61,6 +58,18 @@
 
 }
 
+#pragma mark - Helper methods
+
+- (void) settingImage {
+    
+    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
+    
+    [self.photoImageView setImageWithURL:photoURL];
+    
+    self.photoDescriptionLabel.text = self.photo.text;
+    self.likeButton.titleLabel.text = self.photo.likesCount;
+
+}
 
 
 #pragma mark - Actions
@@ -75,7 +84,9 @@
     
     // Send message to delegate, to get Next photo from album
     
-    [self.delegate iteratePhoto:ANPhotoIterationDirectionNext];
+    self.photo = [self.delegate iteratePhoto:ANPhotoIterationDirectionNext];
+    
+    [self settingImage];
     
 }
 
@@ -83,8 +94,10 @@
     NSLog(@"actionPreviousPressed");
     
     // Send message to delegate, to get Previous photo from album
-
-    [self.delegate iteratePhoto:ANPhotoIterationDirectionPrevious];
+    
+    self.photo = [self.delegate iteratePhoto:ANPhotoIterationDirectionPrevious];
+    
+    [self settingImage];
     
 }
 
