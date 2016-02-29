@@ -52,7 +52,7 @@
         
         // *** IF THERE'S ONLY ONE PHOTO - GET URL NOW, OTHERWISE - LEAVE ARRAY
         
-        if ([attachmentsArray count] >= 1) {
+        if (1 <= [attachmentsArray count]) {
             ANPhoto* singlePhoto = [attachmentsArray objectAtIndex:0];
             self.postMainImageURL = [NSURL URLWithString:singlePhoto.maxRes];
         }

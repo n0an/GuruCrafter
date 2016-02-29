@@ -10,4 +10,7 @@
 
 @interface ANVideoAlbumsCollViewContr : UICollectionViewController
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem* menuRevealBarButton;
+
+
 @end

@@ -14,6 +14,8 @@
 
 #import "ANVideosViewController.h"
 
+#import <SWRevealViewController.h>
+
 
 @interface ANVideoAlbumsCollViewContr ()
 
@@ -34,6 +36,17 @@ static NSString * const reuseIdentifier = @"videoCVCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.menuRevealBarButton setTarget: self.revealViewController];
+        [self.menuRevealBarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
+
+    
+    
     
     self.videoAlbumsArray = [NSMutableArray array];
     self.loadingData = YES;
@@ -123,9 +136,33 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     videoAlbumCell.sizeLabel.text = [NSString stringWithFormat:@"%@ videos", videoAlbum.albumSize];
     videoAlbumCell.dateLabel.text = [NSString stringWithFormat:@"Updated on %@", videoAlbum.date];
 
-    [videoAlbumCell.albumImageView setImageWithURL:videoAlbum.albumThumbImageURL];
     
-//    videoAlbumCell.albumImageView.userInteractionEnabled = YES;
+    NSURLRequest* albumThumbRequest = [NSURLRequest requestWithURL:videoAlbum.albumThumbImageURL];
+    
+    __block UIImageView* weakAlbumImageView = videoAlbumCell.albumImageView;
+    
+    [videoAlbumCell.albumImageView
+     setImageWithURLRequest:albumThumbRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         
+         
+         [UIView transitionWithView:weakAlbumImageView
+                           duration:0.3f
+                            options:UIViewAnimationOptionTransitionCrossDissolve
+                         animations:^{
+                             weakAlbumImageView.image = image;
+                         }
+                         completion:nil];
+         
+         
+     }
+     failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+         
+     }];
+    
+    
+
     UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionCellTapped:)];
     
     [videoAlbumCell addGestureRecognizer:tapGesture];

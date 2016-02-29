@@ -21,79 +21,102 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.isLabelsVisible = NO;
+    [self settingImage];
     
-    /*
-    CGFloat withPhoto = (CGFloat)self.photo.width;
-    CGFloat heightPhoto = (CGFloat)self.photo.height;
-
-    CGFloat ratio = withPhoto / heightPhoto;
-    
-    CGFloat newWith, newHeight;
-    CGRect rectForPhoto;
-    
-    if (ratio >= 1) {
-        newWith = CGRectGetWidth(self.view.frame);
-        newHeight = newWith / ratio;
-        
-        CGFloat verticalCenter = CGRectGetMidY(self.view.frame);
-        
-        rectForPhoto = CGRectMake(0, verticalCenter -newHeight/2, newWith, newHeight);
-        
-    } else {
-        newHeight = CGRectGetHeight(self.view.frame) - 100;
-        newWith = newHeight * ratio;
-        
-        CGFloat horizontalCenter = CGRectGetMidX(self.view.frame);
-        
-        rectForPhoto = CGRectMake(horizontalCenter - newWith/2, 0, newWith, newHeight);
-    }
-    
-//    self.photoImageView.frame = rectForPhoto;
-//    [self.view layoutSubviews];
-     
-     //    UIImageView* photoImage = [[UIImageView alloc] initWithFrame:rectForPhoto];
-     //
-     //    [photoImage setImageWithURL:photoURL];
-     //
-     //    photoImage.userInteractionEnabled = YES;
-     //    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
-     //
-     //    [photoImage addGestureRecognizer:tapGesture];
-     //
-     //    [self.view addSubview:photoImage];
-     
-     */
-    
-    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
-    
-    [self.photoImageView setImageWithURL:photoURL];
     
     self.photoImageView.userInteractionEnabled = YES;
-    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
-    [self.photoImageView addGestureRecognizer:tapGesture];
+    UITapGestureRecognizer* tapGesture =
+    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
     
+    UISwipeGestureRecognizer* rightSwipeGesture =
+    [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightSwipe:)];
+    rightSwipeGesture.direction = UISwipeGestureRecognizerDirectionRight;
+    
+    UISwipeGestureRecognizer* leftSwipeGesture =
+    [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipe:)];
+    leftSwipeGesture.direction = UISwipeGestureRecognizerDirectionLeft;
+    
+    [self.photoImageView addGestureRecognizer:tapGesture];
+    [self.photoImageView addGestureRecognizer:rightSwipeGesture];
+    [self.photoImageView addGestureRecognizer:leftSwipeGesture];
 
+
+    self.isLabelsVisible = NO;
+    
     self.photoDescriptionLabel.hidden = YES;
     self.likeButton.hidden = YES;
     self.likeButton.userInteractionEnabled = NO;
     
-    self.photoDescriptionLabel.text = self.photo.text;
-    self.likeButton.titleLabel.text = self.photo.likesCount;
+    
     
     
     UIBarButtonItem* cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(actionCancel:)];
     
     self.navigationItem.leftBarButtonItem = cancel;
     
+    
+    UIBarButtonItem* nextButton = [[UIBarButtonItem alloc] initWithTitle:@">" style:UIBarButtonItemStylePlain target:self action:@selector(actionNextPressed:)];
+    
+    UIBarButtonItem* previousButton = [[UIBarButtonItem alloc] initWithTitle:@"<" style:UIBarButtonItemStylePlain target:self action:@selector(actionPreviousPressed:)];
+    
+    UIBarButtonItem* fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
+    fixedSpace.width = 50;
+    
+
+    self.navigationItem.rightBarButtonItems = @[nextButton, fixedSpace, previousButton];
+    
     [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
 
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
 
-    
-    
 }
 
+#pragma mark - Helper methods
+
+- (void) settingImage {
+    
+    self.photoDescriptionLabel.text = self.photo.text;
+    self.likeButton.titleLabel.text = self.photo.likesCount;
+    
+    self.photoImageView.image = nil;
+    
+    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
+
+    // Animated setting photo in UIImageView
+    
+    NSURLRequest* photuURLRequest = [NSURLRequest requestWithURL:photoURL];
+    
+    __block UIImageView* weakPhotoImageView = self.photoImageView;
+    
+    [self.photoImageView
+     setImageWithURLRequest:photuURLRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         
+         [UIView transitionWithView:weakPhotoImageView
+                           duration:0.4f
+                            options:UIViewAnimationOptionTransitionCrossDissolve
+                         animations:^{
+                             weakPhotoImageView.image = image;
+                         }
+                         completion:nil];
+         
+         
+     }
+     failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+         
+     }];
+
+
+}
+
+- (void) iterateAndSetPhotoUsingDirection:(ANPhotoIterationDirection) iterationDirection {
+    
+    self.photo = [self.delegate iteratePhoto:iterationDirection];
+    
+    [self settingImage];
+    
+}
 
 
 #pragma mark - Actions
@@ -101,6 +124,28 @@
 - (void) actionCancel:(UIBarButtonItem*) sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+- (void) actionNextPressed:(UIBarButtonItem*) sender {
+    NSLog(@"actionNextPressed");
+    
+    // Send message to delegate, to get Next photo from album
+    
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionNext];
+    
+}
+
+- (void) actionPreviousPressed:(UIBarButtonItem*) sender {
+    NSLog(@"actionPreviousPressed");
+    
+    // Send message to delegate, to get Previous photo from album
+    
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionPrevious];
+
+    
+}
+
+
 
 - (void) actionOnTapImage: (UITapGestureRecognizer*) recognizer {
     
@@ -117,6 +162,20 @@
 
 }
 
+
+- (void) handleRightSwipe: (UITapGestureRecognizer*) recognizer {
+    
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionPrevious];
+
+    
+}
+
+- (void) handleLeftSwipe: (UITapGestureRecognizer*) recognizer {
+    
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionNext];
+
+    
+}
 
 
 

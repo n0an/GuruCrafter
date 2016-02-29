@@ -24,14 +24,24 @@
 @property (weak, nonatomic) IBOutlet UILabel* likesCountLabel;
 
 @property (weak, nonatomic) IBOutlet UIImageView* postAuthorImageView;
-@property (weak, nonatomic) IBOutlet UIImageView* postImageView;
+@property (weak, nonatomic) IBOutlet UIImageView* postImageView; // to del
 
-@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewFirst;
-@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewSecond;
-@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewThird;
+@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewFirst; // to del
+@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewSecond; // to del
+@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewThird; // to del
 
 
-@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *galleryImageViews;
+@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *galleryImageViews; // delete this
+@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *glryImageViews; // new one
+
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *photoWidths;
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *photoHeights;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* galleryFirstRowLeadingConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* gallerySecondRowLeadingConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* gallerySecondRowTopConstraint;
+
+
 
 @property (weak, nonatomic) IBOutlet UIButton* likeButton;
 @property (weak, nonatomic) IBOutlet UIButton* commentButton;
