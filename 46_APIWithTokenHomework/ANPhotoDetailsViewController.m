@@ -80,7 +80,26 @@
     
     self.photoImageView.image = nil;
     
-    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
+    
+    NSString* linkToNeededRes;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        linkToNeededRes = self.photo.maxRes;
+        
+    } else {
+        
+        if (self.photo.photo_1280) {
+            linkToNeededRes = self.photo.photo_1280;
+        } else {
+            linkToNeededRes = self.photo.maxRes;
+        }
+        
+    }
+    
+ 
+    
+    NSURL* photoURL = [NSURL URLWithString:linkToNeededRes];
+    
 
     // Animated setting photo in UIImageView
     

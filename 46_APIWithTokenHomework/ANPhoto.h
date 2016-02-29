@@ -8,6 +8,21 @@
 
 #import "ANServerObject.h"
 
+typedef enum {
+
+    ANPhotoResolution_First = -1,
+    ANPhotoResolution75,
+    ANPhotoResolution130,
+    ANPhotoResolution604,
+    ANPhotoResolution807,
+    ANPhotoResolution1280,
+    ANPhotoResolution2560,
+    ANPhotoResolution_Last
+
+} ANPhotoResolution;
+
+
+
 @interface ANPhoto : ANServerObject
 
 @property (assign, nonatomic) NSInteger width;
@@ -21,6 +36,10 @@
 @property (strong, nonatomic) NSString* photo_2560;
 
 @property (strong, nonatomic) NSString* maxRes;
+
+@property (strong, nonatomic) NSArray* keysResArray;
+
+@property (strong, nonatomic) NSDictionary* resolutionsDictionary;
 
 
 @property (strong, nonatomic) NSString* text;

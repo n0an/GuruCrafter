@@ -8,6 +8,18 @@
 
 #import "ANPhoto.h"
 
+NSString* kPhoto_75 = @"photo_75";
+NSString* kPhoto_130 = @"photo_130";
+NSString* kPhoto_604 = @"photo_604";
+NSString* kPhoto_807 = @"photo_807";
+NSString* kPhoto_1208 = @"photo_1208";
+NSString* kPhoto_2560 = @"photo_2560";
+
+
+
+
+
+
 @implementation ANPhoto
 
 
@@ -16,6 +28,9 @@
     
     self = [super init];
     if (self) {
+        
+        
+        self.keysResArray = @[kPhoto_75, kPhoto_130, kPhoto_604, kPhoto_807, kPhoto_1208, kPhoto_2560];
         
         self.width = [[responseObject objectForKey:@"width"] integerValue];
         self.height = [[responseObject objectForKey:@"height"] integerValue];
@@ -27,20 +42,34 @@
         self.photo_1280 = [responseObject objectForKey:@"photo_1280"];
         self.photo_2560 = [responseObject objectForKey:@"photo_2560"];
         
-        if (self.photo_2560) {
-            self.maxRes = self.photo_2560;
-        } else if (self.photo_1280) {
-            self.maxRes = self.photo_1280;
-        } else if (self.photo_807) {
-            self.maxRes = self.photo_807;
-        } else if (self.photo_604) {
-            self.maxRes = self.photo_604;
-        } else if (self.photo_130) {
-            self.maxRes = self.photo_130;
-        } else {
-            self.maxRes = self.photo_75;
+        
+        self.resolutionsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      self.photo_75, kPhoto_75,
+                                      self.photo_130, kPhoto_130,
+                                      self.photo_604, kPhoto_604,
+                                      self.photo_807, kPhoto_807,
+                                      self.photo_1280, kPhoto_1208,
+                                      self.photo_2560, kPhoto_2560,
+                                      nil];
+        
+        
+        
+        
+        
+        for (int i = ANPhotoResolution_Last - 1; i > ANPhotoResolution_First; i--) {
+            
+            NSString* keyRes = [self.keysResArray objectAtIndex:i];
+            
+            NSString* currentRes = [self.resolutionsDictionary objectForKey:keyRes];
+            
+            if (currentRes) {
+                self.maxRes = currentRes;
+                break;
+            }
+            
         }
         
+    
         
         self.text = [responseObject objectForKey:@"text"];
         
