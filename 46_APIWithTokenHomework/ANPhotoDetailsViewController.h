@@ -8,7 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    ANPhotoIterationDirectionNext,
+    ANPhotoIterationDirectionPrevious
+
+} ANPhotoIterationDirection;
+
+@protocol ANPhotoViewerDelegate;
+
 @class ANPhoto;
+
+
 
 @interface ANPhotoDetailsViewController : UIViewController
 
@@ -20,6 +30,17 @@
 
 @property (weak, nonatomic) IBOutlet UIButton* likeButton;
 
+@property (weak, nonatomic) id <ANPhotoViewerDelegate> delegate;
 
+
+
+@end
+
+
+@protocol ANPhotoViewerDelegate <NSObject>
+
+@required
+
+- (ANPhoto*) iteratePhoto:(ANPhotoIterationDirection) iterationDirection;
 
 @end

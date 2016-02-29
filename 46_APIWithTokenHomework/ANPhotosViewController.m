@@ -18,11 +18,13 @@
 #import "ANPhotoAddingViewController.h"
 
 
-@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate>
+@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate, ANPhotoViewerDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
 
 @property (strong, nonatomic) UIRefreshControl* refreshControl;
+
+@property (strong, nonatomic) ANPhoto* currentViewingPhoto;
 
 @end
 
@@ -180,8 +182,11 @@ static NSString* myVKAccountID = @"21743772";
  
     ANPhoto* selectedPhoto = [self.photosArray objectAtIndex:indexPath.row];
     
+    self.currentViewingPhoto = selectedPhoto;
+    
     ANPhotoDetailsViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPhotoDetailsViewController"];
     vc.photo = selectedPhoto;
+    vc.delegate = self;
     
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:vc];
     
@@ -223,6 +228,54 @@ static NSString* myVKAccountID = @"21743772";
 
     [self refreshPhotos];
 }
+
+#pragma mark - +++ ANPhotoViewerDelegate +++
+
+- (ANPhoto*) iteratePhoto:(ANPhotoIterationDirection) iterationDirection {
+    
+    ANPhoto* iteratedPhoto;
+    
+    NSInteger currentViewingPhotoIndex = [self.photosArray indexOfObject:self.currentViewingPhoto];
+    NSInteger iteratedPhotoIndex;
+    
+    if (iterationDirection == ANPhotoIterationDirectionNext) {
+        
+        NSLog(@"iteratePhoto Next");
+        
+        if ([self.currentViewingPhoto isEqual:[self.photosArray lastObject]]) {
+            iteratedPhoto = [self.photosArray firstObject];
+            
+        } else {
+            
+            iteratedPhotoIndex = currentViewingPhotoIndex + 1;
+            
+            iteratedPhoto = [self.photosArray objectAtIndex:iteratedPhotoIndex];
+        }
+        
+    } else {
+        
+        NSLog(@"iteratePhoto Previous");
+
+        if ([self.currentViewingPhoto isEqual:[self.photosArray firstObject]]) {
+            iteratedPhoto = [self.photosArray lastObject];
+            
+        } else {
+            
+            iteratedPhotoIndex = currentViewingPhotoIndex - 1;
+            
+            iteratedPhoto = [self.photosArray objectAtIndex:iteratedPhotoIndex];
+
+        }
+        
+    }
+    
+    self.currentViewingPhoto = iteratedPhoto;
+    
+    return iteratedPhoto;
+    
+}
+
+
 
 
 @end
