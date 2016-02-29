@@ -10,10 +10,6 @@
 
 @interface ViewController : UITableViewController
 
-- (IBAction)actionCameraButtonPressed:(UIBarButtonItem*)sender;
-
-- (IBAction)actionVideoButtonPressed:(UIBarButtonItem*)sender;
-
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* menuRevealBarButton;
 
 
