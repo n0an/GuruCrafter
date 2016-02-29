@@ -28,13 +28,16 @@
 
 @interface ANServerManager ()
 
-@property (strong, nonatomic) AFHTTPRequestOperationManager* requestOperationManager;
+@property (strong, nonatomic) AFHTTPSessionManager* requestSessionManager;
 
 @property (strong, nonatomic) ANAccessToken* accessToken;
 
 @property (strong, nonatomic) dispatch_queue_t srvManagerQueue;
 
 @end
+
+
+static NSInteger errorDuringNetworkRequest = 999;
 
 
 @implementation ANServerManager
@@ -60,8 +63,7 @@
         
         NSURL* url = [NSURL URLWithString:@"https://api.vk.com/method/"];
         
-        self.requestOperationManager = [[AFHTTPRequestOperationManager manager] initWithBaseURL:url];
-        
+        self.requestSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:url];
 
         dispatch_queue_attr_t appQueueAttributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, QOS_CLASS_DEFAULT, 0);
         self.srvManagerQueue = dispatch_queue_create("com.anovoselov.iosdevcourse", appQueueAttributes);
@@ -87,7 +89,8 @@
                         completion(user);
                     }
                     
-                } onFailure:^(NSError *error, NSInteger statusCode) {
+                }
+                onFailure:^(NSError *error, NSInteger statusCode) {
                     
                     if (completion) {
                         completion(nil);
@@ -131,12 +134,13 @@
      @"nom",        @"name_case",
      @"5.45",       @"v", nil];
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"users.get"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"users.get JSON: %@", responseObject);
-
+         
          dispatch_async(self.srvManagerQueue, ^{
              
              NSArray* dictsArray = [responseObject objectForKey:@"response"];
@@ -154,20 +158,24 @@
                  
              } else {
                  if (failure) {
-                     failure(nil, operation.response.statusCode);
+                     failure(nil, errorDuringNetworkRequest);
                  }
              }
          });
          
-
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
+
      }];
+    
+    
     
 
 }
@@ -189,10 +197,12 @@
      @"5.45",       @"v",
      nil];
     
-    [self.requestOperationManager
+    
+    [self.requestSessionManager
      GET:@"friends.get"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"JSON: %@", responseObject);
          
          NSArray* dictsArray = [responseObject objectForKey:@"response"];
@@ -207,15 +217,18 @@
          if (success) {
              success(objectsArray);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
 }
 
@@ -245,11 +258,11 @@
      nil];
     
     
-    
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"wall.get"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"getGroupWall JSON: %@", responseObject);
          
          dispatch_async(self.srvManagerQueue, ^{
@@ -311,17 +324,17 @@
              
              
          });
-         
-         
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
@@ -349,12 +362,11 @@
      nil];
     
     
-    
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"wall.getById"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
-        
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"wall.getById JSON: %@", responseObject);
          
          NSDictionary* response = [responseObject objectForKey:@"response"];
@@ -372,20 +384,22 @@
          } else {
              post.author = author;
          }
-
+         
          
          if (success) {
              success(post);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
@@ -411,26 +425,27 @@
      @"5.45",                   @"v",
      nil];
     
-    
-    [self.requestOperationManager
+    [self.requestSessionManager
      POST:@"wall.post"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"JSON: %@", responseObject);
          
          
          if (success) {
              success(responseObject);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
@@ -454,11 +469,11 @@
      @"5.45",                   @"v", nil];
     
     
-    
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"messages.getHistory"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"messages.getHistory JSON: %@", responseObject);
          
          dispatch_async(self.srvManagerQueue, ^{
@@ -481,16 +496,18 @@
              
              
          });
-         
 
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
+    
     
 }
 
@@ -510,25 +527,28 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      POST:@"messages.send"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"messages.send JSON: %@", responseObject);
          
          
          if (success) {
              success(responseObject);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+
     
     
 }
@@ -562,11 +582,11 @@
      @"5.45",                   @"v", nil];
     
     
-    
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"wall.getComments"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"wall.getComments JSON: %@", responseObject);
          
          dispatch_async(self.srvManagerQueue, ^{
@@ -624,19 +644,21 @@
                      success(comments);
                  }
              });
-
+             
          });
-
+         
      }
      
-     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
+    
     
     
 }
@@ -665,25 +687,29 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      POST:@"wall.addComment"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"wall.addComment JSON: %@", responseObject);
          
          
          if (success) {
              success(responseObject);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
@@ -711,10 +737,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      POST:@"likes.add"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"likes.add JSON: %@", responseObject);
          
          NSDictionary* result = [responseObject objectForKey:@"response"];
@@ -722,14 +749,16 @@
          if (success) {
              success(result);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
+
      }];
     
     
@@ -758,10 +787,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      POST:@"likes.delete"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"likes.delete JSON: %@", responseObject);
          
          NSDictionary* result = [responseObject objectForKey:@"response"];
@@ -769,13 +799,14 @@
          if (success) {
              success(result);
          }
-         
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
@@ -807,10 +838,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      POST:@"likes.isLiked"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"likes.isLiked JSON: %@", responseObject);
          
          NSDictionary* response = [responseObject objectForKey:@"response"];
@@ -820,15 +852,18 @@
          if (success) {
              success(isLiked);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
@@ -857,10 +892,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"photos.getAlbums"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"photos.getAlbums JSON: %@", responseObject);
          
          dispatch_async(self.srvManagerQueue, ^{
@@ -883,15 +919,15 @@
              });
              
              
-
          });
-         
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
@@ -925,10 +961,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"photos.get"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"photos.get JSON: %@", responseObject);
          
          dispatch_async(self.srvManagerQueue, ^{
@@ -952,16 +989,18 @@
              
              
          });
-         
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
@@ -981,11 +1020,11 @@
      @"5.45",                   @"v",
      nil];
     
-    
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"photos.getUploadServer"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"photos.getUploadServer JSON: %@", responseObject);
          
          NSDictionary* response = [responseObject objectForKey:@"response"];
@@ -995,15 +1034,17 @@
          if (success) {
              success(uploadServer);
          }
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
@@ -1013,19 +1054,19 @@
         fileToUpload:(NSData*) fileData
           onSuccess:(void(^)(ANParsedUploadServer* parsedUploadServer)) success
           onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
-
     
-    AFHTTPRequestOperationManager* requestManager = [AFHTTPRequestOperationManager manager];
-    requestManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+    AFHTTPSessionManager* sessionManager = [AFHTTPSessionManager manager];
+    sessionManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     
     
-    [requestManager
-     POST:uploadServerURL parameters:nil
+    [sessionManager
+     POST:uploadServerURL
+     parameters:nil
      constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
          [formData appendPartWithFileData:fileData name:@"file1" fileName:@"file1.jpg" mimeType:@"image/jpeg"];
      }
-     
-     success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"POST SAVE JSON: %@", responseObject);
          
          ANParsedUploadServer* parsedUploadServer = [[ANParsedUploadServer alloc] initWithServerResponse:responseObject];
@@ -1035,10 +1076,11 @@
          }
 
      }
-     
-     failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-         failure(error, operation.response.statusCode);
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         failure(error, errorDuringNetworkRequest);
+
      }];
+    
     
 }
 
@@ -1060,10 +1102,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      POST:@"photos.save"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"photos.save JSON: %@", responseObject);
          
          
@@ -1071,15 +1114,17 @@
              success(responseObject);
          }
          
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
     
+        
     
 }
 
@@ -1110,10 +1155,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"video.getAlbums"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"video.getAlbums JSON: %@", responseObject);
          
          dispatch_async(self.srvManagerQueue, ^{
@@ -1137,17 +1183,19 @@
              
              
          });
-         
-         
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
+    
     
     
 }
@@ -1177,10 +1225,11 @@
      nil];
     
     
-    [self.requestOperationManager
+    [self.requestSessionManager
      GET:@"video.get"
      parameters:params
-     success:^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"video.get JSON: %@", responseObject);
          
          dispatch_async(self.srvManagerQueue, ^{
@@ -1200,20 +1249,21 @@
                  if (success) {
                      success(videosArray);
                  }
-
+                 
              });
              
          });
-         
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error: %@", error);
          
          if (failure) {
-             failure(error, operation.response.statusCode);
+             failure(error, errorDuringNetworkRequest);
              
          }
      }];
+    
     
     
 }
