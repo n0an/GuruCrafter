@@ -37,7 +37,6 @@ typedef enum {
 } ANTableViewSection;
 
 
-
 @interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
 
 @property (strong, nonatomic) NSMutableArray* postsArray;
@@ -421,30 +420,34 @@ static NSInteger firstRowCount = 3;
              */
 
                 //  Calculation of Gallery ImageViews Maximum Sizes (depending on count of photos)
-                //TODO: use Portrait Landscape idioms instead fixing to 400
-                //TODO: limit sized in both rows
+        
         CGFloat maxRequiredSizeOfImageInFirstRow = 0;
         CGFloat maxRequiredSizeOfImageInSecondRow = 0;
         
+        CGFloat maxAvailableSpaceToOperate = MIN(CGRectGetWidth(self.tableView.frame), 1300);
+        
         if ([post.attachmentsArray count] <= firstRowCount) { // If we have 3 or less photos - use only ONE row of Gallery
             
-            NSLog(@"self.tableView.frame width = %f", self.tableView.frame.size.width);
+            NSLog(@"self.tableView.frame width = %f", CGRectGetWidth(self.tableView.frame));
             
-            maxRequiredSizeOfImageInFirstRow = (CGRectGetWidth(self.tableView.frame) - 16 - 4 * ([post.attachmentsArray count] - 1))/ [post.attachmentsArray count];
+            maxRequiredSizeOfImageInFirstRow = (maxAvailableSpaceToOperate - 16 - 4 * ([post.attachmentsArray count] - 1))/ [post.attachmentsArray count];
             
-            maxRequiredSizeOfImageInFirstRow = MIN(maxRequiredSizeOfImageInFirstRow, 400); // Limit to 400 even in landscape mode of iphone
+            maxRequiredSizeOfImageInFirstRow = MIN(maxRequiredSizeOfImageInFirstRow, 800); // Limit to 800
    
         } else { //** If we have more than 3 photos - use TWO rows of Gallery
             
-            maxRequiredSizeOfImageInFirstRow = (CGRectGetWidth(self.tableView.frame) - 16 - 4 * (firstRowCount - 1)) / 3;
+
+            maxRequiredSizeOfImageInFirstRow = (maxAvailableSpaceToOperate - 16 - 4 * (firstRowCount - 1)) / 3;
             
             maxRequiredSizeOfImageInSecondRow =
             (CGRectGetWidth(self.tableView.frame) - 16 - 4 * ([post.attachmentsArray count] - firstRowCount - 1)) / ([post.attachmentsArray count] - firstRowCount);
             
-            maxRequiredSizeOfImageInSecondRow = MIN(maxRequiredSizeOfImageInSecondRow, 400); // Limit to 400 even in landscape mode of iphone
-
+            maxRequiredSizeOfImageInSecondRow = MIN(maxRequiredSizeOfImageInSecondRow, 800); // Limit to 800
+            
+            
         }
 
+        
         
         
             /*-- PART 3. LOOP THROUGH PHOTOS IN ATTACHMENTS ARRAY AND HANDLE EACH PHOTO --
@@ -526,7 +529,58 @@ static NSInteger firstRowCount = 3;
                                                 widthOfCurrentPhoto, heightOfCurrentPhoto);
             
             // * 4. Loading and setting image
-            NSURL* urlPhoto = [NSURL URLWithString:photo.photo_604];
+            
+    
+            NSString* linkToNeededRes;
+            ANPhotoResolution neededRes;
+            
+            if (i < firstRowCount) {
+                
+                if (maxRequiredSizeOfImageInFirstRow > 600) {
+                    linkToNeededRes = photo.photo_807;
+                    neededRes = ANPhotoResolution807;
+                } else {
+                    linkToNeededRes = photo.photo_604;
+                    neededRes = ANPhotoResolution604;
+
+                }
+                
+
+            } else {
+                
+                if (maxRequiredSizeOfImageInSecondRow > 600) {
+                    linkToNeededRes = photo.photo_807;
+                    neededRes = ANPhotoResolution807;
+
+                } else {
+                    linkToNeededRes = photo.photo_604;
+                    neededRes = ANPhotoResolution604;
+
+                }
+                
+            }
+            
+            if (linkToNeededRes == nil) {
+                
+                for (ANPhotoResolution i = neededRes - 1; i > ANPhotoResolution_First; i--) {
+                    
+                    NSString* lessResolutionKey = [photo.keysResArray objectAtIndex:i];
+                    
+                    NSString* lessResolution = [photo.resolutionsDictionary objectForKey:lessResolutionKey];
+                    
+                    if (lessResolution != nil) {
+                        linkToNeededRes = lessResolution;
+                        break;
+                    }
+                    
+                    
+                }
+                
+            }
+            
+            
+            
+            NSURL* urlPhoto = [NSURL URLWithString:linkToNeededRes];
             
             NSURLRequest* photoRequest = [NSURLRequest requestWithURL:urlPhoto];
             
