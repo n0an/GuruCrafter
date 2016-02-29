@@ -82,7 +82,7 @@ static NSString* myVKAccountID = @"21743772";
                          
                          dispatch_async(dispatch_get_main_queue(), ^{
                              [self.tableView beginUpdates];
-                             [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+                             [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationRight];
                              [self.tableView endUpdates];
                              
                          });
@@ -127,6 +127,8 @@ static NSString* myVKAccountID = @"21743772";
              }
              onFailure:^(NSError *error, NSInteger statusCode) {
                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                 [self.refreshControl endRefreshing];
+
              }];
    
     }
@@ -187,16 +189,10 @@ static NSString* myVKAccountID = @"21743772";
      failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
          
      }];
-    
-    
-    
-    
-    
-    
+
     return videoCell;
     
 
-    
 }
 
 

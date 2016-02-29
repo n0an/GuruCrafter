@@ -18,10 +18,13 @@
 #import <SWRevealViewController.h>
 
 
-@interface ANPhotoAlbumsViewController ()
+@interface ANPhotoAlbumsViewController () <UIScrollViewDelegate>
 
 @property (strong, nonatomic) NSMutableArray* albumsArray;
 @property (assign, nonatomic) BOOL loadingData;
+
+@property (strong, nonatomic) UIRefreshControl* refreshControl;
+
 
 @end
 
@@ -44,17 +47,21 @@ static NSString* myVKAccountID = @"21743772";
         [self.menuRevealBarButton setAction: @selector( revealToggle: )];
         [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
     }
-    
-    
-    
+
     self.albumsArray = [NSMutableArray array];
     
     self.loadingData = YES;
     
-    
     [self getAlbumsFromServer];
     
+    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
+    [refresh addTarget:self action:@selector(refreshAlbums) forControlEvents:UIControlEventValueChanged];
+    
+    [self.collectionView addSubview:refresh];
+    
+    self.refreshControl = refresh;
 }
+
 
 
 
@@ -64,13 +71,22 @@ static NSString* myVKAccountID = @"21743772";
     
     [[ANServerManager sharedManager] getGroupAlbums:iosDevCourseGroupID
              withOffset:0
-                  count:0
+                  count:requestCount
               onSuccess:^(NSArray *photoAlbums) {
                   
                   if ([photoAlbums count] > 0) {
                       [self.albumsArray addObjectsFromArray:photoAlbums];
                       
-                      [self.collectionView reloadData];
+                      NSMutableArray *newPaths = [NSMutableArray array];
+                      
+                      for (int i = (int)[self.albumsArray count] - (int)[photoAlbums count]; i < [self.albumsArray count]; i++) {
+                          
+                          [newPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                      }
+                      
+                      [self.collectionView insertItemsAtIndexPaths:newPaths];
+ 
+//                      [self.collectionView reloadData];
                   }
                   
                   self.loadingData = NO;
@@ -82,6 +98,43 @@ static NSString* myVKAccountID = @"21743772";
               }];
 
 }
+
+- (void) refreshAlbums {
+    
+    if (self.loadingData == NO) {
+        self.loadingData = YES;
+        
+        [[ANServerManager sharedManager] getGroupAlbums:iosDevCourseGroupID
+                 withOffset:0
+                      count:MAX(requestCount, [self.albumsArray count])
+                  onSuccess:^(NSArray *photoAlbums) {
+                      
+                      if ([photoAlbums count] > 0) {
+                          
+                          [self.albumsArray removeAllObjects];
+                          
+                          [self.albumsArray addObjectsFromArray:photoAlbums];
+                          
+                          [self.collectionView reloadData];
+                          
+                      }
+                      [self.refreshControl endRefreshing];
+                      
+                      self.loadingData = NO;
+                      
+                      
+                  }
+                  onFailure:^(NSError *error, NSInteger statusCode) {
+                      NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                      [self.refreshControl endRefreshing];
+
+                  }];
+    }
+    
+    
+    
+}
+
 
 
 #pragma mark - UICollectionViewDataSource
@@ -136,6 +189,22 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
+        NSLog(@"scrollViewDidScroll");
+        if (!self.loadingData)
+        {
+            self.loadingData = YES;
+            [self getAlbumsFromServer];
+        }
+    }
+}
+
+
+#pragma mark - Segue
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     

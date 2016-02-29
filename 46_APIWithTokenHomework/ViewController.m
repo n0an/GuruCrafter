@@ -195,11 +195,11 @@ static NSInteger firstRowCount = 3;
                  
                  [self.tableView reloadData];
                  
-                 [self.refreshControl endRefreshing];
                  
-                 self.loadingData = NO;
-
              }
+             [self.refreshControl endRefreshing];
+             
+             self.loadingData = NO;
              
          }
          onFailure:^(NSError *error, NSInteger statusCode) {

@@ -72,7 +72,17 @@ static NSString* myVKAccountID = @"21743772";
                      
                      [self.photosArray addObjectsFromArray:photos];
                      
-                     [self.collectionView reloadData];
+                     NSMutableArray *newPaths = [NSMutableArray array];
+                     
+                     for (int i = (int)[self.photosArray count] - (int)[photos count]; i < [self.photosArray count]; i++) {
+                         
+                         [newPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                     }
+                     
+                     [self.collectionView insertItemsAtIndexPaths:newPaths];
+                     
+                     
+//                     [self.collectionView reloadData];
                  }
                  
                  self.loadingData = NO;
@@ -113,6 +123,7 @@ static NSString* myVKAccountID = @"21743772";
                  }
                  onFailure:^(NSError *error, NSInteger statusCode) {
                      NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                     [self.refreshControl endRefreshing];
 
                  }];
         
@@ -194,6 +205,7 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 

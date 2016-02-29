@@ -173,13 +173,16 @@ static NSInteger messagesInRequest = 20;
                           [self.messages addObjectsFromArray:messages];
                           
                           [self.tableView reloadData];
-                          [self.refreshControl endRefreshing];
-                          self.loadingData = NO;
+                          
                       }
+                      [self.refreshControl endRefreshing];
+                      self.loadingData = NO;
                       
                       
                   } onFailure:^(NSError *error, NSInteger statusCode) {
+                      NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
                       
+                      [self.refreshControl endRefreshing];
                   }];
 
     }
