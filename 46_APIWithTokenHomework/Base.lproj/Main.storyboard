@@ -187,7 +187,9 @@
                                         <constraint firstItem="e1c-5u-Smp" firstAttribute="leading" secondItem="m6t-bs-EiR" secondAttribute="trailing" constant="8" id="Qsw-1o-bnk"/>
                                         <constraint firstItem="Mbb-o6-DD2" firstAttribute="leading" secondItem="Gzh-8H-YKk" secondAttribute="trailing" constant="4" id="Qtt-H4-pMW"/>
                                         <constraint firstItem="Gzh-8H-YKk" firstAttribute="top" secondItem="Mbb-o6-DD2" secondAttribute="top" id="Szv-IG-B6q"/>
+                                        <constraint firstItem="Obd-K8-jvu" firstAttribute="leading" secondItem="Myy-Au-6GF" secondAttribute="leading" constant="8" id="UFK-0Y-NVW"/>
                                         <constraint firstItem="ifv-OZ-c6M" firstAttribute="leading" secondItem="Myy-Au-6GF" secondAttribute="leading" constant="18" id="YSS-Qk-4fp"/>
+                                        <constraint firstItem="ZAo-kw-3gu" firstAttribute="leading" secondItem="Myy-Au-6GF" secondAttribute="leading" constant="8" id="Zgb-0r-QJL"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="odd-7d-tO6" secondAttribute="bottom" constant="-5.5" id="aPE-Ud-Xng"/>
                                         <constraint firstItem="z32-df-fNj" firstAttribute="top" secondItem="ZAo-kw-3gu" secondAttribute="top" id="aeZ-0F-Vy1"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="PV9-BM-1pd" secondAttribute="bottom" constant="0.5" id="bqR-jk-iE7"/>
@@ -208,6 +210,8 @@
                                     </constraints>
                                     <variation key="default">
                                         <mask key="constraints">
+                                            <exclude reference="KZn-ux-kf2"/>
+                                            <exclude reference="0Wj-lP-Wx9"/>
                                             <exclude reference="0xf-6z-5FR"/>
                                             <exclude reference="aPE-Ud-Xng"/>
                                             <exclude reference="dEh-k4-Z11"/>
@@ -219,8 +223,8 @@
                                     <outlet property="commentsCountLabel" destination="PV9-BM-1pd" id="kSp-yx-sZF"/>
                                     <outlet property="dateLabel" destination="e1c-5u-Smp" id="WV7-pi-xw9"/>
                                     <outlet property="fullNameLabel" destination="vDS-YI-kAi" id="Qeb-ft-Pao"/>
-                                    <outlet property="galleryFirstRowLeadingConstraint" destination="KZn-ux-kf2" id="ZrQ-za-ZGq"/>
-                                    <outlet property="gallerySecondRowLeadingConstraint" destination="0Wj-lP-Wx9" id="TAa-JW-KNG"/>
+                                    <outlet property="galleryFirstRowLeadingConstraint" destination="UFK-0Y-NVW" id="bJS-NI-TBG"/>
+                                    <outlet property="gallerySecondRowLeadingConstraint" destination="Zgb-0r-QJL" id="765-QH-eNu"/>
                                     <outlet property="gallerySecondRowTopConstraint" destination="sU5-Hi-xQL" id="FkQ-xP-9uj"/>
                                     <outlet property="likeButton" destination="odd-7d-tO6" id="MRD-BF-Dcg"/>
                                     <outlet property="postAuthorImageView" destination="m6t-bs-EiR" id="0pT-Be-dDA"/>

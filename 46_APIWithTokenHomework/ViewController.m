@@ -589,8 +589,10 @@ static NSInteger firstRowCount = 3;
             
         }
         
+        
         postCell.galleryFirstRowLeadingConstraint.constant = (CGRectGetWidth(tableView.frame) - 4 * indentsCountFirstRow - fullWidthFirstRow) / 2;
         
+
         
         
         [postCell layoutIfNeeded];
