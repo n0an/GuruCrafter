@@ -23,13 +23,26 @@
 
     [self settingImage];
     
-    self.isLabelsVisible = NO;
     
     self.photoImageView.userInteractionEnabled = YES;
-    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
-    [self.photoImageView addGestureRecognizer:tapGesture];
+    UITapGestureRecognizer* tapGesture =
+    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionOnTapImage:)];
     
+    UISwipeGestureRecognizer* rightSwipeGesture =
+    [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightSwipe:)];
+    rightSwipeGesture.direction = UISwipeGestureRecognizerDirectionRight;
+    
+    UISwipeGestureRecognizer* leftSwipeGesture =
+    [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipe:)];
+    leftSwipeGesture.direction = UISwipeGestureRecognizerDirectionLeft;
+    
+    [self.photoImageView addGestureRecognizer:tapGesture];
+    [self.photoImageView addGestureRecognizer:rightSwipeGesture];
+    [self.photoImageView addGestureRecognizer:leftSwipeGesture];
 
+
+    self.isLabelsVisible = NO;
+    
     self.photoDescriptionLabel.hidden = YES;
     self.likeButton.hidden = YES;
     self.likeButton.userInteractionEnabled = NO;
@@ -71,6 +84,14 @@
 
 }
 
+- (void) iterateAndSetPhotoUsingDirection:(ANPhotoIterationDirection) iterationDirection {
+    
+    self.photo = [self.delegate iteratePhoto:iterationDirection];
+    
+    [self settingImage];
+    
+}
+
 
 #pragma mark - Actions
 
@@ -84,9 +105,7 @@
     
     // Send message to delegate, to get Next photo from album
     
-    self.photo = [self.delegate iteratePhoto:ANPhotoIterationDirectionNext];
-    
-    [self settingImage];
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionNext];
     
 }
 
@@ -95,9 +114,8 @@
     
     // Send message to delegate, to get Previous photo from album
     
-    self.photo = [self.delegate iteratePhoto:ANPhotoIterationDirectionPrevious];
-    
-    [self settingImage];
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionPrevious];
+
     
 }
 
@@ -119,7 +137,19 @@
 }
 
 
+- (void) handleRightSwipe: (UITapGestureRecognizer*) recognizer {
+    
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionPrevious];
 
+    
+}
+
+- (void) handleLeftSwipe: (UITapGestureRecognizer*) recognizer {
+    
+    [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionNext];
+
+    
+}
 
 
 
