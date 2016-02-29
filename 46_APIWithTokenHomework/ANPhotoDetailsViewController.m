@@ -75,12 +75,38 @@
 
 - (void) settingImage {
     
-    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
-    
-    [self.photoImageView setImageWithURL:photoURL];
-    
     self.photoDescriptionLabel.text = self.photo.text;
     self.likeButton.titleLabel.text = self.photo.likesCount;
+    
+    self.photoImageView.image = nil;
+    
+    NSURL* photoURL = [NSURL URLWithString:self.photo.photo_604];
+
+    // Animated setting photo in UIImageView
+    
+    NSURLRequest* photuURLRequest = [NSURLRequest requestWithURL:photoURL];
+    
+    __block UIImageView* weakPhotoImageView = self.photoImageView;
+    
+    [self.photoImageView
+     setImageWithURLRequest:photuURLRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         
+         [UIView transitionWithView:weakPhotoImageView
+                           duration:0.4f
+                            options:UIViewAnimationOptionTransitionCrossDissolve
+                         animations:^{
+                             weakPhotoImageView.image = image;
+                         }
+                         completion:nil];
+         
+         
+     }
+     failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+         
+     }];
+
 
 }
 
