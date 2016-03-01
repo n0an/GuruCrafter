@@ -560,15 +560,15 @@ static NSInteger firstRowCount = 3;
                 
             }
             
-            if (linkToNeededRes == nil) {
+            if (!linkToNeededRes) {
                 
-                for (ANPhotoResolution i = neededRes - 1; i > ANPhotoResolution_First; i--) {
+                for (ANPhotoResolution i = neededRes - 1; i >= ANPhotoResolution_First; i--) {
                     
                     NSString* lessResolutionKey = [photo.keysResArray objectAtIndex:i];
                     
                     NSString* lessResolution = [photo.resolutionsDictionary objectForKey:lessResolutionKey];
                     
-                    if (lessResolution != nil) {
+                    if (lessResolution) {
                         linkToNeededRes = lessResolution;
                         break;
                     }
