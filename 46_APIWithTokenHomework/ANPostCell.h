@@ -21,7 +21,6 @@
 
 
 @property (weak, nonatomic) IBOutlet UILabel* commentsCountLabel;
-@property (weak, nonatomic) IBOutlet UILabel* likesCountLabel;
 
 @property (weak, nonatomic) IBOutlet UIImageView* postAuthorImageView;
 @property (weak, nonatomic) IBOutlet UIImageView* postImageView; // to del

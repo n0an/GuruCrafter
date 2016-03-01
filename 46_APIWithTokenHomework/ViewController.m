@@ -597,6 +597,18 @@ static NSInteger firstRowCount = 3;
                                              failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                                  NSLog(@"%@", [error localizedDescription]);
                                              }];
+            
+            
+            // * 5. Setting tapGesture for current ImageView
+            currentImageView.userInteractionEnabled = YES;
+            
+            UITapGestureRecognizer* tapGesture =
+            [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                    action:@selector(actionGlryImageViewTapped:)];
+            
+            [currentImageView addGestureRecognizer:tapGesture];
+            
+            
         }
         
         // *********$$$$$$$$ MAIN LOOP FOR ENDS HERE $$$$$$$****************
@@ -731,6 +743,27 @@ static NSInteger firstRowCount = 3;
     
 }
 
+
+- (void) actionGlryImageViewTapped:(UITapGestureRecognizer*) recognizer {
+    
+    NSLog(@"TAP ON GALLERY IMAGEVIEW WORKS!!");
+    
+    
+//    CGPoint btnPosition = [sender convertPoint:CGPointZero toView:self.tableView];
+//    
+//    NSIndexPath *btnIndexPath = [self.tableView indexPathForRowAtPoint:btnPosition];
+//    
+//    NSLog(@"actionCommentPressed");
+//    
+//    
+//    // Taking tapped image view from activated recognizer
+//    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+//    
+//    // Getting cell that has this image view. Double superview becuase - Cell->ContentView->ImageView
+//    UITableViewCell* cell = (UITableViewCell*)tappedImageView.superview.superview;
+    
+    
+}
 
 
 
