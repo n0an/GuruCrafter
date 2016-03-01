@@ -56,7 +56,7 @@ NSString* kPhoto_2560 = @"photo_2560";
         
         
         
-        for (int i = ANPhotoResolution_Last - 1; i > ANPhotoResolution_First; i--) {
+        for (ANPhotoResolution i = ANPhotoResolution_Last; i >= ANPhotoResolution_First; i--) {
             
             NSString* keyRes = [self.keysResArray objectAtIndex:i];
             
