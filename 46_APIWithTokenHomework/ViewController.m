@@ -29,6 +29,8 @@
 
 #import <SWRevealViewController.h>
 
+#import "ANPhotoDetailsViewController.h"
+
 
 typedef enum {
     ANTableViewSectionAddPost,
@@ -37,12 +39,15 @@ typedef enum {
 } ANTableViewSection;
 
 
-@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
+@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate, ANPhotoViewerDelegate>
 
 @property (strong, nonatomic) NSMutableArray* postsArray;
 
 @property (assign, nonatomic) BOOL loadingData;
 @property (assign, nonatomic) BOOL isLikedPost;
+
+@property (strong, nonatomic) NSArray* currentPhotoViewingArray;
+@property (strong, nonatomic) ANPhoto* currentViewingPhoto;
 
 @end
 
@@ -597,6 +602,18 @@ static NSInteger firstRowCount = 3;
                                              failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                                  NSLog(@"%@", [error localizedDescription]);
                                              }];
+            
+            
+            // * 5. Setting tapGesture for current ImageView
+            currentImageView.userInteractionEnabled = YES;
+            
+            UITapGestureRecognizer* tapGesture =
+            [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                    action:@selector(actionGlryImageViewTapped:)];
+            
+            [currentImageView addGestureRecognizer:tapGesture];
+            
+            
         }
         
         // *********$$$$$$$$ MAIN LOOP FOR ENDS HERE $$$$$$$****************
@@ -732,6 +749,41 @@ static NSInteger firstRowCount = 3;
 }
 
 
+- (void) actionGlryImageViewTapped:(UITapGestureRecognizer*) recognizer {
+    
+    NSLog(@"TAP ON GALLERY IMAGEVIEW WORKS!!");
+    
+    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+    
+    // Getting cell that has this image view. Double superview becuase - Cell->ContentView->ImageView
+    ANPostCell* cell = (ANPostCell*)tappedImageView.superview.superview;
+    
+    NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:cell];
+    
+    ANPost* clickedPost = [self.postsArray objectAtIndex:clickedIndexPath.row];
+    
+    self.currentPhotoViewingArray = clickedPost.attachmentsArray;
+    
+    NSInteger clickedIndex = [cell.glryImageViews indexOfObject:tappedImageView];
+    
+    ANPhoto* clickedPhoto = [clickedPost.attachmentsArray objectAtIndex:clickedIndex];
+    self.currentViewingPhoto = clickedPhoto;
+    
+    ANPhotoDetailsViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPhotoDetailsViewController"];
+    vc.photo = clickedPhoto;
+    vc.delegate = self;
+    vc.isViewerInsidePost = YES;
+    
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    
+    [self presentViewController:nav animated:YES completion:nil];
+    
+    
+    
+    
+    
+}
+
 
 
 #pragma mark - UIScrollViewDelegate
@@ -790,6 +842,55 @@ static NSInteger firstRowCount = 3;
     
 
 
+}
+
+
+
+
+#pragma mark - +++ ANPhotoViewerDelegate +++
+
+- (ANPhoto*) iteratePhoto:(ANPhotoIterationDirection) iterationDirection {
+    
+    ANPhoto* iteratedPhoto;
+    
+    NSInteger currentViewingPhotoIndex = [self.currentPhotoViewingArray indexOfObject:self.currentViewingPhoto];
+    NSInteger iteratedPhotoIndex;
+    
+    if (iterationDirection == ANPhotoIterationDirectionNext) {
+        
+        NSLog(@"iteratePhoto Next");
+        
+        if ([self.currentViewingPhoto isEqual:[self.currentPhotoViewingArray lastObject]]) {
+            iteratedPhoto = [self.currentPhotoViewingArray firstObject];
+            
+        } else {
+            
+            iteratedPhotoIndex = currentViewingPhotoIndex + 1;
+            
+            iteratedPhoto = [self.currentPhotoViewingArray objectAtIndex:iteratedPhotoIndex];
+        }
+        
+    } else {
+        
+        NSLog(@"iteratePhoto Previous");
+        
+        if ([self.currentViewingPhoto isEqual:[self.currentPhotoViewingArray firstObject]]) {
+            iteratedPhoto = [self.currentPhotoViewingArray lastObject];
+            
+        } else {
+            
+            iteratedPhotoIndex = currentViewingPhotoIndex - 1;
+            
+            iteratedPhoto = [self.currentPhotoViewingArray objectAtIndex:iteratedPhotoIndex];
+            
+        }
+        
+    }
+    
+    self.currentViewingPhoto = iteratedPhoto;
+    
+    return iteratedPhoto;
+    
 }
 
 
