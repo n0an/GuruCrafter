@@ -36,10 +36,15 @@
     [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipe:)];
     leftSwipeGesture.direction = UISwipeGestureRecognizerDirectionLeft;
     
-    [self.photoImageView addGestureRecognizer:tapGesture];
+    
     [self.photoImageView addGestureRecognizer:rightSwipeGesture];
     [self.photoImageView addGestureRecognizer:leftSwipeGesture];
 
+    if (!self.isViewerInsidePost) {
+        [self.photoImageView addGestureRecognizer:tapGesture];
+    }
+    
+    
 
     self.isLabelsVisible = NO;
     
