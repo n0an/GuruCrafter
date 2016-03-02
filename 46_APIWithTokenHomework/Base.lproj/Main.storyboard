@@ -1959,6 +1959,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ojb-fr-TMB">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ok3-hh-Jjd">
                                 <rect key="frame" x="492" y="558" width="88" height="22"/>
                                 <constraints>
@@ -1977,9 +1980,6 @@
                                     </mask>
                                 </variation>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ojb-fr-TMB">
-                                <rect key="frame" x="0.0" y="20" width="600" height="504"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pwl-FH-zMv">
                                 <rect key="frame" x="20" y="532" width="560" height="17.5"/>
                                 <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="15"/>
@@ -1996,6 +1996,7 @@
                             <constraint firstItem="pwl-FH-zMv" firstAttribute="top" secondItem="ojb-fr-TMB" secondAttribute="bottom" constant="10.5" id="7bv-nu-IQd"/>
                             <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="pwl-FH-zMv" secondAttribute="bottom" constant="12" id="7w8-lE-TtB"/>
                             <constraint firstItem="pwl-FH-zMv" firstAttribute="leading" secondItem="C5R-Yx-0Sb" secondAttribute="leading" constant="20" id="89k-N8-Xsx"/>
+                            <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="ojb-fr-TMB" secondAttribute="bottom" id="C7c-jh-d6t"/>
                             <constraint firstItem="ojb-fr-TMB" firstAttribute="leading" secondItem="C5R-Yx-0Sb" secondAttribute="leading" id="E0B-C1-Lj1"/>
                             <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="pwl-FH-zMv" secondAttribute="bottom" constant="8" id="G3U-ul-tga"/>
                             <constraint firstAttribute="leadingMargin" secondItem="pwl-FH-zMv" secondAttribute="leading" id="KWD-Ov-GXD"/>
@@ -2007,6 +2008,7 @@
                             <constraint firstItem="ojb-fr-TMB" firstAttribute="top" secondItem="fTx-ty-W7I" secondAttribute="bottom" constant="80" id="aXg-Tx-szw"/>
                             <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="ok3-hh-Jjd" secondAttribute="bottom" constant="55" id="ccQ-xO-59c"/>
                             <constraint firstItem="4el-Wz-nBe" firstAttribute="top" secondItem="ok3-hh-Jjd" secondAttribute="bottom" constant="18" id="dGs-qi-PfO"/>
+                            <constraint firstItem="ojb-fr-TMB" firstAttribute="top" secondItem="C5R-Yx-0Sb" secondAttribute="topMargin" id="e8C-nA-6hk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ok3-hh-Jjd" secondAttribute="trailing" id="kdC-8w-WEf"/>
                             <constraint firstItem="ojb-fr-TMB" firstAttribute="top" secondItem="fTx-ty-W7I" secondAttribute="bottom" constant="95" id="m3i-VZ-Xsi"/>
                             <constraint firstAttribute="leadingMargin" secondItem="pwl-FH-zMv" secondAttribute="leading" id="m44-gV-Ahc"/>
@@ -2021,6 +2023,7 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="29s-GM-ZSb"/>
+                                <exclude reference="5CZ-Z9-7WT"/>
                                 <exclude reference="aXg-Tx-szw"/>
                                 <exclude reference="m3i-VZ-Xsi"/>
                                 <exclude reference="oVR-AC-KcI"/>
@@ -2028,6 +2031,7 @@
                                 <exclude reference="7bv-nu-IQd"/>
                                 <exclude reference="89k-N8-Xsx"/>
                                 <exclude reference="KWD-Ov-GXD"/>
+                                <exclude reference="oW3-5e-R4S"/>
                                 <exclude reference="7w8-lE-TtB"/>
                                 <exclude reference="G3U-ul-tga"/>
                                 <exclude reference="ccQ-xO-59c"/>
