@@ -36,20 +36,23 @@
     [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipe:)];
     leftSwipeGesture.direction = UISwipeGestureRecognizerDirectionLeft;
     
+    UISwipeGestureRecognizer* upDownGesture =
+    [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleUpDownSwipe:)];
+    upDownGesture.direction = UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown;
+    
     
     [self.photoImageView addGestureRecognizer:rightSwipeGesture];
     [self.photoImageView addGestureRecognizer:leftSwipeGesture];
+    [self.photoImageView addGestureRecognizer:upDownGesture];
 
-    if (!self.isViewerInsidePost) {
-        [self.photoImageView addGestureRecognizer:tapGesture];
-    }
-    
+
+    [self.photoImageView addGestureRecognizer:tapGesture];
     
 
-    self.isLabelsVisible = NO;
+    self.isLabelsVisible = YES;
     
-    self.photoDescriptionLabel.hidden = YES;
-    self.likeButton.hidden = YES;
+    self.photoDescriptionLabel.hidden = NO;
+    self.likeButton.hidden = NO;
     self.likeButton.userInteractionEnabled = NO;
     
     
@@ -74,6 +77,7 @@
 
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
 
+    
 }
 
 #pragma mark - Helper methods
@@ -134,6 +138,9 @@
 
 }
 
+
+
+
 - (void) iterateAndSetPhotoUsingDirection:(ANPhotoIterationDirection) iterationDirection {
     
     self.photo = [self.delegate iteratePhoto:iterationDirection];
@@ -166,7 +173,6 @@
     
     [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionPrevious];
 
-    
 }
 
 
@@ -174,16 +180,22 @@
 - (void) actionOnTapImage: (UITapGestureRecognizer*) recognizer {
     
     if (self.isLabelsVisible == YES) {
+        
         self.isLabelsVisible = NO;
+        
+        self.navigationController.navigationBar.hidden = YES;
         self.photoDescriptionLabel.hidden = YES;
         self.likeButton.hidden = YES;
+        
     } else {
+        
         self.isLabelsVisible = YES;
+        
+        self.navigationController.navigationBar.hidden = NO;
         self.photoDescriptionLabel.hidden = NO;
         self.likeButton.hidden = NO;
     }
     
-
 }
 
 
@@ -191,17 +203,20 @@
     
     [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionPrevious];
 
-    
 }
 
 - (void) handleLeftSwipe: (UITapGestureRecognizer*) recognizer {
     
     [self iterateAndSetPhotoUsingDirection:ANPhotoIterationDirectionNext];
 
-    
 }
 
-
+- (void) handleUpDownSwipe: (UITapGestureRecognizer*) recognizer {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    
+}
 
 
 @end
