@@ -29,9 +29,8 @@
 
 #import <SWRevealViewController.h>
 
-#import "ANPhotoDetailsViewController.h"
-
 #import "ANPostPhotoGallery.h"
+#import "ANPhotoInPostVC.h"
 
 
 typedef enum {
@@ -41,7 +40,7 @@ typedef enum {
 } ANTableViewSection;
 
 
-@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate, ANPhotoViewerDelegate>
+@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
 
 @property (strong, nonatomic) NSMutableArray* postsArray;
 
@@ -455,7 +454,7 @@ static NSString* myVKAccountID = @"21743772";
     // Taking tapped image view from activated recognizer
     UIImageView* tappedImageView = (UIImageView*)recognizer.view;
     
-    // Getting cell that has this image view. Double superview becuase - Cell->ContentView->ImageView
+    // Getting cell that has this image view. Double superview because - Cell->ContentView->ImageView
     UITableViewCell* cell = (UITableViewCell*)tappedImageView.superview.superview;
     
     NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:cell];
@@ -480,36 +479,27 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void) actionGlryImageViewTapped:(UITapGestureRecognizer*) recognizer {
     
-    NSLog(@"TAP ON GALLERY IMAGEVIEW WORKS!!");
-    
     UIImageView* tappedImageView = (UIImageView*)recognizer.view;
     
-    // Getting cell that has this image view. Double superview becuase - Cell->ContentView->ImageView
+    // Getting cell that has this image view. Double superview because - Cell->ContentView->ImageView
     ANPostCell* cell = (ANPostCell*)tappedImageView.superview.superview;
     
     NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:cell];
     
     ANPost* clickedPost = [self.postsArray objectAtIndex:clickedIndexPath.row];
     
-    self.currentPhotoViewingArray = clickedPost.attachmentsArray;
-    
     NSInteger clickedIndex = [cell.glryImageViews indexOfObject:tappedImageView];
     
     ANPhoto* clickedPhoto = [clickedPost.attachmentsArray objectAtIndex:clickedIndex];
-    self.currentViewingPhoto = clickedPhoto;
     
-    ANPhotoDetailsViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPhotoDetailsViewController"];
-    vc.photo = clickedPhoto;
-    vc.delegate = self;
-    vc.isViewerInsidePost = YES;
+    ANPhotoInPostVC* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPhotoInPostVC"];
     
-    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    vc.currentPhoto = clickedPhoto;
+    vc.photosArray = clickedPost.attachmentsArray;
     
-    [self presentViewController:nav animated:YES completion:nil];
+    [self.navigationController pushViewController:vc animated:YES];
     
-    
-    
-    
+
     
 }
 
@@ -574,53 +564,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-
-
-#pragma mark - +++ ANPhotoViewerDelegate +++
-
-- (ANPhoto*) iteratePhoto:(ANPhotoIterationDirection) iterationDirection {
-    
-    ANPhoto* iteratedPhoto;
-    
-    NSInteger currentViewingPhotoIndex = [self.currentPhotoViewingArray indexOfObject:self.currentViewingPhoto];
-    NSInteger iteratedPhotoIndex;
-    
-    if (iterationDirection == ANPhotoIterationDirectionNext) {
-        
-        NSLog(@"iteratePhoto Next");
-        
-        if ([self.currentViewingPhoto isEqual:[self.currentPhotoViewingArray lastObject]]) {
-            iteratedPhoto = [self.currentPhotoViewingArray firstObject];
-            
-        } else {
-            
-            iteratedPhotoIndex = currentViewingPhotoIndex + 1;
-            
-            iteratedPhoto = [self.currentPhotoViewingArray objectAtIndex:iteratedPhotoIndex];
-        }
-        
-    } else {
-        
-        NSLog(@"iteratePhoto Previous");
-        
-        if ([self.currentViewingPhoto isEqual:[self.currentPhotoViewingArray firstObject]]) {
-            iteratedPhoto = [self.currentPhotoViewingArray lastObject];
-            
-        } else {
-            
-            iteratedPhotoIndex = currentViewingPhotoIndex - 1;
-            
-            iteratedPhoto = [self.currentPhotoViewingArray objectAtIndex:iteratedPhotoIndex];
-            
-        }
-        
-    }
-    
-    self.currentViewingPhoto = iteratedPhoto;
-    
-    return iteratedPhoto;
-    
-}
 
 
 @end

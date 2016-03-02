@@ -23,7 +23,6 @@ typedef enum {
 @interface ANPhotoDetailsViewController : UIViewController
 
 @property (strong, nonatomic) ANPhoto* photo;
-@property (assign, nonatomic) BOOL isViewerInsidePost;
 
 
 @property (weak, nonatomic) IBOutlet UIImageView* photoImageView;

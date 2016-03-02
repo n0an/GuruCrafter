@@ -52,6 +52,7 @@
 		18E8D85A1C68896400C1204F /* ANPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8D8591C68896400C1204F /* ANPhoto.m */; };
 		18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F7DA581C70CEC90027A836 /* ANNewMessageCell.m */; };
 		18F932C81C873BB000E1E17C /* ANPostPhotoGallery.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F932C71C873BB000E1E17C /* ANPostPhotoGallery.m */; };
+		18F932CB1C87485E00E1E17C /* ANPhotoInPostVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F932CA1C87485E00E1E17C /* ANPhotoInPostVC.m */; };
 		AC73DC8C223EB42DB2FDA8D6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149FED9822B8F31BB63210E /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -163,6 +164,8 @@
 		18F7DA581C70CEC90027A836 /* ANNewMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANNewMessageCell.m; sourceTree = "<group>"; };
 		18F932C61C873BB000E1E17C /* ANPostPhotoGallery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPostPhotoGallery.h; sourceTree = "<group>"; };
 		18F932C71C873BB000E1E17C /* ANPostPhotoGallery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPostPhotoGallery.m; sourceTree = "<group>"; };
+		18F932C91C87485E00E1E17C /* ANPhotoInPostVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANPhotoInPostVC.h; sourceTree = "<group>"; };
+		18F932CA1C87485E00E1E17C /* ANPhotoInPostVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANPhotoInPostVC.m; sourceTree = "<group>"; };
 		2149FED9822B8F31BB63210E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40CC3732CBA3BFF3108B259 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		C93851F0D87243F52E621999 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -339,6 +342,8 @@
 				185571491C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m */,
 				182D339C1C7F7CD2005E7D2A /* ANPhotoAddingViewController.h */,
 				182D339D1C7F7CD2005E7D2A /* ANPhotoAddingViewController.m */,
+				18F932C91C87485E00E1E17C /* ANPhotoInPostVC.h */,
+				18F932CA1C87485E00E1E17C /* ANPhotoInPostVC.m */,
 			);
 			name = "Photo Feature";
 			sourceTree = "<group>";
@@ -583,6 +588,7 @@
 			files = (
 				1878CB711C78EA29005D5AF4 /* ANPhotoAlbumCellCollectionViewCell.m in Sources */,
 				18F7DA591C70CEC90027A836 /* ANNewMessageCell.m in Sources */,
+				18F932CB1C87485E00E1E17C /* ANPhotoInPostVC.m in Sources */,
 				18D3CE5B1C7C7CDA00C09C5D /* ANVideoPlayerViewController.m in Sources */,
 				18038CD01C71FE7900A33F3C /* ANPostCommentsViewController.m in Sources */,
 				1855714A1C7A123E00B5C8F4 /* ANPhotoDetailsViewController.m in Sources */,
