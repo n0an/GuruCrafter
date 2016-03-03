@@ -1270,6 +1270,112 @@ static NSInteger errorDuringNetworkRequest = 999;
 
 
 
+- (void) getCommentsForVideo:(NSString*) videoID
+                      groupID:(NSString*) groupID
+                  withOffset:(NSInteger) offset
+                       count:(NSInteger) count
+                   onSuccess:(void(^)(NSArray* comments)) success
+                   onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"owner_id",
+     videoID,                    @"video_id",
+     @(count),                  @"count",
+     @(offset),                 @"offset",
+     @"1",                      @"need_likes",
+     @"1",                      @"extended",
+     @"desc",                   @"sort",
+     self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v", nil];
+    
+    
+    [self.requestSessionManager
+     GET:@"video.getComments"
+     parameters:params
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         NSLog(@"video.getComments JSON: %@", responseObject);
+         
+         dispatch_async(self.srvManagerQueue, ^{
+             NSDictionary* response = [responseObject objectForKey:@"response"];
+             
+             NSArray* profiles = [response objectForKey:@"profiles"];
+             NSArray* items = [response objectForKey:@"items"];
+             NSArray* groups = [response objectForKey:@"groups"];
+             
+             // *** WE HAVE ONLY ONE GROUP - iOSDevCourse group. Getting it to object
+             
+             ANGroup* group;
+             if ([groups count] > 0) {
+                 group = [[ANGroup alloc] initWithServerResponse:[groups objectAtIndex:0]];
+             }
+             
+             
+             
+             // *** CREATING AUTHORS PROFILES ARRAY
+             NSMutableArray* authorsArray = [NSMutableArray array];
+             
+             for (NSDictionary* dict in profiles) {
+                 ANUser* author = [[ANUser alloc] initWithServerResponse:dict];
+                 
+                 [authorsArray addObject:author];
+             }
+             
+             
+             // *** CREATING COMMENTS ARRAY, AND GETTING AUTHOR FOR EACH COMMENT
+             
+             NSMutableArray* comments = [NSMutableArray array];
+             
+             for (NSDictionary* dict in items) {
+                 ANComment* comment = [[ANComment alloc] initWithServerResponse:dict];
+                 [comments addObject:comment];
+                 
+                 // **** ITERATING THROUGH ARRAY OF AUTHORS - LOOKING FOR AUTHOR FOR THIS COMMENT
+                 
+                 for (ANUser* author in authorsArray) {
+                     
+                     if ([comment.authorID hasPrefix:@"-"]) {
+                         comment.fromGroup = group;
+                         continue;
+                     }
+                     
+                     if ([author.userID isEqualToString:comment.authorID]) {
+                         comment.author = author;
+                     }
+                 }
+                 
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if (success) {
+                     success(comments);
+                 }
+             });
+             
+         });
+         
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, errorDuringNetworkRequest);
+             
+         }
+     }];
+    
+    
+    
+    
+}
+
 
 
 

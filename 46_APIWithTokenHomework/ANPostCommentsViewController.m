@@ -40,10 +40,10 @@ typedef enum {
 
 @property (strong, nonatomic) UIRefreshControl* refreshControl;
 
-@property (assign, nonatomic) UIEdgeInsets initialInsets;
-@property (assign, nonatomic) CGPoint initialContentOffset;
+//@property (assign, nonatomic) UIEdgeInsets initialInsets;
+//@property (assign, nonatomic) CGPoint initialContentOffset;
 
-@property (assign, nonatomic) BOOL isFirstTimeAfterLoading;
+//@property (assign, nonatomic) BOOL isFirstTimeAfterLoading;
 
 @end
 
