@@ -318,6 +318,17 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
+- (void) actionLikeVideoPressed:(UIButton*) sender {
+    
+    if (self.selectedVideo.isLikedByMyself) {
+        [self deleteLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
+    } else {
+        [self addLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
+    }
+    
+    
+}
+
 
 
 #pragma mark - UITableViewDataSource
@@ -364,7 +375,21 @@ static NSString* myVKAccountID = @"21743772";
         
          videoPlayerCell.titleLabel.text = self.selectedVideo.title;
          videoPlayerCell.descriptionLabel.text = self.selectedVideo.videoDescription;
-         videoPlayerCell.likesCountLabel.text = self.selectedVideo.likesCount;
+        
+        [videoPlayerCell.likeButton setTitle:self.selectedVideo.likesCount forState:UIControlStateNormal];
+        [videoPlayerCell.likeButton addTarget:self action:@selector(actionLikeVideoPressed:) forControlEvents:UIControlEventTouchUpInside];
+
+        
+        if (self.selectedVideo.isLikedByMyself) {
+            [videoPlayerCell.likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [videoPlayerCell.likeButton setImage:[UIImage imageNamed:@"thumb-up_b.png"] forState:UIControlStateNormal];
+            
+        } else {
+            [videoPlayerCell.likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [videoPlayerCell.likeButton setImage:[UIImage imageNamed:@"thumb-up_16.png"] forState:UIControlStateNormal];
+        }
+
+        
          videoPlayerCell.viewsCountLabel.text = self.selectedVideo.views;
          videoPlayerCell.dateLabel.text = [NSString stringWithFormat:@"Added on %@", self.selectedVideo.date];
         

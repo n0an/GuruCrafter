@@ -18,9 +18,11 @@
 @property (weak, nonatomic) IBOutlet UIWebView* playerWebView;
 @property (weak, nonatomic) IBOutlet UILabel* titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel* descriptionLabel;
-@property (weak, nonatomic) IBOutlet UILabel* likesCountLabel;
+@property (weak, nonatomic) IBOutlet UIButton* likeButton;
 @property (weak, nonatomic) IBOutlet UILabel* viewsCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel* dateLabel;
+
+
 
 
 @end
