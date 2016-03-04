@@ -23,15 +23,8 @@
 @property (weak, nonatomic) IBOutlet UILabel* commentsCountLabel;
 
 @property (weak, nonatomic) IBOutlet UIImageView* postAuthorImageView;
-@property (weak, nonatomic) IBOutlet UIImageView* postImageView; // to del
 
-@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewFirst; // to del
-@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewSecond; // to del
-@property (weak, nonatomic) IBOutlet UIImageView* galleryImageViewThird; // to del
-
-
-@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *galleryImageViews; // delete this
-@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *glryImageViews; // new one
+@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *glryImageViews;
 
 @property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *photoWidths;
 @property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *photoHeights;
