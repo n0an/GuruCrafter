@@ -1314,11 +1314,11 @@
                         <viewControllerLayoutGuide type="bottom" id="ZOE-cc-Cps"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Nyt-iP-FkS">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="848"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fdN-RJ-nKo">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="810"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="videoPlayerCell" rowHeight="600" id="XD5-QX-hA8" customClass="ANVideoPlayerCell">
@@ -1554,20 +1554,72 @@
                                     <outlet property="delegate" destination="cnO-9A-efo" id="cU4-uf-P8H"/>
                                 </connections>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="09G-AA-v7w" userLabel="Toolbar View">
+                                <rect key="frame" x="0.0" y="810" width="600" height="38"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your comment message..." textAlignment="natural" minimumFontSize="15" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="0Wu-C2-mk5">
+                                        <rect key="frame" x="4" y="4" width="508" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="rOa-aq-6D8"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" returnKeyType="send"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="rOa-aq-6D8"/>
+                                            </mask>
+                                        </variation>
+                                        <connections>
+                                            <action selector="actionMsgTxtFieldEditingChanged:" destination="cnO-9A-efo" eventType="editingChanged" id="Jbf-t3-pPc"/>
+                                            <outlet property="delegate" destination="cnO-9A-efo" id="aTS-Lv-1Oy"/>
+                                        </connections>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lTw-jt-nxm">
+                                        <rect key="frame" x="516" y="4" width="80" height="30"/>
+                                        <color key="backgroundColor" red="0.385073059" green="0.5745729745" blue="0.82465277780000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="80" id="YWt-7v-ubW"/>
+                                        </constraints>
+                                        <state key="normal" title="Send">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="actionSendButtonPressed:" destination="cnO-9A-efo" eventType="touchUpInside" id="kLD-vO-kMR"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="0Wu-C2-mk5" secondAttribute="bottom" constant="4" id="1x0-nW-UsR"/>
+                                    <constraint firstItem="0Wu-C2-mk5" firstAttribute="top" secondItem="09G-AA-v7w" secondAttribute="top" constant="4" id="9FA-GU-v9c"/>
+                                    <constraint firstAttribute="trailing" secondItem="lTw-jt-nxm" secondAttribute="trailing" constant="4" id="FMb-Zj-Hnu"/>
+                                    <constraint firstItem="lTw-jt-nxm" firstAttribute="top" secondItem="09G-AA-v7w" secondAttribute="top" constant="4" id="Hp9-p7-amK"/>
+                                    <constraint firstAttribute="bottom" secondItem="lTw-jt-nxm" secondAttribute="bottom" constant="4" id="aY3-pV-XGI"/>
+                                    <constraint firstItem="0Wu-C2-mk5" firstAttribute="leading" secondItem="09G-AA-v7w" secondAttribute="leading" constant="4" id="dHu-Z2-1FK"/>
+                                    <constraint firstItem="lTw-jt-nxm" firstAttribute="leading" secondItem="0Wu-C2-mk5" secondAttribute="trailing" constant="4" id="pLd-lq-jlx"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="ZOE-cc-Cps" firstAttribute="top" secondItem="fdN-RJ-nKo" secondAttribute="bottom" id="AxQ-2n-FOt"/>
+                            <constraint firstItem="ZOE-cc-Cps" firstAttribute="top" secondItem="09G-AA-v7w" secondAttribute="bottom" id="Kj5-7a-coI"/>
+                            <constraint firstAttribute="trailing" secondItem="09G-AA-v7w" secondAttribute="trailing" id="Klg-5G-PKt"/>
                             <constraint firstItem="fdN-RJ-nKo" firstAttribute="top" secondItem="Nyt-iP-FkS" secondAttribute="top" id="MQP-TN-jr8"/>
                             <constraint firstItem="fdN-RJ-nKo" firstAttribute="leading" secondItem="Nyt-iP-FkS" secondAttribute="leading" id="Uqh-hc-5fW"/>
+                            <constraint firstItem="09G-AA-v7w" firstAttribute="top" secondItem="fdN-RJ-nKo" secondAttribute="bottom" id="X2H-DH-Xo1"/>
+                            <constraint firstItem="09G-AA-v7w" firstAttribute="leading" secondItem="Nyt-iP-FkS" secondAttribute="leading" id="o2A-hi-sSC"/>
                             <constraint firstAttribute="trailing" secondItem="fdN-RJ-nKo" secondAttribute="trailing" id="pYp-ZD-jmY"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="0qf-4C-lje"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="600" height="800"/>
+                    <size key="freeformSize" width="600" height="848"/>
                     <connections>
+                        <outlet property="messageTextField" destination="0Wu-C2-mk5" id="x3t-LA-18z"/>
+                        <outlet property="sendButton" destination="lTw-jt-nxm" id="97T-r5-Uah"/>
                         <outlet property="tableView" destination="fdN-RJ-nKo" id="5cl-9f-1fO"/>
+                        <outlet property="toolBarView" destination="09G-AA-v7w" id="bA8-gN-aqY"/>
+                        <outlet property="toolbarViewToBottomConstraint" destination="Kj5-7a-coI" id="TgX-aX-kQh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XJp-xb-E3v" userLabel="First Responder" sceneMemberID="firstResponder"/>

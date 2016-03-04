@@ -21,4 +21,20 @@
 @property (weak, nonatomic) IBOutlet UITableView* tableView;
 
 
+
+@property (weak, nonatomic) IBOutlet UIView* toolBarView;
+
+@property (weak, nonatomic) IBOutlet UITextField* messageTextField;;
+@property (weak, nonatomic) IBOutlet UIButton* sendButton;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* toolbarViewToBottomConstraint;
+
+
+- (IBAction)actionSendButtonPressed:(UIButton*)sender;
+- (IBAction)actionMsgTxtFieldEditingChanged:(UITextField*)sender;
+
+
+
+
+
 @end

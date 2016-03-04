@@ -1379,5 +1379,57 @@ static NSInteger errorDuringNetworkRequest = 999;
 
 
 
+- (void) addComment:(NSString*) text
+           forGroup:(NSString*) groupID
+           forVideo:(NSString*) videoID
+          onSuccess:(void(^)(id result)) success
+          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+    
+    
+    if (![groupID hasPrefix:@"-"]) {
+        groupID = [@"-" stringByAppendingString:groupID];
+    }
+    
+    
+    NSDictionary* params =
+    [NSDictionary dictionaryWithObjectsAndKeys:
+     groupID,                   @"owner_id",
+     videoID,                   @"video_id",
+     text,                      @"message",
+     self.accessToken.token,    @"access_token",
+     @"5.45",                   @"v",
+     nil];
+    
+    
+    [self.requestSessionManager
+     POST:@"video.createComment"
+     parameters:params
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         NSLog(@"wall.addComment JSON: %@", responseObject);
+         
+         
+         if (success) {
+             success(responseObject);
+         }
+         
+     }
+     
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         NSLog(@"Error: %@", error);
+         
+         if (failure) {
+             failure(error, errorDuringNetworkRequest);
+             
+         }
+     }];
+    
+    
+    
+}
+
+
+
+
 
 @end

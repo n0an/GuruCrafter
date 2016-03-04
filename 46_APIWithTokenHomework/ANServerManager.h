@@ -155,4 +155,11 @@
                    onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
+- (void) addComment:(NSString*) text
+           forGroup:(NSString*) groupID
+           forVideo:(NSString*) videoID
+          onSuccess:(void(^)(id result)) success
+          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
 @end

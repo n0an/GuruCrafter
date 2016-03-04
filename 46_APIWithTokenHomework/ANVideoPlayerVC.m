@@ -79,7 +79,31 @@ static NSString* myVKAccountID = @"21743772";
     self.navigationItem.leftBarButtonItem = cancelButton;
     
     
+    UITapGestureRecognizer* tapGestureOnTableView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionTapOnTableView)];
+    
+    [self.tableView addGestureRecognizer:tapGestureOnTableView];
+    
+    
 }
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWillShow:)
+     name:UIKeyboardWillShowNotification
+     object:nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWillHide:)
+     name:UIKeyboardWillHideNotification
+     object:nil];
+    
+    
+}
+
 
 
 
@@ -92,7 +116,142 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
+
+
 #pragma mark - Helper Methods
+
+- (void) prepareAndSendMessage {
+    
+    NSString* messageToSend = self.messageTextField.text;
+    
+    [self addComment:messageToSend];
+    
+    self.sendButton.enabled = NO;
+    
+    self.messageTextField.text = nil;
+    
+    [self.messageTextField resignFirstResponder];
+}
+
+
+
+
+#pragma mark - Actions
+
+
+- (IBAction)actionSendButtonPressed:(UIButton*)sender {
+    
+    NSLog(@"actionSendButtonPressed");
+    
+    if ([self.messageTextField.text length] > 0) {
+        
+        [self prepareAndSendMessage];
+        
+    }
+    
+}
+
+
+- (IBAction)actionMsgTxtFieldEditingChanged:(UITextField*)sender {
+    
+    NSLog(@"actionMsgTxtFieldEditingChanged");
+    
+    if ([self.messageTextField.text length] > 0) {
+        self.sendButton.enabled = YES;
+    } else {
+        self.sendButton.enabled = NO;
+    }
+    
+}
+
+
+
+
+
+- (void) actionCancelPressed:(UIBarButtonItem*) sender {
+    NSLog(@"actionCancelPressed");
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+
+- (void) actionLikeCommentPressed:(UIButton*) sender {
+    
+    CGPoint btnPosition = [sender convertPoint:CGPointZero toView:self.tableView];
+    
+    NSIndexPath *btnIndexPath = [self.tableView indexPathForRowAtPoint:btnPosition];
+    
+    ANComment* comment = [self.commentsArray objectAtIndex:btnIndexPath.row];
+    
+    if (comment.isLikedByMyself) {
+        [self deleteLikeForItemType:@"video_comment" andItemID:comment.postID];
+    } else {
+        [self addLikeForItemType:@"video_comment" andItemID:comment.postID];
+    }
+    
+    
+}
+
+- (void) actionLikeVideoPressed:(UIButton*) sender {
+    
+    if (self.selectedVideo.isLikedByMyself) {
+        [self deleteLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
+    } else {
+        [self addLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
+    }
+    
+    
+}
+
+- (void) actionTapOnTableView {
+    
+    NSLog(@"actionTapOnTableView");
+    
+    [self.messageTextField resignFirstResponder];
+    
+}
+
+
+
+
+#pragma mark - Notifications actions
+
+- (void) keyboardWillShow:(NSNotification*) notification {
+    
+    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView animateWithDuration:0.3f
+                          delay:0.f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         self.toolbarViewToBottomConstraint.constant = keyboardRect.size.height;
+                         
+                         [self.view layoutIfNeeded];
+                         
+                     } completion:nil];
+    
+    
+}
+
+- (void) keyboardWillHide:(NSNotification*) notification {
+    
+    
+    
+    [UIView animateWithDuration:0.3f
+                          delay:0.f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         self.toolbarViewToBottomConstraint.constant = 0;
+                         
+                         [self.view layoutIfNeeded];
+                         
+                     } completion:nil];
+    
+}
+
+
 
 
 
@@ -177,19 +336,21 @@ static NSString* myVKAccountID = @"21743772";
 - (void) addComment:(NSString*) message {
     
     [[ANServerManager sharedManager] addComment:message
-                                    onGroupWall:iosDevCourseGroupID
-                                        forPost:self.selectedVideo.videoID
-                                      onSuccess:^(id result) {
-                                          
-                                          NSLog(@"COMMENT ADDED");
-                                          
-                                          [self refreshComments];
-                                          
-                                      }
-                                      onFailure:^(NSError *error, NSInteger statusCode) {
-                                          NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                                          
-                                      }];
+               forGroup:iosDevCourseGroupID
+               forVideo:self.selectedVideo.videoID
+              onSuccess:^(id result) {
+                  
+                  NSLog(@"COMMENT ADDED");
+                  
+                  [self refreshComments];
+                  
+              }
+
+              onFailure:^(NSError *error, NSInteger statusCode) {
+                  NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+
+              }];
+    
     
 }
 
@@ -291,43 +452,6 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
-
-#pragma mark - Actions
-
-- (void) actionCancelPressed:(UIBarButtonItem*) sender {
-    NSLog(@"actionCancelPressed");
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-
-
-- (void) actionLikeCommentPressed:(UIButton*) sender {
-    
-    CGPoint btnPosition = [sender convertPoint:CGPointZero toView:self.tableView];
-    
-    NSIndexPath *btnIndexPath = [self.tableView indexPathForRowAtPoint:btnPosition];
-    
-    ANComment* comment = [self.commentsArray objectAtIndex:btnIndexPath.row];
-    
-    if (comment.isLikedByMyself) {
-        [self deleteLikeForItemType:@"video_comment" andItemID:comment.postID];
-    } else {
-        [self addLikeForItemType:@"video_comment" andItemID:comment.postID];
-    }
-    
-    
-}
-
-- (void) actionLikeVideoPressed:(UIButton*) sender {
-    
-    if (self.selectedVideo.isLikedByMyself) {
-        [self deleteLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
-    } else {
-        [self addLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
-    }
-    
-    
-}
 
 
 
@@ -510,6 +634,22 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    if ([self.messageTextField.text length] > 0) {
+        
+        [self prepareAndSendMessage];
+        
+    } else {
+        
+        [textField resignFirstResponder];
+    }
+    
+    
+    return YES;
+}
 
 
 
