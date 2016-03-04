@@ -388,7 +388,8 @@ static NSString* myVKAccountID = @"21743772";
         
         
         
-        
+        // *** ADDING POST IMAGES GALLERY
+
         ANPostPhotoGallery* postGallery = [[ANPostPhotoGallery alloc] initWithTableViewWidth:CGRectGetWidth(self.tableView.frame)];
         
         [postGallery insertGalleryOfPost:post toCell:postCell];

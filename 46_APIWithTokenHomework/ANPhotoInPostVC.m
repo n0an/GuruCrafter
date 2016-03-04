@@ -37,8 +37,6 @@ typedef enum {
     
     self.navigationController.hidesBarsOnTap = YES;
     
-    [self.navigationController barHideOnTapGestureRecognizer];
-    
     
     UISwipeGestureRecognizer* rightSwipeGesture =
     [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightSwipe:)];
@@ -59,6 +57,16 @@ typedef enum {
     [self.photoImageView addGestureRecognizer:leftSwipeGesture];
     [self.photoImageView addGestureRecognizer:upDownGesture];
 
+    
+    
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    self.navigationController.hidesBarsOnTap = NO;
     
     
 }
@@ -223,10 +231,14 @@ typedef enum {
 
 - (void) handleUpDownSwipe: (UITapGestureRecognizer*) recognizer {
     
+    
     [self.navigationController popViewControllerAnimated:YES];
     
     
+    
 }
+
+
 
 
 

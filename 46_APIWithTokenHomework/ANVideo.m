@@ -31,7 +31,7 @@
         
         self.likesCount = [[[responseObject objectForKey:@"likes"] objectForKey:@"count"] stringValue];
         
-        self.isLikedByMyself = !([[[responseObject objectForKey:@"likes"] objectForKey:@"user_likes"] boolValue]);
+        self.isLikedByMyself = ([[[responseObject objectForKey:@"likes"] objectForKey:@"user_likes"] boolValue]);
 
         
         self.views = [[responseObject objectForKey:@"views"] stringValue];

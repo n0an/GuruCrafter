@@ -20,6 +20,10 @@
 
 #import "ANNewMessageCell.h"
 
+#import "ANPostPhotoGallery.h"
+#import "ANPhotoInPostVC.h"
+#import "ANMessagesViewController.h"
+
 typedef enum {
     ANTableViewSectionPostInfo,
     ANTableViewSectionSeparator,
@@ -40,10 +44,10 @@ typedef enum {
 
 @property (strong, nonatomic) UIRefreshControl* refreshControl;
 
-@property (assign, nonatomic) UIEdgeInsets initialInsets;
-@property (assign, nonatomic) CGPoint initialContentOffset;
+//@property (assign, nonatomic) UIEdgeInsets initialInsets;
+//@property (assign, nonatomic) CGPoint initialContentOffset;
 
-@property (assign, nonatomic) BOOL isFirstTimeAfterLoading;
+//@property (assign, nonatomic) BOOL isFirstTimeAfterLoading;
 
 @end
 
@@ -177,13 +181,71 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
+
+
+
+
+#pragma mark - Gestures
+
+- (void) actionGlryImageViewTapped:(UITapGestureRecognizer*) recognizer {
+    
+    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+    
+    // Getting cell that has this image view. Double superview because - Cell->ContentView->ImageView
+    ANPostCell* cell = (ANPostCell*)tappedImageView.superview.superview;
+    
+    ANPost* clickedPost = self.post;
+    
+    NSInteger clickedIndex = [cell.glryImageViews indexOfObject:tappedImageView];
+    
+    ANPhoto* clickedPhoto = [clickedPost.attachmentsArray objectAtIndex:clickedIndex];
+    
+    ANPhotoInPostVC* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANPhotoInPostVC"];
+    
+    vc.currentPhoto = clickedPhoto;
+    vc.photosArray = clickedPost.attachmentsArray;
+    
+    [self.navigationController pushViewController:vc animated:YES];
+    
+    
+}
+
+- (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
+    
+    NSLog(@"TAP WORKS!!");
+    
+    // Taking tapped image view from activated recognizer
+    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+    
+    // Getting cell that has this image view. Double superview because - Cell->ContentView->ImageView
+    UITableViewCell* cell = (UITableViewCell*)tappedImageView.superview.superview;
+    
+    ANPost* clickedPost = self.post;
+    
+    ANMessagesViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANMessagesViewController"];
+    
+    vc.partnerUserID = clickedPost.authorID;
+    
+    if (clickedPost.author != nil) {
+        vc.partnerUser = clickedPost.author;
+    } else if (clickedPost.fromGroup != nil) {
+        vc.partnerGroup = clickedPost.fromGroup;
+    }
+    
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
+
+
 - (void) actionTapOnTableView {
     
     NSLog(@"actionTapOnTableView");
-
+    
     [self.messageTextField resignFirstResponder];
     
 }
+
+
 
 
 
@@ -513,6 +575,17 @@ static NSString* myVKAccountID = @"21743772";
             
         }
         
+        
+        // *** CREATING GESTURE RECOGNIZER FOR HADLE AUTHOR IMAGEVIEW TAP
+        
+        postCell.postAuthorImageView.userInteractionEnabled = YES;
+        
+        UIGestureRecognizer* tapAuthorImageViewGesutre =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnImageView:)];
+        [postCell.postAuthorImageView addGestureRecognizer:tapAuthorImageViewGesutre];
+
+        
+        
         postCell.delegate = self;
         postCell.postID = self.postID;
         
@@ -537,30 +610,20 @@ static NSString* myVKAccountID = @"21743772";
         postCell.postTextLabel.text = self.post.text;
         
         
-        // *** ADDING IMAGES
-        // **** IF ONLY ONE PHOTO. PLACING IT TO MAIN IMAGEVIEW
-        postCell.postImageView.image = nil;
+        // *** ADDING POST IMAGE GALLERY
+        ANPostPhotoGallery* postGallery = [[ANPostPhotoGallery alloc] initWithTableViewWidth:CGRectGetWidth(self.tableView.frame)];
         
-        if (self.post.postMainImageURL) {
-            [postCell.postImageView setImageWithURL:self.post.postMainImageURL];
-        }
+        [postGallery insertGalleryOfPost:self.post toCell:postCell];
         
-        // **** IF THERE'RE MANY PHOTOS - PLACE THE FIRST ONE TO THE MAIN IMAGEVIEW, THEN
-        // **** TAKE THE FOLLOWING 3, AND FILL GALLERY BY THEM
-        postCell.galleryImageViewFirst.image = nil;
-        postCell.galleryImageViewSecond.image = nil;
-        postCell.galleryImageViewThird.image = nil;
-        
-        if ([self.post.attachmentsArray count] > 1) {
-            for (int i = 1; i < MIN(4, [self.post.attachmentsArray count]) ; i++) {
-                ANPhoto* photo = [self.post.attachmentsArray objectAtIndex:i];
-                NSURL* photoURL = [NSURL URLWithString:photo.photo_604];
-                
-                UIImageView* imageView = [postCell.galleryImageViews objectAtIndex:i-1];
-                
-                [imageView setImageWithURL:photoURL];
-                
-            }
+        for (UIImageView* photoImageView in postCell.glryImageViews) {
+            photoImageView.userInteractionEnabled = YES;
+            
+            UITapGestureRecognizer* tapGesture =
+            [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                    action:@selector(actionGlryImageViewTapped:)];
+            
+            [photoImageView addGestureRecognizer:tapGesture];
+            
         }
         
 
