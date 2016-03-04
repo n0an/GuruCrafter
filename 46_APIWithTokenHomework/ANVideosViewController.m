@@ -13,7 +13,8 @@
 #import "UIImageView+AFNetworking.h"
 
 #import "ANVideoCell.h"
-#import "ANVideoPlayerViewController.h"
+#import "ANVideoPlayerVC.h"
+
 
 @interface ANVideosViewController () <UIScrollViewDelegate>
 
@@ -230,17 +231,12 @@ static NSString* myVKAccountID = @"21743772";
         NSIndexPath* selectedIndexPath = [self.tableView indexPathForSelectedRow];
         
         ANVideo* selectedVideo = [self.videosArray objectAtIndex:selectedIndexPath.row];
-        
-//        NSURL* videoURL = [NSURL URLWithString:selectedVideo.videoPlayerURLString];
-        
-
+    
         UINavigationController* nav = segue.destinationViewController;
         
-        ANVideoPlayerViewController* vc = (ANVideoPlayerViewController*)nav.topViewController;
+        ANVideoPlayerVC* vc = (ANVideoPlayerVC*)nav.topViewController;
         
-//        vc.videoURL = videoURL;
         vc.selectedVideo = selectedVideo;
-        
         
  
     }

@@ -1,51 +1,44 @@
 //
-//  ANPostCommentsViewController.m
+//  ANVideoPlayerVC.m
 //  46_APIWithTokenHomework
 //
-//  Created by Anton Novoselov on 15/02/16.
+//  Created by Anton Novoselov on 03/03/16.
 //  Copyright © 2016 Anton Novoselov. All rights reserved.
 //
 
-#import "ANPostCommentsViewController.h"
+#import "ANVideoPlayerVC.h"
+#import "ANVideo.h"
 #import "ANServerManager.h"
-#import "ANPostCell.h"
+
 #import "ANCommentCell.h"
-#import "ANPost.h"
+#import "ANVideoPlayerCell.h"
+
+#import "ANComment.h"
 #import "ANGroup.h"
 #import "ANUser.h"
-#import "ANPhoto.h"
-#import "ANComment.h"
 
 #import "UIImageView+AFNetworking.h"
 
-#import "ANNewMessageCell.h"
 
 typedef enum {
-    ANTableViewSectionPostInfo,
-    ANTableViewSectionSeparator,
-    ANTableViewSectionComments
+    ANVideoTableViewSectionVideo,
+    ANVideoTableViewSectionSeparator,
+    ANVideoTableViewSectionComments
+    
+} ANVideoTableViewSection;
 
-} ANTableViewSection;
-
-
-@interface ANPostCommentsViewController () <UITextFieldDelegate, UIScrollViewDelegate, ANNewMessageDelegate, ANPostCellDelegate>
+@interface ANVideoPlayerVC ()
 
 @property (strong, nonatomic) NSMutableArray* commentsArray;
 @property (assign, nonatomic) BOOL loadingData;
-
-
-@property (strong, nonatomic) ANPostCell* postCell;
 
 @property (assign, nonatomic) BOOL isLikedPost;
 
 @property (strong, nonatomic) UIRefreshControl* refreshControl;
 
-//@property (assign, nonatomic) UIEdgeInsets initialInsets;
-//@property (assign, nonatomic) CGPoint initialContentOffset;
-
-//@property (assign, nonatomic) BOOL isFirstTimeAfterLoading;
 
 @end
+
 
 
 static NSInteger commentsInRequest = 10;
@@ -54,21 +47,23 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
-@implementation ANPostCommentsViewController
+@implementation ANVideoPlayerVC
 
-
-- (void) viewDidLoad {
-    
+- (void)viewDidLoad {
     [super viewDidLoad];
+    // Do any additional setup after loading the view.
     
-    self.sendButton.layer.cornerRadius = 10;
-    self.sendButton.enabled = NO;
-
+    NSLog(@"ANVideoPlayerVC videoPlayerURLString = %@", self.selectedVideo.videoPlayerURLString);
+    
+    
+    
     self.commentsArray = [NSMutableArray array];
     
     self.loadingData = YES;
-
+    
     [self getCommentsFromServer];
+
+    
     
     UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(refreshComments) forControlEvents:UIControlEventValueChanged];
@@ -76,15 +71,19 @@ static NSString* myVKAccountID = @"21743772";
     [self.tableView addSubview:refresh];
     
     self.refreshControl = refresh;
+
+
     
+    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(actionCancelPressed:)];
     
-    self.navigationItem.title = [NSString stringWithFormat:@"Post #%@", self.postID];
+    self.navigationItem.leftBarButtonItem = cancelButton;
     
     
     UITapGestureRecognizer* tapGestureOnTableView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionTapOnTableView)];
     
     [self.tableView addGestureRecognizer:tapGestureOnTableView];
-
+    
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -101,14 +100,21 @@ static NSString* myVKAccountID = @"21743772";
      selector:@selector(keyboardWillHide:)
      name:UIKeyboardWillHideNotification
      object:nil];
-
+    
     
 }
 
-- (void) dealloc {
-    
-    [[NSNotificationCenter defaultCenter]  removeObserver:self];
+
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
+
+
+
+
 
 
 
@@ -147,7 +153,7 @@ static NSString* myVKAccountID = @"21743772";
 
 
 - (IBAction)actionMsgTxtFieldEditingChanged:(UITextField*)sender {
-
+    
     NSLog(@"actionMsgTxtFieldEditingChanged");
     
     if ([self.messageTextField.text length] > 0) {
@@ -155,7 +161,16 @@ static NSString* myVKAccountID = @"21743772";
     } else {
         self.sendButton.enabled = NO;
     }
+    
+}
 
+
+
+
+
+- (void) actionCancelPressed:(UIBarButtonItem*) sender {
+    NSLog(@"actionCancelPressed");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -169,9 +184,20 @@ static NSString* myVKAccountID = @"21743772";
     ANComment* comment = [self.commentsArray objectAtIndex:btnIndexPath.row];
     
     if (comment.isLikedByMyself) {
-        [self deleteLikeForItemType:@"comment" andItemID:comment.postID];
+        [self deleteLikeForItemType:@"video_comment" andItemID:comment.postID];
     } else {
-        [self addLikeForItemType:@"comment" andItemID:comment.postID];
+        [self addLikeForItemType:@"video_comment" andItemID:comment.postID];
+    }
+    
+    
+}
+
+- (void) actionLikeVideoPressed:(UIButton*) sender {
+    
+    if (self.selectedVideo.isLikedByMyself) {
+        [self deleteLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
+    } else {
+        [self addLikeForItemType:@"video" andItemID:self.selectedVideo.videoID];
     }
     
     
@@ -180,10 +206,11 @@ static NSString* myVKAccountID = @"21743772";
 - (void) actionTapOnTableView {
     
     NSLog(@"actionTapOnTableView");
-
+    
     [self.messageTextField resignFirstResponder];
     
 }
+
 
 
 
@@ -205,42 +232,12 @@ static NSString* myVKAccountID = @"21743772";
                      } completion:nil];
     
     
-    
-    /****** TABLEVIEW CONTENT OFFSET AFTER KEYBOARD BECOME/RESIGN FIRST RESPONDER
-     *
-     *       Need to troubleshoot tableview content offset
-     *
-     
-    CGSize keyboardSize = keyboardRect.size;
-    
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, keyboardSize.height, 0);
-//    self.initialInsets = self.tableView.contentInset;
-    
-//    self.tableView.contentInset = contentInsets;
-//    self.tableView.scrollIndicatorInsets = contentInsets;
-    
-    
-    if (self.isFirstTimeAfterLoading) {
-        self.initialContentOffset  = self.tableView.contentOffset;
-        self.isFirstTimeAfterLoading = NO;
-    }
-    
-//    NSLog(@"self.tableView.contentOffset = {%f, %f}", self.tableView.contentOffset.x, self.tableView.contentOffset.y);
-//    
-//    NSLog(@"self.initialContentOffset = {%f, %f}", self.initialContentOffset.x, self.initialContentOffset.y);
-    
-    CGPoint scrollPoint = CGPointMake(0, self.toolBarView.frame.origin.y - keyboardSize.height - self.initialContentOffset.y);
-    NSLog(@"scrollPoint = %f, %f", scrollPoint.x, scrollPoint.y);
-
-    [self.tableView setContentOffset:scrollPoint animated:YES];
-*/
-    
 }
 
 - (void) keyboardWillHide:(NSNotification*) notification {
     
-
-
+    
+    
     [UIView animateWithDuration:0.3f
                           delay:0.f
                         options:UIViewAnimationOptionCurveEaseIn
@@ -252,22 +249,9 @@ static NSString* myVKAccountID = @"21743772";
                          
                      } completion:nil];
     
-    /****** TABLEVIEW CONTENT OFFSET AFTER KEYBOARD BECOME/RESIGN FIRST RESPONDER
-     *
-     *       Need to troubleshoot tableview content offset
-     *
-     
-     //    self.tableView.contentInset = self.initialInsets;
-     //
-     //    self.tableView.scrollIndicatorInsets = self.initialInsets;
-     
-     NSLog(@"self.initialContentOffset = {%f, %f}", self.initialContentOffset.x, self.initialContentOffset.y);
-     
-     [self.tableView setContentOffset:self.initialContentOffset animated:YES];
-     
-     */
-    
 }
+
+
 
 
 
@@ -277,37 +261,37 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void) getCommentsFromServer {
     
-    [[ANServerManager sharedManager] getCommentsForGroup:self.groupID
-              PostID:self.postID
-          withOffset:[self.commentsArray count]
-               count:commentsInRequest
-           onSuccess:^(NSArray *comments) {
-               
-               if ([comments count] > 0) {
+    [[ANServerManager sharedManager] getCommentsForVideo:self.selectedVideo.videoID
+                 groupID:iosDevCourseGroupID
+              withOffset:[self.commentsArray count]
+                   count:commentsInRequest
+               onSuccess:^(NSArray *comments) {
                    
-                   [self.commentsArray addObjectsFromArray:comments];
-                   
-                   NSMutableArray* newPaths = [NSMutableArray array];
-                   
-                   for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
-                       [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:ANTableViewSectionComments]];
+                   if ([comments count] > 0) {
+                       
+                       [self.commentsArray addObjectsFromArray:comments];
+                       
+                       NSMutableArray* newPaths = [NSMutableArray array];
+                       
+                       for (int i = (int)[self.commentsArray count] - (int)[comments count]; i < [self.commentsArray count]; i++) {
+                           [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:ANVideoTableViewSectionComments]];
+                       }
+                       
+                       [self.tableView beginUpdates];
+                       [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationBottom];
+                       [self.tableView endUpdates];
+                       
+                       
                    }
-                   
-                   [self.tableView beginUpdates];
-                   [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationBottom];
-                   [self.tableView endUpdates];
-                   
+                   self.loadingData = NO;
                    
                }
-               self.loadingData = NO;
-               
-          }
-           onFailure:^(NSError *error, NSInteger statusCode) {
-              
-               NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-               
-          }];
-
+               onFailure:^(NSError *error, NSInteger statusCode) {
+                   
+                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                   
+               }];
+    
 }
 
 
@@ -317,32 +301,32 @@ static NSString* myVKAccountID = @"21743772";
     if (self.loadingData == NO) {
         self.loadingData = YES;
         
-        [[ANServerManager sharedManager] getCommentsForGroup:self.groupID
-                  PostID:self.postID
-              withOffset:0
-                   count:MAX(commentsInRequest, [self.commentsArray count])
-               onSuccess:^(NSArray *comments) {
-                   
-                   if ([comments count] > 0) {
-                       [self.commentsArray removeAllObjects];
+        [[ANServerManager sharedManager] getCommentsForVideo:self.selectedVideo.videoID
+                     groupID:iosDevCourseGroupID
+                  withOffset:0
+                       count:MAX(commentsInRequest, [self.commentsArray count])
+                   onSuccess:^(NSArray *comments) {
                        
-                       [self.commentsArray addObjectsFromArray:comments];
+                       if ([comments count] > 0) {
+                           [self.commentsArray removeAllObjects];
+                           
+                           [self.commentsArray addObjectsFromArray:comments];
+                           
+                           [self.tableView reloadData];
+                           
+                       }
+                       [self.refreshControl endRefreshing];
                        
-                       [self.tableView reloadData];
+                       self.loadingData = NO;
                        
                    }
-                   [self.refreshControl endRefreshing];
-                   
-                   self.loadingData = NO;
-                   
-               }
-               onFailure:^(NSError *error, NSInteger statusCode) {
-                   
-                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                   [self.refreshControl endRefreshing];
-
-               }];
-
+                   onFailure:^(NSError *error, NSInteger statusCode) {
+                       
+                       NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                       [self.refreshControl endRefreshing];
+                       
+                   }];
+        
     }
     
     
@@ -352,19 +336,21 @@ static NSString* myVKAccountID = @"21743772";
 - (void) addComment:(NSString*) message {
     
     [[ANServerManager sharedManager] addComment:message
-            onGroupWall:self.groupID
-                forPost:self.postID
+               forGroup:iosDevCourseGroupID
+               forVideo:self.selectedVideo.videoID
               onSuccess:^(id result) {
                   
                   NSLog(@"COMMENT ADDED");
-
+                  
                   [self refreshComments];
                   
               }
+
               onFailure:^(NSError *error, NSInteger statusCode) {
                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
 
               }];
+    
     
 }
 
@@ -382,29 +368,29 @@ static NSString* myVKAccountID = @"21743772";
          
          NSString* likesCount = [[result objectForKey:@"likes"] stringValue];
          
-         if ([itemType isEqualToString:@"post"]) {
-             self.post.isLikedByMyself = YES;
-             self.post.likes = likesCount;
+         if ([itemType isEqualToString:@"video"]) {
+             self.selectedVideo.isLikedByMyself = YES;
+             self.selectedVideo.likesCount = likesCount;
              
-         } else if ([itemType isEqualToString:@"comment"]) {
+         } else if ([itemType isEqualToString:@"video_comment"]) {
              
              NSIndexPath* changingInxPath;
              for (ANComment* comment in self.commentsArray) {
                  if ([comment.postID isEqualToString:itemID]) {
+                     
+                     
                      comment.isLikedByMyself = YES;
                      comment.likes = likesCount;
                      
                      NSInteger index = [self.commentsArray indexOfObject:comment];
                      
-
-                     
-                     changingInxPath = [NSIndexPath indexPathForRow:index inSection:ANTableViewSectionComments];
+                     changingInxPath = [NSIndexPath indexPathForRow:index inSection:ANVideoTableViewSectionComments];
                      NSLog(@"changingInxPath = %@", changingInxPath);
                  }
              }
-
+             
          }
-
+         
          [self.tableView reloadData];
          
          self.loadingData = NO;
@@ -433,12 +419,12 @@ static NSString* myVKAccountID = @"21743772";
          
          NSString* likesCount = [[result objectForKey:@"likes"] stringValue];
          
-         if ([itemType isEqualToString:@"post"]) {
+         if ([itemType isEqualToString:@"video"]) {
              
-             self.post.isLikedByMyself = NO;
-             self.post.likes = likesCount;
+             self.selectedVideo.isLikedByMyself = NO;
+             self.selectedVideo.likesCount = likesCount;
              
-         } else if ([itemType isEqualToString:@"comment"]) {
+         } else if ([itemType isEqualToString:@"video_comment"]) {
              
              for (ANComment* comment in self.commentsArray) {
                  if ([comment.postID isEqualToString:itemID]) {
@@ -452,7 +438,7 @@ static NSString* myVKAccountID = @"21743772";
          [self.tableView reloadData];
          
          self.loadingData = NO;
-
+         
          
      }
      onFailure:^(NSError *error, NSInteger statusCode)
@@ -462,6 +448,9 @@ static NSString* myVKAccountID = @"21743772";
      }];
     
 }
+
+
+
 
 
 
@@ -477,8 +466,9 @@ static NSString* myVKAccountID = @"21743772";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (section == ANTableViewSectionComments) {
+    if (section == ANVideoTableViewSectionComments) {
         return [self.commentsArray count];
+        
     }
     
     return 1;
@@ -489,85 +479,52 @@ static NSString* myVKAccountID = @"21743772";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *postIdentifier =       @"postCell";
+    static NSString *videoIdentifier =      @"videoPlayerCell";
     static NSString *separatorIdentifier =  @"separatorCell";
     static NSString *commentIdentifier =    @"commentCell";
     
+    
+    if (indexPath.section == ANVideoTableViewSectionVideo) { // *** VIDEO CELL
+        
+        ANVideoPlayerCell* videoPlayerCell = [tableView dequeueReusableCellWithIdentifier:videoIdentifier];
+        
+         
+        NSString* newString = [self.selectedVideo.videoPlayerURLString stringByAppendingString:@"&showinfo=0"];
+         
+        NSURL* urlVideo = [NSURL URLWithString:newString];
+         
+        NSURLRequest* requestToYoutube = [NSURLRequest requestWithURL:urlVideo];
+        
+        [videoPlayerCell.playerWebView loadRequest:requestToYoutube];
+        
+        [videoPlayerCell.playerWebView.scrollView setScrollEnabled:NO];
 
-    if (indexPath.section == ANTableViewSectionPostInfo) { // *** POST CELL
         
-        ANPostCell* postCell = [tableView dequeueReusableCellWithIdentifier:postIdentifier];
+        videoPlayerCell.titleLabel.text = self.selectedVideo.title;
+        videoPlayerCell.descriptionLabel.text = self.selectedVideo.videoDescription;
+        
+        [videoPlayerCell.likeButton setTitle:self.selectedVideo.likesCount forState:UIControlStateNormal];
+        [videoPlayerCell.likeButton addTarget:self action:@selector(actionLikeVideoPressed:) forControlEvents:UIControlEventTouchUpInside];
 
-        if (!postCell) {
-            postCell = [[ANPostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:postIdentifier];
-        }
-
-        if (self.post.fromGroup != nil) {
-            postCell.fullNameLabel.text = self.post.fromGroup.groupName;
-            [postCell.postAuthorImageView setImageWithURL:self.post.fromGroup.imageURL];
-            
-            
-        } else if (self.post.author != nil) {
-            postCell.fullNameLabel.text = [NSString stringWithFormat:@"%@ %@", self.post.author.firstName, self.post.author.lastName];
-            [postCell.postAuthorImageView setImageWithURL:self.post.author.imageURL];
-            
-        }
         
-        postCell.delegate = self;
-        postCell.postID = self.postID;
-        
-        
-        postCell.dateLabel.text = self.post.date;
-        
-        postCell.commentsCountLabel.text = self.post.comments;
-        
-        
-        [postCell.likeButton setTitle:self.post.likes forState:UIControlStateNormal];
-        
-
-        if (self.post.isLikedByMyself) {
-            [postCell.likeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-            [postCell.likeButton setImage:[UIImage imageNamed:@"like_b_16.png"] forState:UIControlStateNormal];
+        if (self.selectedVideo.isLikedByMyself) {
+            [videoPlayerCell.likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [videoPlayerCell.likeButton setImage:[UIImage imageNamed:@"thumb-up_b.png"] forState:UIControlStateNormal];
             
         } else {
-            [postCell.likeButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-            [postCell.likeButton setImage:[UIImage imageNamed:@"like_16.png"] forState:UIControlStateNormal];
+            [videoPlayerCell.likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [videoPlayerCell.likeButton setImage:[UIImage imageNamed:@"thumb-up_16.png"] forState:UIControlStateNormal];
         }
-        
-        postCell.postTextLabel.text = self.post.text;
-        
-        
-        // *** ADDING IMAGES
-        // **** IF ONLY ONE PHOTO. PLACING IT TO MAIN IMAGEVIEW
-        postCell.postImageView.image = nil;
-        
-        if (self.post.postMainImageURL) {
-            [postCell.postImageView setImageWithURL:self.post.postMainImageURL];
-        }
-        
-        // **** IF THERE'RE MANY PHOTOS - PLACE THE FIRST ONE TO THE MAIN IMAGEVIEW, THEN
-        // **** TAKE THE FOLLOWING 3, AND FILL GALLERY BY THEM
-        postCell.galleryImageViewFirst.image = nil;
-        postCell.galleryImageViewSecond.image = nil;
-        postCell.galleryImageViewThird.image = nil;
-        
-        if ([self.post.attachmentsArray count] > 1) {
-            for (int i = 1; i < MIN(4, [self.post.attachmentsArray count]) ; i++) {
-                ANPhoto* photo = [self.post.attachmentsArray objectAtIndex:i];
-                NSURL* photoURL = [NSURL URLWithString:photo.photo_604];
-                
-                UIImageView* imageView = [postCell.galleryImageViews objectAtIndex:i-1];
-                
-                [imageView setImageWithURL:photoURL];
-                
-            }
-        }
-        
-
-        return postCell;
 
         
-    } else if (indexPath.section == ANTableViewSectionSeparator) { // *** SEPARATOR SECTION
+        videoPlayerCell.viewsCountLabel.text = self.selectedVideo.views;
+        videoPlayerCell.dateLabel.text = [NSString stringWithFormat:@"Added on %@", self.selectedVideo.date];
+        
+
+        return videoPlayerCell;
+        
+        
+    } else if (indexPath.section == ANVideoTableViewSectionSeparator) { // *** SEPARATOR SECTION
         
         UITableViewCell* separatorCell = [tableView dequeueReusableCellWithIdentifier:separatorIdentifier];
         
@@ -577,7 +534,7 @@ static NSString* myVKAccountID = @"21743772";
         
         return separatorCell;
         
-    } else if (indexPath.section == ANTableViewSectionComments) { // *** COMMENTS SECTION
+    } else if (indexPath.section == ANVideoTableViewSectionComments) { // *** COMMENTS SECTION
         
         ANCommentCell* commentCell = [tableView dequeueReusableCellWithIdentifier:commentIdentifier];
         
@@ -598,7 +555,7 @@ static NSString* myVKAccountID = @"21743772";
             [commentCell.postAuthorImageView setImageWithURL:comment.author.imageURL];
             
         }
-
+        
         commentCell.dateLabel.text = comment.date;
         
         
@@ -609,17 +566,17 @@ static NSString* myVKAccountID = @"21743772";
         if (comment.isLikedByMyself) {
             [commentCell.likeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
             [commentCell.likeButton setImage:[UIImage imageNamed:@"like_b_16.png"] forState:UIControlStateNormal];
-
+            
         } else {
             [commentCell.likeButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
             [commentCell.likeButton setImage:[UIImage imageNamed:@"like_16.png"] forState:UIControlStateNormal];
-
+            
         }
         
         commentCell.commentTextLabel.text = comment.text;
-
+        
         return commentCell;
-
+        
     }
     
     return nil;
@@ -629,7 +586,7 @@ static NSString* myVKAccountID = @"21743772";
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 1) {
+    if (indexPath.section == ANVideoTableViewSectionSeparator) {
         return 10;
     }
     
@@ -638,7 +595,8 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1) {
+    
+    if (indexPath.section == ANVideoTableViewSectionSeparator) {
         return 10;
     }
     return UITableViewAutomaticDimension; // Auto Layout elements in the cell
@@ -646,16 +604,16 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
+// SCROLLING HANDLE
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     NSLog(@"indexPath.section = %d, indexPath.row = %d", indexPath.section, indexPath.row);
     
-    
-    if (indexPath.section == ANTableViewSectionComments) {
-
+    if (indexPath.section == ANVideoTableViewSectionComments) {
+        
         ANComment* comment = [self.commentsArray objectAtIndex:indexPath.row];
         NSLog(@"comment.author = %@", comment.author.firstName);
-
+        
         
         if (indexPath.row == [self.commentsArray count] - 1) {
             
@@ -665,33 +623,14 @@ static NSString* myVKAccountID = @"21743772";
             if (self.loadingData == NO) {
                 self.loadingData = YES;
                 NSLog(@"LOADING!");
-
+                
                 [self getCommentsFromServer];
             }
             
         }
     }
- 
+    
 }
-
-
-
-#pragma mark - UIScrollViewDelegate
-
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    
-//    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-//        NSLog(@"scrollViewDidScroll");
-//        if (!self.loadingData)
-//        {
-//            self.loadingData = YES;
-//            [self getCommentsFromServer];
-//        }
-//    }
-//}
-
-
-
 
 
 
@@ -707,34 +646,9 @@ static NSString* myVKAccountID = @"21743772";
         
         [textField resignFirstResponder];
     }
-
-
+    
+    
     return YES;
-}
-
-
-#pragma mark - +++ ANNewMessageDelegate +++
-- (void) sendButtonPressedWithMessage:(NSString*) message {
-    NSLog(@"sendButtonPressedWithMessage");
-    NSLog(@"received message = %@",message);
-    
-    [self addComment:message];
-    
-    
-    
-}
-
-
-#pragma mark - +++ ANPostCellDelegate +++
-
-- (void) likeButtonPressedForPostID:(NSString*) postID {
-    
-    if (self.post.isLikedByMyself) {
-        [self deleteLikeForItemType:@"post" andItemID:self.postID];
-    } else {
-        [self addLikeForItemType:@"post" andItemID:self.postID];
-    }
-    
 }
 
 

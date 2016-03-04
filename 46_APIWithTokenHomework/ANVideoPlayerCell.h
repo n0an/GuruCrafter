@@ -1,8 +1,8 @@
 //
-//  ANVideoPlayerViewController.h
+//  ANVideoPlayerCell.h
 //  46_APIWithTokenHomework
 //
-//  Created by Anton Novoselov on 23/02/16.
+//  Created by Anton Novoselov on 03/03/16.
 //  Copyright © 2016 Anton Novoselov. All rights reserved.
 //
 
@@ -10,17 +10,17 @@
 
 @class ANVideo;
 
-@interface ANVideoPlayerViewController : UIViewController
+@interface ANVideoPlayerCell : UITableViewCell
+
 
 @property (strong, nonatomic) ANVideo* selectedVideo;
 
 @property (weak, nonatomic) IBOutlet UIWebView* playerWebView;
 @property (weak, nonatomic) IBOutlet UILabel* titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel* descriptionLabel;
-@property (weak, nonatomic) IBOutlet UILabel* likesCountLabel;
+@property (weak, nonatomic) IBOutlet UIButton* likeButton;
 @property (weak, nonatomic) IBOutlet UILabel* viewsCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel* dateLabel;
-
 
 
 

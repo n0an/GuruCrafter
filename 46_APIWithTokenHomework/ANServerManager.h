@@ -147,5 +147,19 @@
                  onSuccess:(void(^)(NSArray* videos)) success
                  onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
+- (void) getCommentsForVideo:(NSString*) videoID
+                     groupID:(NSString*) groupID
+                  withOffset:(NSInteger) offset
+                       count:(NSInteger) count
+                   onSuccess:(void(^)(NSArray* comments)) success
+                   onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
+
+- (void) addComment:(NSString*) text
+           forGroup:(NSString*) groupID
+           forVideo:(NSString*) videoID
+          onSuccess:(void(^)(id result)) success
+          onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
+
 
 @end
