@@ -469,6 +469,7 @@ static NSInteger errorDuringNetworkRequest = 999;
      userID,                    @"user_id",
      @(count),                  @"count",
      @(offset),                 @"offset",
+     @"1",                      @"rev",
      @"5.45",                   @"v", nil];
     
     

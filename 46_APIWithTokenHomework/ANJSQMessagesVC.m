@@ -109,6 +109,8 @@ static NSInteger messagesInRequest = 20;
                   
                   [self.collectionView reloadData];
                   
+                  [self scrollToBottomAnimated:YES];
+                  
               }
               self.loadingData = NO;
               
@@ -141,6 +143,8 @@ static NSInteger messagesInRequest = 20;
                       [self.messages addObjectsFromArray:messages];
                       
                       [self.collectionView reloadData];
+                      
+                      [self scrollToBottomAnimated:YES];
                   }
                   [self.refreshControl endRefreshing];
 
@@ -177,6 +181,20 @@ static NSInteger messagesInRequest = 20;
                    
                }];
     
+    
+}
+
+
+#pragma mark - JSQMessagesVC methods
+
+- (void)didPressSendButton:(UIButton *)button
+           withMessageText:(NSString *)text
+                  senderId:(NSString *)senderId
+         senderDisplayName:(NSString *)senderDisplayName
+                      date:(NSDate *)date {
+    
+
+    [self sendMessage:text];
     
 }
 
