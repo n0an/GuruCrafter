@@ -365,16 +365,19 @@ static NSString* myVKAccountID = @"21743772";
         ANVideoPlayerCell* videoPlayerCell = [tableView dequeueReusableCellWithIdentifier:videoIdentifier];
         
          
-         NSString* newString = [self.selectedVideo.videoPlayerURLString stringByAppendingString:@"&showinfo=0"];
+        NSString* newString = [self.selectedVideo.videoPlayerURLString stringByAppendingString:@"&showinfo=0"];
          
-         NSURL* urlVideo = [NSURL URLWithString:newString];
+        NSURL* urlVideo = [NSURL URLWithString:newString];
          
-         NSURLRequest* requestToYoutube = [NSURLRequest requestWithURL:urlVideo];
-         
-         [videoPlayerCell.playerWebView loadRequest:requestToYoutube];
+        NSURLRequest* requestToYoutube = [NSURLRequest requestWithURL:urlVideo];
         
-         videoPlayerCell.titleLabel.text = self.selectedVideo.title;
-         videoPlayerCell.descriptionLabel.text = self.selectedVideo.videoDescription;
+        [videoPlayerCell.playerWebView loadRequest:requestToYoutube];
+        
+        [videoPlayerCell.playerWebView.scrollView setScrollEnabled:NO];
+
+        
+        videoPlayerCell.titleLabel.text = self.selectedVideo.title;
+        videoPlayerCell.descriptionLabel.text = self.selectedVideo.videoDescription;
         
         [videoPlayerCell.likeButton setTitle:self.selectedVideo.likesCount forState:UIControlStateNormal];
         [videoPlayerCell.likeButton addTarget:self action:@selector(actionLikeVideoPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -390,10 +393,10 @@ static NSString* myVKAccountID = @"21743772";
         }
 
         
-         videoPlayerCell.viewsCountLabel.text = self.selectedVideo.views;
-         videoPlayerCell.dateLabel.text = [NSString stringWithFormat:@"Added on %@", self.selectedVideo.date];
+        videoPlayerCell.viewsCountLabel.text = self.selectedVideo.views;
+        videoPlayerCell.dateLabel.text = [NSString stringWithFormat:@"Added on %@", self.selectedVideo.date];
         
-        
+
         return videoPlayerCell;
         
         
