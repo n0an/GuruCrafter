@@ -12,11 +12,11 @@
 @interface ANMessage : ANServerObject
 
 
-@property (strong, nonatomic) NSString* authorID;
+@property (strong, nonatomic) NSString* userId;
 
-@property (strong, nonatomic) NSString* messageText;
+@property (strong, nonatomic) NSString* body;
 
-@property (strong, nonatomic) NSString* messageDate;
+@property (strong, nonatomic) NSDate* date;
 
 
 @end

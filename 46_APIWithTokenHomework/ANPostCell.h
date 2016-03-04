@@ -19,7 +19,6 @@
 
 @property (weak, nonatomic) IBOutlet UILabel* fullNameLabel;
 
-
 @property (weak, nonatomic) IBOutlet UILabel* commentsCountLabel;
 
 @property (weak, nonatomic) IBOutlet UIImageView* postAuthorImageView;
@@ -34,11 +33,8 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* gallerySecondRowTopConstraint;
 
 
-
 @property (weak, nonatomic) IBOutlet UIButton* likeButton;
 @property (weak, nonatomic) IBOutlet UIButton* commentButton;
-
-//+ (CGFloat) heightForText:(NSString*) text;
 
 - (IBAction)actionLikePressed:(UIButton*)sender;
 

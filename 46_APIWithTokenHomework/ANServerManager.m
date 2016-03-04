@@ -26,6 +26,8 @@
 #import "ANVideoAlbum.h"
 #import "ANVideo.h"
 
+#import "JSQMessage.h"
+
 @interface ANServerManager ()
 
 @property (strong, nonatomic) AFHTTPSessionManager* requestSessionManager;
@@ -454,10 +456,11 @@ static NSInteger errorDuringNetworkRequest = 999;
 #pragma mark - Private messages methods
 
 - (void) getMessagesForUser:(NSString*) userID
-           withOffset:(NSInteger) offset
-                count:(NSInteger) count
-            onSuccess:(void(^)(NSArray* messages)) success
-            onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
+                 senderName:(NSString*) senderName
+                 withOffset:(NSInteger) offset
+                      count:(NSInteger) count
+                  onSuccess:(void(^)(NSArray* messages)) success
+                  onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
     
     
     NSDictionary* params =
@@ -484,8 +487,23 @@ static NSInteger errorDuringNetworkRequest = 999;
              NSMutableArray* messagesArray = [NSMutableArray array];
              
              for (NSDictionary* dict in itemsArray) {
-                 ANMessage* message = [[ANMessage alloc] initWithServerResponse:dict];
+
+
+                 NSString* senderID = [[dict objectForKey:@"from_id"] stringValue];
+
+                 NSTimeInterval unixtime = [[dict objectForKey:@"date"] doubleValue];
+                 
+                 NSDate *date = [NSDate dateWithTimeIntervalSince1970:unixtime];
+                 NSString *text = [dict objectForKey:@"body"];
+                 
+                 JSQMessage* message = [[JSQMessage alloc] initWithSenderId:senderID
+                                                          senderDisplayName:senderName
+                                                                       date:date
+                                                                       text:text];
+                 
                  [messagesArray addObject:message];
+                 
+                 
              }
              
              dispatch_async(dispatch_get_main_queue(), ^{

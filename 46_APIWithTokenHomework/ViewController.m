@@ -11,6 +11,7 @@
 #import "ANUser.h"
 #import "ANGroup.h"
 #import "UIImageView+AFNetworking.h"
+#import "UITableViewCell+CellForContent.h"
 
 #import "ANPost.h"
 #import "ANPostCell.h"
@@ -19,7 +20,8 @@
 
 #import "ANAddPostViewController.h"
 
-#import "ANMessagesViewController.h"
+
+#import "ANJSQMessagesVC.h"
 #import "ANNewPostCell.h"
 
 #import "ANPostCommentsViewController.h"
@@ -447,7 +449,7 @@ static NSString* myVKAccountID = @"21743772";
 
 
 #pragma mark - Gestures
-
+/*
 - (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
     
     NSLog(@"TAP WORKS!!");
@@ -457,6 +459,9 @@ static NSString* myVKAccountID = @"21743772";
     
     // Getting cell that has this image view. Double superview because - Cell->ContentView->ImageView
     UITableViewCell* cell = (UITableViewCell*)tappedImageView.superview.superview;
+    
+//    ANPostCell* clickedPostCell = (ANPostCell*)[UITableViewCell getParentCellFor:tappedImageView];
+    
     
     NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:cell];
     
@@ -476,6 +481,60 @@ static NSString* myVKAccountID = @"21743772";
     [self.navigationController pushViewController:vc animated:YES];
     
 }
+
+*/
+
+
+- (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
+    
+    NSLog(@"TAP WORKS!!");
+    
+    // Taking tapped image view from activated recognizer
+    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+
+    ANPostCell* clickedPostCell = (ANPostCell*)[UITableViewCell getParentCellFor:tappedImageView];
+    
+    NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:clickedPostCell];
+    
+    ANPost* clickedPost = [self.postsArray objectAtIndex:clickedIndexPath.row];
+    
+    ANJSQMessagesVC* vc = [[ANJSQMessagesVC alloc] init];
+    
+//    vc.partnerUser = clickedPost.author;
+    
+    vc.senderId = clickedPost.author.userID;
+    
+    vc.senderDisplayName = [NSString stringWithFormat:@"%@ %@", clickedPost.author.firstName, clickedPost.author.lastName];
+    
+    vc.avatarIncoming = clickedPost.author.imageURL;
+    
+    vc.avatarOutgoing = [[[ANServerManager sharedManager] currentUser] imageURL];
+    
+    
+//    vc.currentUser = [[ANServerManager sharedManager] currentUser];
+    
+    
+    
+    
+//    ANMessagesViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANMessagesViewController"];
+//    
+//    vc.partnerUserID = clickedPost.authorID;
+//    
+//    if (clickedPost.author != nil) {
+//        vc.partnerUser = clickedPost.author;
+//    } else if (clickedPost.fromGroup != nil) {
+//        vc.partnerGroup = clickedPost.fromGroup;
+//    }
+    
+    
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
+
+
+
+
+
 
 
 - (void) actionGlryImageViewTapped:(UITapGestureRecognizer*) recognizer {
