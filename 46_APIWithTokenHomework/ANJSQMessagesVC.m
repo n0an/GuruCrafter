@@ -13,9 +13,10 @@
 #import "ANServerManager.h"
 
 #import "JSQMessagesCollectionView.h"
+#import <CCBottomRefreshControl/UIScrollView+BottomRefreshControl.h>
 
 
-@interface ANJSQMessagesVC () <UIScrollViewDelegate>
+@interface ANJSQMessagesVC ()
 
 @property (strong, nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (strong, nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
@@ -23,6 +24,7 @@
 @property (strong, nonatomic) NSMutableArray* messages;
 
 @property (assign, nonatomic) BOOL loadingData;
+@property (assign, nonatomic) BOOL firstFetch;
 
 @property (strong, nonatomic) NSString* sourceFullName;
 @property (strong, nonatomic) NSURL* sourceImageURL;
@@ -30,7 +32,11 @@
 @property (strong, nonatomic) UIImage *imageAvatarIncoming;
 @property (strong, nonatomic) UIImage *imageAvatarOutgoing;
 
-@property (strong, nonatomic) UIRefreshControl* refreshControl;
+@property (strong, nonatomic) UIRefreshControl* topRefreshControl;
+@property (strong, nonatomic) UIRefreshControl* bottomRefreshControl;
+
+@property (strong, nonatomic) NSOperation *currentOperation;
+@property (strong, nonatomic) NSOperationQueue *queue;
 
 
 @end
@@ -46,24 +52,32 @@ static NSInteger messagesInRequest = 20;
     // Do any additional setup after loading the view.
     
     
+    
+    UIRefreshControl* bottomRefresh = [[UIRefreshControl alloc] init];
+    bottomRefresh.triggerVerticalOffset = 100.;
+    [bottomRefresh addTarget:self action:@selector(refreshMessagesHistory) forControlEvents:UIControlEventValueChanged];
+    
+    self.collectionView.bottomRefreshControl = bottomRefresh;
+    self.bottomRefreshControl = bottomRefresh;
+    
+    
+    UIRefreshControl* topRefresh = [[UIRefreshControl alloc] init];
+    [topRefresh addTarget:self action:@selector(topRefreshAction:) forControlEvents:UIControlEventValueChanged];
+    
+    [self.collectionView addSubview:topRefresh];
+    
+    self.topRefreshControl = topRefresh;
+    
+    
     self.imageAvatarOutgoing = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.avatarOutgoing]];
     self.imageAvatarIncoming = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.avatarIncoming]];
     
     self.loadingData = YES;
-    
+    self.firstFetch = YES;
     self.messages = [NSMutableArray array];
-    
-    [self getMessagesFromServer];
-    
-    
+    [self getHistoryMessagesBackgroundFromServer:messagesInRequest offset:0];
 
-    
-    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
-    [refresh addTarget:self action:@selector(refreshMessagesHistory) forControlEvents:UIControlEventValueChanged];
-    
-    [self.collectionView addSubview:refresh];
-    
-    self.refreshControl = refresh;
+
 
     self.navigationItem.title = self.senderDisplayName;
     
@@ -88,14 +102,53 @@ static NSInteger messagesInRequest = 20;
     
     self.collectionView.collectionViewLayout.springinessEnabled = YES;
     
-    //[self scrollToBottomAnimated:NO];
 }
+
+
+
+
+#pragma mark - Actions
+
+- (void) topRefreshAction:(UIRefreshControl*) refreshControl {
+    
+    [self getHistoryMessagesBackgroundFromServer:messagesInRequest offset:[self.messages count]];
+    
+}
+
 
 
 #pragma mark - API
 
 
-- (void) getMessagesFromServer {
+- (void)getHistoryMessagesBackgroundFromServer:(NSInteger)count offset:(NSInteger)offset {
+    
+    self.queue = [[NSOperationQueue alloc] init];
+    
+    __weak NSOperation *weakCurrentOperation = self.currentOperation;
+    
+    __weak ANJSQMessagesVC* weakSelf = self;
+    
+    self.currentOperation = [NSBlockOperation blockOperationWithBlock:^{
+        
+        if (![weakCurrentOperation isCancelled]) {
+            
+            [weakSelf getHistoryMessagesFromServer:count offset:offset];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [weakSelf.collectionView reloadData];
+            
+            self.currentOperation = nil;
+        });
+        
+    }];
+    
+    [self.queue addOperation:self.currentOperation];
+}
+
+
+- (void)getHistoryMessagesFromServer:(NSInteger)count offset:(NSInteger)offset {
     
     [[ANServerManager sharedManager] getMessagesForUser:self.senderId
          senderName:self.senderDisplayName
@@ -103,27 +156,37 @@ static NSInteger messagesInRequest = 20;
               count:messagesInRequest
           onSuccess:^(NSArray *messages) {
               
-              if ([messages count] > 0) {
-                  [self.messages addObjectsFromArray:messages];
-                  
-                  
-                  [self.collectionView reloadData];
-                  
+              [self.messages addObjectsFromArray:messages];
+              
+              NSSortDescriptor *date = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+              
+              [self.messages sortUsingDescriptors:[NSArray arrayWithObject:date]];
+              
+              [self.collectionView reloadData];
+              
+              if (self.firstFetch) {
                   [self scrollToBottomAnimated:YES];
-                  
+                  self.firstFetch = NO;
               }
+              
+              
               self.loadingData = NO;
+              
+              if (self.topRefreshControl.isRefreshing) {
+                  [self.topRefreshControl endRefreshing];
+              }
               
           }
           onFailure:^(NSError *error, NSInteger statusCode) {
               NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-
+              
+              
           }];
     
-    
-    
-    
+
 }
+
+
 
 
 - (void) refreshMessagesHistory {
@@ -142,18 +205,20 @@ static NSInteger messagesInRequest = 20;
                       [self.messages removeAllObjects];
                       [self.messages addObjectsFromArray:messages];
                       
+                      NSSortDescriptor* dateDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+                      [self.messages sortUsingDescriptors:@[dateDescriptor]];
+                      
                       [self.collectionView reloadData];
                       
-                      [self scrollToBottomAnimated:YES];
                   }
-                  [self.refreshControl endRefreshing];
+                  [self.bottomRefreshControl endRefreshing];
 
                   self.loadingData = NO;
                   
               }
               onFailure:^(NSError *error, NSInteger statusCode) {
                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                  [self.refreshControl endRefreshing];
+                  [self.bottomRefreshControl endRefreshing];
 
               }];
   
@@ -198,6 +263,14 @@ static NSInteger messagesInRequest = 20;
     
 }
 
+
+
+- (void)didPressAccessoryButton:(UIButton *)sender {
+    
+    NSLog(@"didPressAccessoryButton");
+    
+    
+}
 
 
 
@@ -363,29 +436,6 @@ static NSInteger messagesInRequest = 20;
 {
     return kJSQMessagesCollectionViewAvatarSizeDefault;
 }
-
-
-
-
-
-
-
-
-
-#pragma mark - UIScrollViewDelegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-        if (!self.loadingData)
-        {
-            self.loadingData = YES;
-            [self getMessagesFromServer];
-        }
-    }
-}
-
-
 
 
 
