@@ -19,13 +19,14 @@
         NSDateFormatter *dateWithFormat = [[NSDateFormatter alloc] init];
         [dateWithFormat setDateFormat:@"dd.MM.yyyy HH:mm"];
         
-        NSTimeInterval rawDate = [[responseObject objectForKey:@"date"] intValue];
+        NSTimeInterval rawDate = [[responseObject objectForKey:@"date"] doubleValue];
         NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:rawDate];
-        self.messageDate = [dateWithFormat stringFromDate:dateValue];
+//        self.date = [dateWithFormat stringFromDate:dateValue];
+        self.date = dateValue;
         
-        self.authorID = [[responseObject objectForKey:@"from_id"] stringValue];
+        self.userId = [[responseObject objectForKey:@"from_id"] stringValue];
     
-        self.messageText = [responseObject objectForKey:@"body"];
+        self.body = [responseObject objectForKey:@"body"];
     
     
     

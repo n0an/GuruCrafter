@@ -22,7 +22,7 @@
 
 #import "ANPostPhotoGallery.h"
 #import "ANPhotoInPostVC.h"
-#import "ANMessagesViewController.h"
+
 
 typedef enum {
     ANTableViewSectionPostInfo,
@@ -210,6 +210,7 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
+/*
 - (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
     
     NSLog(@"TAP WORKS!!");
@@ -235,7 +236,7 @@ static NSString* myVKAccountID = @"21743772";
     [self.navigationController pushViewController:vc animated:YES];
     
 }
-
+*/
 
 - (void) actionTapOnTableView {
     

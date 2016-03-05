@@ -53,8 +53,8 @@
         onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure;
 
 
-
 - (void) getMessagesForUser:(NSString*) userID
+                 senderName:(NSString*) senderName
                  withOffset:(NSInteger) offset
                       count:(NSInteger) count
                   onSuccess:(void(^)(NSArray* messages)) success
