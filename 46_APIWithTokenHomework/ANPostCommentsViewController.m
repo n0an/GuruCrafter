@@ -23,6 +23,9 @@
 #import "ANPostPhotoGallery.h"
 #import "ANPhotoInPostVC.h"
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
+
 
 typedef enum {
     ANTableViewSectionPostInfo,
@@ -32,7 +35,7 @@ typedef enum {
 } ANTableViewSection;
 
 
-@interface ANPostCommentsViewController () <UITextFieldDelegate, UIScrollViewDelegate, ANNewMessageDelegate, ANPostCellDelegate>
+@interface ANPostCommentsViewController () <UITextFieldDelegate, ANNewMessageDelegate, ANPostCellDelegate>
 
 @property (strong, nonatomic) NSMutableArray* commentsArray;
 @property (assign, nonatomic) BOOL loadingData;
@@ -65,24 +68,18 @@ static NSString* myVKAccountID = @"21743772";
     
     [super viewDidLoad];
     
+    
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem.title = [NSString stringWithFormat:@"Post #%@", self.postID];
+
     self.sendButton.layer.cornerRadius = 10;
     self.sendButton.enabled = NO;
 
     self.commentsArray = [NSMutableArray array];
-    
     self.loadingData = YES;
-
     [self getCommentsFromServer];
     
-    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
-    [refresh addTarget:self action:@selector(refreshComments) forControlEvents:UIControlEventValueChanged];
-    
-    [self.tableView addSubview:refresh];
-    
-    self.refreshControl = refresh;
-    
-    
-    self.navigationItem.title = [NSString stringWithFormat:@"Post #%@", self.postID];
+    [self infiniteScrolling];
     
     
     UITapGestureRecognizer* tapGestureOnTableView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionTapOnTableView)];
@@ -117,6 +114,30 @@ static NSString* myVKAccountID = @"21743772";
 
 
 #pragma mark - Helper Methods
+
+
+- (void)infiniteScrolling {
+    
+    __weak ANPostCommentsViewController* weakSelf = self;
+    
+        [self.tableView addPullToRefreshWithActionHandler:^{
+    
+            [weakSelf refreshComments];
+            
+            
+            // once refresh, allow the infinite scroll again
+            weakSelf.tableView.showsInfiniteScrolling = YES;
+        }];
+    
+    
+    [self.tableView addInfiniteScrollingWithActionHandler:^{
+        
+        [weakSelf getCommentsFromServer];
+        
+    }];
+}
+
+
 
 - (void) prepareAndSendMessage {
     
@@ -210,33 +231,7 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-/*
-- (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
-    
-    NSLog(@"TAP WORKS!!");
-    
-    // Taking tapped image view from activated recognizer
-    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
-    
-    // Getting cell that has this image view. Double superview because - Cell->ContentView->ImageView
-    UITableViewCell* cell = (UITableViewCell*)tappedImageView.superview.superview;
-    
-    ANPost* clickedPost = self.post;
-    
-    ANMessagesViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANMessagesViewController"];
-    
-    vc.partnerUserID = clickedPost.authorID;
-    
-    if (clickedPost.author != nil) {
-        vc.partnerUser = clickedPost.author;
-    } else if (clickedPost.fromGroup != nil) {
-        vc.partnerGroup = clickedPost.fromGroup;
-    }
-    
-    [self.navigationController pushViewController:vc animated:YES];
-    
-}
-*/
+
 
 - (void) actionTapOnTableView {
     
@@ -363,10 +358,14 @@ static NSString* myVKAccountID = @"21743772";
                    
                }
                self.loadingData = NO;
+               [self.tableView.infiniteScrollingView stopAnimating];
+               
                
           }
            onFailure:^(NSError *error, NSInteger statusCode) {
-              
+               self.tableView.showsInfiniteScrolling = NO;
+               [self.tableView.infiniteScrollingView stopAnimating];
+
                NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
                
           }];
@@ -394,15 +393,16 @@ static NSString* myVKAccountID = @"21743772";
                        [self.tableView reloadData];
                        
                    }
-                   [self.refreshControl endRefreshing];
                    
                    self.loadingData = NO;
+                   [self.tableView.pullToRefreshView stopAnimating];
+
                    
                }
                onFailure:^(NSError *error, NSInteger statusCode) {
-                   
+                   [self.tableView.pullToRefreshView stopAnimating];
+
                    NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                   [self.refreshControl endRefreshing];
 
                }];
 
@@ -709,11 +709,10 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-
+// *** INSTEAD SCROLL VIEW ACTION
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
 
     NSLog(@"indexPath.section = %d, indexPath.row = %d", indexPath.section, indexPath.row);
-    
     
     if (indexPath.section == ANTableViewSectionComments) {
 
@@ -771,7 +770,6 @@ static NSString* myVKAccountID = @"21743772";
         
         [textField resignFirstResponder];
     }
-
 
     return YES;
 }
