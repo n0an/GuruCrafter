@@ -17,12 +17,15 @@
 #import "ANParsedUploadServer.h"
 #import "ANPhotoAddingViewController.h"
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
 
-@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate, ANPhotoViewerDelegate>
+
+@interface ANPhotosViewController () <ANPhotoAddingDelegate, ANPhotoViewerDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
 
-@property (strong, nonatomic) UIRefreshControl* refreshControl;
+
 
 @property (strong, nonatomic) ANPhoto* currentViewingPhoto;
 
@@ -39,22 +42,48 @@ static NSString* myVKAccountID = @"21743772";
     // Do any additional setup after loading the view.
     
     self.photosArray = [NSMutableArray array];
-    
     self.loadingData = YES;
-    
-    UIRefreshControl* refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
-    [self.collectionView addSubview:refreshControl];
-    
-    self.refreshControl = refreshControl;
-    
     [self getPhotosFromServer];
+
+    [self infiniteScrolling];
+
+    
+
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+
+
+#pragma mark - Helper Methods
+
+
+- (void)infiniteScrolling {
+    
+    __weak ANPhotosViewController* weakSelf = self;
+    
+    [self.collectionView addPullToRefreshWithActionHandler:^{
+        
+        [weakSelf refreshPhotos];
+        
+        // once refresh, allow the infinite scroll again
+        weakSelf.collectionView.showsInfiniteScrolling = YES;
+    }];
+    
+    
+    [self.collectionView addInfiniteScrollingWithActionHandler:^{
+        
+        [weakSelf getPhotosFromServer];
+        
+    }];
+}
+
+
 
 
 
@@ -86,11 +115,15 @@ static NSString* myVKAccountID = @"21743772";
                  }
                  
                  self.loadingData = NO;
+                 [self.collectionView.infiniteScrollingView stopAnimating];
+
                  
                  
              }
              onFailure:^(NSError *error, NSInteger statusCode) {
                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                 self.collectionView.showsInfiniteScrolling = NO;
+                 [self.collectionView.infiniteScrollingView stopAnimating];
              }];
     
 }
@@ -117,13 +150,18 @@ static NSString* myVKAccountID = @"21743772";
                      }
                      
                      self.loadingData = NO;
-                     [self.refreshControl endRefreshing];
+
+                     [self.collectionView.pullToRefreshView stopAnimating];
+
                      
                      
                  }
                  onFailure:^(NSError *error, NSInteger statusCode) {
                      NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                     [self.refreshControl endRefreshing];
+
+                     [self.collectionView.pullToRefreshView stopAnimating];
+
+                     
 
                  }];
         
@@ -205,19 +243,7 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-#pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-        NSLog(@"scrollViewDidScroll");
-        if (!self.loadingData)
-        {
-            self.loadingData = YES;
-            [self getPhotosFromServer];
-        }
-    }
-}
 
 
 #pragma mark - Segue
