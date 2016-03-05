@@ -259,9 +259,10 @@ static NSString* myVKAccountID = @"21743772";
         
         ANPhotosViewController* vc = segue.destinationViewController;
         
-        vc.albumID = album.albumID;
+        vc.album = album;
         
-        NSLog(@"vc.allbumID = %@", vc.albumID);
+        
+
         
     }
 }

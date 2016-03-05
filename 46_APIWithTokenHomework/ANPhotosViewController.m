@@ -11,6 +11,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "ANPhotoCollectionViewCell.h"
 #import "ANPhoto.h"
+#import "ANPhotoAlbum.h"
 
 #import "ANPhotoDetailsViewController.h"
 #import "ANUploadServer.h"
@@ -25,6 +26,7 @@
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
 
+@property (strong, nonatomic) NSMutableArray* allPhotosInAlbumArray;
 
 
 @property (strong, nonatomic) ANPhoto* currentViewingPhoto;
@@ -41,6 +43,7 @@ static NSString* myVKAccountID = @"21743772";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.allPhotosInAlbumArray = [NSMutableArray array];
     self.photosArray = [NSMutableArray array];
     self.loadingData = YES;
     [self getPhotosFromServer];
@@ -92,7 +95,7 @@ static NSString* myVKAccountID = @"21743772";
 - (void) getPhotosFromServer {
     
     [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
-            forAlbumID:self.albumID
+            forAlbumID:self.album.albumID
             withOffset:[self.photosArray count]
                  count:requestCount
              onSuccess:^(NSArray *photos) {
@@ -137,7 +140,7 @@ static NSString* myVKAccountID = @"21743772";
         
         
         [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
-                forAlbumID:self.albumID
+                forAlbumID:self.album.albumID
                 withOffset:0
                      count:MAX(requestCount, [self.photosArray count])
                  onSuccess:^(NSArray *photos) {
@@ -169,6 +172,31 @@ static NSString* myVKAccountID = @"21743772";
     
     
 }
+
+
+
+
+- (void) getAllPhotosFromServer {
+    
+    [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
+            forAlbumID:self.album.albumID
+            withOffset:[self.photosArray count]
+                 count:[self.album.albumSize integerValue] - [self.photosArray count]
+             onSuccess:^(NSArray *photos) {
+                 
+                 if ([photos count] > 0) {
+                     [self.allPhotosInAlbumArray addObjectsFromArray:photos];
+
+                 }
+                 
+                 
+             }
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+             }];
+    
+}
+
 
 
 
@@ -241,6 +269,12 @@ static NSString* myVKAccountID = @"21743772";
     
     [self presentViewController:nav animated:YES completion:nil];
     
+    [self.allPhotosInAlbumArray addObjectsFromArray:self.photosArray];
+
+    [self getAllPhotosFromServer];
+    
+    
+    
 }
 
 
@@ -253,7 +287,7 @@ static NSString* myVKAccountID = @"21743772";
         
         ANPhotoAddingViewController* vc = segue.destinationViewController;
         
-        vc.albumID = self.albumID;
+        vc.albumID = self.album.albumID;
         vc.delegate = self;
         
     }
@@ -273,35 +307,35 @@ static NSString* myVKAccountID = @"21743772";
     
     ANPhoto* iteratedPhoto;
     
-    NSInteger currentViewingPhotoIndex = [self.photosArray indexOfObject:self.currentViewingPhoto];
+    NSInteger currentViewingPhotoIndex = [self.allPhotosInAlbumArray indexOfObject:self.currentViewingPhoto];
     NSInteger iteratedPhotoIndex;
     
     if (iterationDirection == ANPhotoIterationDirectionNext) {
         
         NSLog(@"iteratePhoto Next");
         
-        if ([self.currentViewingPhoto isEqual:[self.photosArray lastObject]]) {
-            iteratedPhoto = [self.photosArray firstObject];
+        if ([self.currentViewingPhoto isEqual:[self.allPhotosInAlbumArray lastObject]]) {
+            iteratedPhoto = [self.allPhotosInAlbumArray firstObject];
             
         } else {
             
             iteratedPhotoIndex = currentViewingPhotoIndex + 1;
             
-            iteratedPhoto = [self.photosArray objectAtIndex:iteratedPhotoIndex];
+            iteratedPhoto = [self.allPhotosInAlbumArray objectAtIndex:iteratedPhotoIndex];
         }
         
     } else {
         
         NSLog(@"iteratePhoto Previous");
 
-        if ([self.currentViewingPhoto isEqual:[self.photosArray firstObject]]) {
-            iteratedPhoto = [self.photosArray lastObject];
+        if ([self.currentViewingPhoto isEqual:[self.allPhotosInAlbumArray firstObject]]) {
+            iteratedPhoto = [self.allPhotosInAlbumArray lastObject];
             
         } else {
             
             iteratedPhotoIndex = currentViewingPhotoIndex - 1;
             
-            iteratedPhoto = [self.photosArray objectAtIndex:iteratedPhotoIndex];
+            iteratedPhoto = [self.allPhotosInAlbumArray objectAtIndex:iteratedPhotoIndex];
 
         }
         
