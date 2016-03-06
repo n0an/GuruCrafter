@@ -113,8 +113,6 @@ static NSString* myVKAccountID = @"21743772";
                      
                      [self.collectionView insertItemsAtIndexPaths:newPaths];
                      
-                     
-//                     [self.collectionView reloadData];
                  }
                  
                  self.loadingData = NO;

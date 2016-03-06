@@ -22,9 +22,13 @@
 
 #import "ANPostPhotoGallery.h"
 #import "ANPhotoInPostVC.h"
+#import "ANJSQMessagesVC.h"
 
 #import <UIScrollView+SVInfiniteScrolling.h>
 #import <UIScrollView+SVPullToRefresh.h>
+
+#import "UITableViewCell+CellForContent.h"
+
 
 
 typedef enum {
@@ -46,11 +50,6 @@ typedef enum {
 @property (assign, nonatomic) BOOL isLikedPost;
 
 @property (strong, nonatomic) UIRefreshControl* refreshControl;
-
-//@property (assign, nonatomic) UIEdgeInsets initialInsets;
-//@property (assign, nonatomic) CGPoint initialContentOffset;
-
-//@property (assign, nonatomic) BOOL isFirstTimeAfterLoading;
 
 @end
 
@@ -242,6 +241,60 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+- (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
+    
+    NSLog(@"TAP WORKS!!");
+    
+    ANPost* clickedPost = self.post;
+    
+    ANJSQMessagesVC* vc = [[ANJSQMessagesVC alloc] init];
+    
+    vc.senderId = clickedPost.author.userID;
+    
+    vc.senderDisplayName = [NSString stringWithFormat:@"%@ %@", clickedPost.author.firstName, clickedPost.author.lastName];
+    
+    vc.avatarIncoming = clickedPost.author.imageURL;
+    
+    vc.avatarOutgoing = [[[ANServerManager sharedManager] currentUser] imageURL];
+    
+    
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
+
+
+- (void) handleTapOnCommentImageView:(UITapGestureRecognizer*) recognizer {
+    
+    NSLog(@"TAP WORKS!!");
+    
+    // Taking tapped image view from activated recognizer
+    UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+    
+    ANCommentCell* clickedCommentCell = (ANCommentCell*)[UITableViewCell getParentCellFor:tappedImageView];
+    
+    NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:clickedCommentCell];
+    
+    ANComment* clickedComment = [self.commentsArray objectAtIndex:clickedIndexPath.row];
+    
+    ANJSQMessagesVC* vc = [[ANJSQMessagesVC alloc] init];
+    
+    vc.senderId = clickedComment.author.userID;
+    
+    vc.senderDisplayName = [NSString stringWithFormat:@"%@ %@", clickedComment.author.firstName, clickedComment.author.lastName];
+    
+    vc.avatarIncoming = clickedComment.author.imageURL;
+    
+    vc.avatarOutgoing = [[[ANServerManager sharedManager] currentUser] imageURL];
+    
+    
+    [self.navigationController pushViewController:vc animated:YES];
+
+}
+
+
+
+
+
 
 
 
@@ -262,42 +315,9 @@ static NSString* myVKAccountID = @"21743772";
                          
                      } completion:nil];
     
-    
-    
-    /****** TABLEVIEW CONTENT OFFSET AFTER KEYBOARD BECOME/RESIGN FIRST RESPONDER
-     *
-     *       Need to troubleshoot tableview content offset
-     *
-     
-    CGSize keyboardSize = keyboardRect.size;
-    
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, keyboardSize.height, 0);
-//    self.initialInsets = self.tableView.contentInset;
-    
-//    self.tableView.contentInset = contentInsets;
-//    self.tableView.scrollIndicatorInsets = contentInsets;
-    
-    
-    if (self.isFirstTimeAfterLoading) {
-        self.initialContentOffset  = self.tableView.contentOffset;
-        self.isFirstTimeAfterLoading = NO;
-    }
-    
-//    NSLog(@"self.tableView.contentOffset = {%f, %f}", self.tableView.contentOffset.x, self.tableView.contentOffset.y);
-//    
-//    NSLog(@"self.initialContentOffset = {%f, %f}", self.initialContentOffset.x, self.initialContentOffset.y);
-    
-    CGPoint scrollPoint = CGPointMake(0, self.toolBarView.frame.origin.y - keyboardSize.height - self.initialContentOffset.y);
-    NSLog(@"scrollPoint = %f, %f", scrollPoint.x, scrollPoint.y);
-
-    [self.tableView setContentOffset:scrollPoint animated:YES];
-*/
-    
 }
 
 - (void) keyboardWillHide:(NSNotification*) notification {
-    
-
 
     [UIView animateWithDuration:0.3f
                           delay:0.f
@@ -309,21 +329,6 @@ static NSString* myVKAccountID = @"21743772";
                          [self.view layoutIfNeeded];
                          
                      } completion:nil];
-    
-    /****** TABLEVIEW CONTENT OFFSET AFTER KEYBOARD BECOME/RESIGN FIRST RESPONDER
-     *
-     *       Need to troubleshoot tableview content offset
-     *
-     
-     //    self.tableView.contentInset = self.initialInsets;
-     //
-     //    self.tableView.scrollIndicatorInsets = self.initialInsets;
-     
-     NSLog(@"self.initialContentOffset = {%f, %f}", self.initialContentOffset.x, self.initialContentOffset.y);
-     
-     [self.tableView setContentOffset:self.initialContentOffset animated:YES];
-     
-     */
     
 }
 
@@ -586,7 +591,6 @@ static NSString* myVKAccountID = @"21743772";
         [postCell.postAuthorImageView addGestureRecognizer:tapAuthorImageViewGesutre];
 
         
-        
         postCell.delegate = self;
         postCell.postID = self.postID;
         
@@ -662,6 +666,15 @@ static NSString* myVKAccountID = @"21743772";
             [commentCell.postAuthorImageView setImageWithURL:comment.author.imageURL];
             
         }
+        
+        // *** CREATING GESTURE RECOGNIZER FOR HADLE COMMENT AUTHOR IMAGEVIEW TAP
+        
+        commentCell.postAuthorImageView.userInteractionEnabled = YES;
+        
+        UIGestureRecognizer* tapCommentAuthorImageViewGesutre =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnCommentImageView:)];
+        [commentCell.postAuthorImageView addGestureRecognizer:tapCommentAuthorImageViewGesutre];
+        
 
         commentCell.dateLabel.text = comment.date;
         
@@ -707,53 +720,6 @@ static NSString* myVKAccountID = @"21743772";
     }
     return UITableViewAutomaticDimension; // Auto Layout elements in the cell
 }
-
-
-// *** INSTEAD SCROLL VIEW ACTION
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSLog(@"indexPath.section = %d, indexPath.row = %d", indexPath.section, indexPath.row);
-    
-    if (indexPath.section == ANTableViewSectionComments) {
-
-        ANComment* comment = [self.commentsArray objectAtIndex:indexPath.row];
-        NSLog(@"comment.author = %@", comment.author.firstName);
-
-        
-        if (indexPath.row == [self.commentsArray count] - 1) {
-            
-            NSLog(@"%d", indexPath.row);
-            NSLog(@"END OF COMMENTS");
-            
-            if (self.loadingData == NO) {
-                self.loadingData = YES;
-                NSLog(@"LOADING!");
-
-                [self getCommentsFromServer];
-            }
-            
-        }
-    }
- 
-}
-
-
-
-#pragma mark - UIScrollViewDelegate
-
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    
-//    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-//        NSLog(@"scrollViewDidScroll");
-//        if (!self.loadingData)
-//        {
-//            self.loadingData = YES;
-//            [self getCommentsFromServer];
-//        }
-//    }
-//}
-
-
 
 
 

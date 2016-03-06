@@ -7,35 +7,32 @@
 //
 
 #import "ViewController.h"
+
 #import "ANServerManager.h"
+
 #import "ANUser.h"
 #import "ANGroup.h"
-#import "UIImageView+AFNetworking.h"
-#import "UITableViewCell+CellForContent.h"
-
-#import "ANPost.h"
-#import "ANPostCell.h"
-
-#import "ANPhoto.h"
-
-#import "ANAddPostViewController.h"
-
-
-#import "ANJSQMessagesVC.h"
-#import "ANNewPostCell.h"
-
-#import "ANPostCommentsViewController.h"
-
 #import "ANPhotoAlbum.h"
-#import "ANUploadServer.h"
+#import "ANPhoto.h"
+#import "ANPost.h"
 
+#import "UIImageView+AFNetworking.h"
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
 #import <SWRevealViewController.h>
 
+#import "UITableViewCell+CellForContent.h"
+
+#import "ANPostCell.h"
+#import "ANNewPostCell.h"
+
+#import "ANAddPostViewController.h"
+#import "ANJSQMessagesVC.h"
+#import "ANPostCommentsViewController.h"
 #import "ANPostPhotoGallery.h"
 #import "ANPhotoInPostVC.h"
 
-#import <UIScrollView+SVInfiniteScrolling.h>
-#import <UIScrollView+SVPullToRefresh.h>
+
 
 typedef enum {
     ANTableViewSectionAddPost,
@@ -248,10 +245,8 @@ static NSString* myVKAccountID = @"21743772";
                  
                  [self.tableView reloadData];
                  
-                 
              }
 
-             
              self.loadingData = NO;
              
              [self.tableView.pullToRefreshView stopAnimating];
@@ -264,7 +259,6 @@ static NSString* myVKAccountID = @"21743772";
 
              [self.tableView.pullToRefreshView stopAnimating];
 
-             
          }];
         
     }
@@ -353,9 +347,9 @@ static NSString* myVKAccountID = @"21743772";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (section == 0) {
+    if (section == ANTableViewSectionAddPost) {
         return 1;
-    } else if (section == 1) {
+    } else if (section == ANTableViewSectionWall) {
         return [self.postsArray count];
     }
     
@@ -374,7 +368,6 @@ static NSString* myVKAccountID = @"21743772";
     if (indexPath.section == ANTableViewSectionAddPost) { // *** ADD POST BUTTON
         
         ANNewPostCell* addPostCell = [tableView dequeueReusableCellWithIdentifier:addPostIdentifier];
-        
         
         if (!addPostCell) {
             addPostCell = [[ANNewPostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:addPostIdentifier];
@@ -408,7 +401,7 @@ static NSString* myVKAccountID = @"21743772";
             
         }
         
-        // *** CREATING GESTURE RECOGNIZER FOR HADLE AUTHOR IMAGEVIEW TAP
+        // *** CREATING GESTURE RECOGNIZER FOR HANDLE AUTHOR IMAGEVIEW TAP
         
         postCell.postAuthorImageView.userInteractionEnabled = YES;
         
@@ -416,9 +409,7 @@ static NSString* myVKAccountID = @"21743772";
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnImageView:)];
         [postCell.postAuthorImageView addGestureRecognizer:tapAuthorImageViewGesutre];
         
-        
         postCell.dateLabel.text = post.date;
-        
         
         postCell.commentsCountLabel.text = post.comments;
         
@@ -490,7 +481,6 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     [self performTransitionToPostDetails:indexPath];
@@ -556,8 +546,6 @@ static NSString* myVKAccountID = @"21743772";
     
     [self.navigationController pushViewController:vc animated:YES];
     
-
-    
 }
 
 
@@ -569,7 +557,6 @@ static NSString* myVKAccountID = @"21743772";
         ANAddPostViewController* vc = [segue destinationViewController];
         
         vc.delegate = self;
-        
         
     }
 }

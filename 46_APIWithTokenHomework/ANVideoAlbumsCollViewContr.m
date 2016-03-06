@@ -143,15 +143,12 @@ static NSString * const reuseIdentifier = @"videoCVCell";
                         }
                         
                         [self.collectionView insertItemsAtIndexPaths:newPaths];
-                        
-                        // [self.collectionView reloadData];
 
                     }
                     
                     self.loadingData = NO;
                     [self.collectionView.infiniteScrollingView stopAnimating];
 
-                    
                 }
 
                 onFailure:^(NSError *error, NSInteger statusCode) {

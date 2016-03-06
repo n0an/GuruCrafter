@@ -887,7 +887,7 @@ static NSInteger errorDuringNetworkRequest = 999;
     
 }
 
-#pragma mark - Photos uploading methods
+#pragma mark - Photos API methods
 
 - (void) getGroupAlbums:(NSString*) groupID
              withOffset:(NSInteger) offset
