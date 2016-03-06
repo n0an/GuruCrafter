@@ -49,9 +49,6 @@ static NSString* myVKAccountID = @"21743772";
     [self getPhotosFromServer];
 
     [self infiniteScrolling];
-
-    
-
     
 }
 

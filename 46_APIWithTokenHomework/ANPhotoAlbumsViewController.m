@@ -21,7 +21,7 @@
 #import <UIScrollView+SVPullToRefresh.h>
 
 
-@interface ANPhotoAlbumsViewController () <UIScrollViewDelegate>
+@interface ANPhotoAlbumsViewController ()
 
 @property (strong, nonatomic) NSMutableArray* albumsArray;
 @property (assign, nonatomic) BOOL loadingData;
@@ -230,19 +230,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-        NSLog(@"scrollViewDidScroll");
-        if (!self.loadingData)
-        {
-            self.loadingData = YES;
-            [self getAlbumsFromServer];
-        }
-    }
-}
 
 
 #pragma mark - Segue

@@ -129,55 +129,54 @@ static NSString* myVKAccountID = @"21743772";
     NSData* selectedImageData = UIImageJPEGRepresentation(self.selectedImage, 1.0f);
     
     [[ANServerManager sharedManager] getUploadServerForGroupID:iosDevCourseGroupID
-                                               forPhotoAlbumID:self.albumID
-                                                     onSuccess:^(ANUploadServer *uploadServer) {
-                                                         
-                                                         [self getParsedUploadServerForUploadServer:uploadServer andImageData:selectedImageData];
-                                                         
-                                                     }
-                                                     onFailure:^(NSError *error, NSInteger statusCode) {
-                                                         NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                                                     }];
+       forPhotoAlbumID:self.albumID
+             onSuccess:^(ANUploadServer *uploadServer) {
+                 
+                 [self getParsedUploadServerForUploadServer:uploadServer andImageData:selectedImageData];
+                 
+             }
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+             }];
     
 }
 
 - (void) getParsedUploadServerForUploadServer:(ANUploadServer*) uploadServer andImageData:(NSData*)imageData {
-    
     [[ANServerManager sharedManager] getUploadJSONStringForServerURL:uploadServer.uploadURL
-                                                        fileToUpload:imageData
-                                                           onSuccess:^(ANParsedUploadServer *parsedUploadServer) {
-                                                               
-                                                               NSLog(@"parsedUploadServer = %@", parsedUploadServer);
-                                                               
-                                                               [self uploadPhotosToServer:parsedUploadServer];
-                                                               
-                                                           } onFailure:^(NSError *error, NSInteger statusCode) {
-                                                               NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                                                           }];
-    
+            fileToUpload:imageData
+               onSuccess:^(ANParsedUploadServer *parsedUploadServer) {
+                   
+                   NSLog(@"parsedUploadServer = %@", parsedUploadServer);
+                   
+                   [self uploadPhotosToServer:parsedUploadServer];
+                   
+               } onFailure:^(NSError *error, NSInteger statusCode) {
+                   NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+               }];
+
 }
 
 
 - (void) uploadPhotosToServer:(ANParsedUploadServer*) parsedUploadServer {
     [[ANServerManager sharedManager] uploadPhotosToGroupWithServer:parsedUploadServer
-                                                         onSuccess:^(id result) {
-                                                             
-                                                             NSLog(@"result = %@", result);
-                                                             
-                                                             self.waitView.hidden = YES;
+             onSuccess:^(id result) {
+                 
+                 NSLog(@"result = %@", result);
+                 
+                 self.waitView.hidden = YES;
 
-                                                             self.hintLabel.hidden = NO;
-                                                             self.hintLabel.text = @"Photo uploaded successfully!\n You can upload more photos now.";
-                                                             self.uploadBarButton.enabled = NO;
-                                                             
-                                                             [self.delegate photoDidFinishUploading];
-                                                             
-                                                         }
-                                                         onFailure:^(NSError *error, NSInteger statusCode) {
-                                                             
-                                                             NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                                                         }];
-}
+                 self.hintLabel.hidden = NO;
+                 self.hintLabel.text = @"Photo uploaded successfully!\n You can upload more photos now.";
+                 self.uploadBarButton.enabled = NO;
+                 
+                 [self.delegate photoDidFinishUploading];
+                 
+             }
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+             }];
+    }
 
 
 

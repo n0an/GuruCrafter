@@ -19,6 +19,9 @@
 
 #import "UIImageView+AFNetworking.h"
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
+
 
 typedef enum {
     ANVideoTableViewSectionVideo,
@@ -34,7 +37,6 @@ typedef enum {
 
 @property (assign, nonatomic) BOOL isLikedPost;
 
-@property (strong, nonatomic) UIRefreshControl* refreshControl;
 
 
 @end
@@ -53,25 +55,11 @@ static NSString* myVKAccountID = @"21743772";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSLog(@"ANVideoPlayerVC videoPlayerURLString = %@", self.selectedVideo.videoPlayerURLString);
-    
-    
-    
     self.commentsArray = [NSMutableArray array];
-    
     self.loadingData = YES;
-    
     [self getCommentsFromServer];
 
-    
-    
-    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
-    [refresh addTarget:self action:@selector(refreshComments) forControlEvents:UIControlEventValueChanged];
-    
-    [self.tableView addSubview:refresh];
-    
-    self.refreshControl = refresh;
-
+    [self infiniteScrolling];
 
     
     UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(actionCancelPressed:)];
@@ -115,10 +103,29 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
-
-
-
 #pragma mark - Helper Methods
+
+
+- (void)infiniteScrolling {
+    
+    __weak ANVideoPlayerVC* weakSelf = self;
+    
+    [self.tableView addPullToRefreshWithActionHandler:^{
+        
+        [weakSelf refreshComments];
+        
+        // once refresh, allow the infinite scroll again
+        weakSelf.tableView.showsInfiniteScrolling = YES;
+    }];
+    
+    
+    [self.tableView addInfiniteScrollingWithActionHandler:^{
+        
+        [weakSelf getCommentsFromServer];
+        
+    }];
+}
+
 
 - (void) prepareAndSendMessage {
     
@@ -284,11 +291,15 @@ static NSString* myVKAccountID = @"21743772";
                        
                    }
                    self.loadingData = NO;
+                   [self.tableView.infiniteScrollingView stopAnimating];
+
                    
                }
                onFailure:^(NSError *error, NSInteger statusCode) {
                    
                    NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                   self.tableView.showsInfiniteScrolling = NO;
+                   [self.tableView.infiniteScrollingView stopAnimating];
                    
                }];
     
@@ -315,15 +326,18 @@ static NSString* myVKAccountID = @"21743772";
                            [self.tableView reloadData];
                            
                        }
-                       [self.refreshControl endRefreshing];
                        
                        self.loadingData = NO;
+                       [self.tableView.pullToRefreshView stopAnimating];
+
                        
                    }
                    onFailure:^(NSError *error, NSInteger statusCode) {
                        
                        NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                       [self.refreshControl endRefreshing];
+
+                       [self.tableView.pullToRefreshView stopAnimating];
+
                        
                    }];
         
@@ -603,34 +617,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-
-// SCROLLING HANDLE
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"indexPath.section = %d, indexPath.row = %d", indexPath.section, indexPath.row);
-    
-    if (indexPath.section == ANVideoTableViewSectionComments) {
-        
-        ANComment* comment = [self.commentsArray objectAtIndex:indexPath.row];
-        NSLog(@"comment.author = %@", comment.author.firstName);
-        
-        
-        if (indexPath.row == [self.commentsArray count] - 1) {
-            
-            NSLog(@"%d", indexPath.row);
-            NSLog(@"END OF COMMENTS");
-            
-            if (self.loadingData == NO) {
-                self.loadingData = YES;
-                NSLog(@"LOADING!");
-                
-                [self getCommentsFromServer];
-            }
-            
-        }
-    }
-    
-}
 
 
 
