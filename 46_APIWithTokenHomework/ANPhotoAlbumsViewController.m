@@ -17,19 +17,21 @@
 
 #import <SWRevealViewController.h>
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
+
 
 @interface ANPhotoAlbumsViewController () <UIScrollViewDelegate>
 
 @property (strong, nonatomic) NSMutableArray* albumsArray;
 @property (assign, nonatomic) BOOL loadingData;
 
-@property (strong, nonatomic) UIRefreshControl* refreshControl;
 
 
 @end
 
 
-static NSInteger requestCount = 20;
+static NSInteger requestCount = 5;
 static NSString* iosDevCourseGroupID = @"58860049";
 static NSString* myVKAccountID = @"21743772";
 
@@ -39,6 +41,16 @@ static NSString* myVKAccountID = @"21743772";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+
+    
+    self.albumsArray = [NSMutableArray array];
+    self.loadingData = YES;
+    [self getAlbumsFromServer];
+    
+    [self infiniteScrolling];
+
     
     SWRevealViewController *revealViewController = self.revealViewController;
     if ( revealViewController )
@@ -48,19 +60,39 @@ static NSString* myVKAccountID = @"21743772";
         [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
     }
 
-    self.albumsArray = [NSMutableArray array];
     
-    self.loadingData = YES;
     
-    [self getAlbumsFromServer];
-    
-    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
-    [refresh addTarget:self action:@selector(refreshAlbums) forControlEvents:UIControlEventValueChanged];
-    
-    [self.collectionView addSubview:refresh];
-    
-    self.refreshControl = refresh;
+
 }
+
+
+
+
+
+#pragma mark - Helper Methods
+
+
+- (void)infiniteScrolling {
+    
+    __weak ANPhotoAlbumsViewController* weakSelf = self;
+    
+    [self.collectionView addPullToRefreshWithActionHandler:^{
+        
+        [weakSelf refreshAlbums];
+        
+        // once refresh, allow the infinite scroll again
+        weakSelf.collectionView.showsInfiniteScrolling = YES;
+    }];
+    
+    
+    [self.collectionView addInfiniteScrollingWithActionHandler:^{
+        
+        [weakSelf getAlbumsFromServer];
+        
+    }];
+}
+
+
 
 
 
@@ -86,15 +118,20 @@ static NSString* myVKAccountID = @"21743772";
                       
                       [self.collectionView insertItemsAtIndexPaths:newPaths];
  
-//                      [self.collectionView reloadData];
+
                   }
                   
                   self.loadingData = NO;
+                  [self.collectionView.infiniteScrollingView stopAnimating];
+
                   
  
               }
               onFailure:^(NSError *error, NSInteger statusCode) {
                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                  self.collectionView.showsInfiniteScrolling = NO;
+                  [self.collectionView.infiniteScrollingView stopAnimating];
+
               }];
 
 }
@@ -118,15 +155,19 @@ static NSString* myVKAccountID = @"21743772";
                           [self.collectionView reloadData];
                           
                       }
-                      [self.refreshControl endRefreshing];
+
                       
                       self.loadingData = NO;
+                      [self.collectionView.pullToRefreshView stopAnimating];
+
                       
                       
                   }
                   onFailure:^(NSError *error, NSInteger statusCode) {
                       NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
-                      [self.refreshControl endRefreshing];
+
+                      [self.collectionView.pullToRefreshView stopAnimating];
+
 
                   }];
     }
@@ -218,9 +259,10 @@ static NSString* myVKAccountID = @"21743772";
         
         ANPhotosViewController* vc = segue.destinationViewController;
         
-        vc.albumID = album.albumID;
+        vc.album = album;
         
-        NSLog(@"vc.allbumID = %@", vc.albumID);
+        
+
         
     }
 }

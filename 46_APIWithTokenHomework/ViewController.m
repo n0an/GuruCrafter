@@ -11,6 +11,7 @@
 #import "ANUser.h"
 #import "ANGroup.h"
 #import "UIImageView+AFNetworking.h"
+#import "UITableViewCell+CellForContent.h"
 
 #import "ANPost.h"
 #import "ANPostCell.h"
@@ -19,7 +20,8 @@
 
 #import "ANAddPostViewController.h"
 
-#import "ANMessagesViewController.h"
+
+#import "ANJSQMessagesVC.h"
 #import "ANNewPostCell.h"
 
 #import "ANPostCommentsViewController.h"
@@ -32,6 +34,8 @@
 #import "ANPostPhotoGallery.h"
 #import "ANPhotoInPostVC.h"
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
 
 typedef enum {
     ANTableViewSectionAddPost,
@@ -40,7 +44,7 @@ typedef enum {
 } ANTableViewSection;
 
 
-@interface ViewController () <UIScrollViewDelegate, ANAddPostDelegate, ANPostCellDelegate>
+@interface ViewController () <ANAddPostDelegate, ANPostCellDelegate>
 
 @property (strong, nonatomic) NSMutableArray* postsArray;
 
@@ -49,6 +53,10 @@ typedef enum {
 
 @property (strong, nonatomic) NSArray* currentPhotoViewingArray;
 @property (strong, nonatomic) ANPhoto* currentViewingPhoto;
+
+
+@property (strong, nonatomic) NSOperation *currentOperation;
+@property (strong, nonatomic) NSOperationQueue *queue;
 
 @end
 
@@ -61,6 +69,18 @@ static NSString* myVKAccountID = @"21743772";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
+    
+    
+    self.postsArray = [NSMutableArray array];
+    self.loadingData = YES;
+    [self getPostsBackgroundFromServer];
+    
+    
+    [self infiniteScrolling];
+
     
     SWRevealViewController *revealViewController = self.revealViewController;
     if ( revealViewController )
@@ -70,23 +90,7 @@ static NSString* myVKAccountID = @"21743772";
         [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
     }
     
-    self.postsArray = [NSMutableArray array];
 
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
-    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
-    [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
-    self.refreshControl = refresh;
-    
-    ANUser* loginedUser = [[ANServerManager sharedManager] currentUser];
-    
-    NSLog(@"%@ %@", loginedUser.firstName, loginedUser.lastName);
-    
-    self.loadingData = YES;
-
-    [self getPostsFromServer];
-       
-    
 }
 
 
@@ -94,6 +98,7 @@ static NSString* myVKAccountID = @"21743772";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 
 #pragma mark - Helper Methods
@@ -110,6 +115,28 @@ static NSString* myVKAccountID = @"21743772";
     [self.navigationController pushViewController:vc animated:YES];
 
 }
+
+
+- (void)infiniteScrolling {
+    
+    __weak ViewController* weakSelf = self;
+    
+    [self.tableView addPullToRefreshWithActionHandler:^{
+
+        [weakSelf refreshWall];
+        
+        // once refresh, allow the infinite scroll again
+        weakSelf.tableView.showsInfiniteScrolling = YES;
+    }];
+    
+    
+    [self.tableView addInfiniteScrollingWithActionHandler:^{
+
+        [weakSelf getPostsBackgroundFromServer];
+
+    }];
+}
+
 
 
 
@@ -134,6 +161,33 @@ static NSString* myVKAccountID = @"21743772";
 #pragma mark - API
 
 
+
+- (void)getPostsBackgroundFromServer {
+    
+    self.queue = [[NSOperationQueue alloc] init];
+    
+    __weak NSOperation *weakCurrentOperation = self.currentOperation;
+    
+    __weak ViewController* weakSelf = self;
+    
+    self.currentOperation = [NSBlockOperation blockOperationWithBlock:^{
+        
+        if (![weakCurrentOperation isCancelled]) {
+            
+            [weakSelf getPostsFromServer];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            self.currentOperation = nil;
+        });
+        
+    }];
+    
+    [self.queue addOperation:self.currentOperation];
+}
+
+
 - (void) getPostsFromServer {
     
     [[ANServerManager sharedManager]
@@ -144,33 +198,29 @@ static NSString* myVKAccountID = @"21743772";
          
          if ([posts count] > 0) {
              
-             dispatch_queue_t highQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+             [self.postsArray addObjectsFromArray:posts];
              
-             dispatch_async(highQueue, ^{
-                 [self.postsArray addObjectsFromArray:posts];
-                 
-                 NSMutableArray* newPaths = [NSMutableArray array];
-                 
-                 for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                     [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
-                 }
-                 
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [self.tableView beginUpdates];
-                     [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-                     [self.tableView endUpdates];
-                     
-                     
-                     self.loadingData = NO;
-                 });
-                 
-                 
-             });
+             NSMutableArray* newPaths = [NSMutableArray array];
+             
+             for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
+                 [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+             }
+             
+             [self.tableView beginUpdates];
+             [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
+             [self.tableView endUpdates];
+             
+             
          }
+         self.loadingData = NO;
+         [self.tableView.infiniteScrollingView stopAnimating];
          
          
      }
      onFailure:^(NSError *error, NSInteger statusCode) {
+         self.tableView.showsInfiniteScrolling = NO;
+         [self.tableView.infiniteScrollingView stopAnimating];
+
          NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
          
      }];
@@ -200,16 +250,20 @@ static NSString* myVKAccountID = @"21743772";
                  
                  
              }
-             [self.refreshControl endRefreshing];
+
              
              self.loadingData = NO;
+             
+             [self.tableView.pullToRefreshView stopAnimating];
              
          }
          onFailure:^(NSError *error, NSInteger statusCode) {
              
              NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
              
-             [self.refreshControl endRefreshing];
+
+             [self.tableView.pullToRefreshView stopAnimating];
+
              
          }];
         
@@ -320,7 +374,6 @@ static NSString* myVKAccountID = @"21743772";
     if (indexPath.section == ANTableViewSectionAddPost) { // *** ADD POST BUTTON
         
         ANNewPostCell* addPostCell = [tableView dequeueReusableCellWithIdentifier:addPostIdentifier];
-        
         
         
         if (!addPostCell) {
@@ -448,34 +501,37 @@ static NSString* myVKAccountID = @"21743772";
 
 #pragma mark - Gestures
 
+
 - (void) handleTapOnImageView:(UITapGestureRecognizer*) recognizer {
     
     NSLog(@"TAP WORKS!!");
     
     // Taking tapped image view from activated recognizer
     UIImageView* tappedImageView = (UIImageView*)recognizer.view;
+
+    ANPostCell* clickedPostCell = (ANPostCell*)[UITableViewCell getParentCellFor:tappedImageView];
     
-    // Getting cell that has this image view. Double superview because - Cell->ContentView->ImageView
-    UITableViewCell* cell = (UITableViewCell*)tappedImageView.superview.superview;
-    
-    NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:cell];
+    NSIndexPath* clickedIndexPath = [self.tableView indexPathForCell:clickedPostCell];
     
     ANPost* clickedPost = [self.postsArray objectAtIndex:clickedIndexPath.row];
     
-    ANMessagesViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ANMessagesViewController"];
+    ANJSQMessagesVC* vc = [[ANJSQMessagesVC alloc] init];
     
-    vc.partnerUserID = clickedPost.authorID;
+    vc.senderId = clickedPost.author.userID;
     
-    if (clickedPost.author != nil) {
-        vc.partnerUser = clickedPost.author;
-    } else if (clickedPost.fromGroup != nil) {
-        vc.partnerGroup = clickedPost.fromGroup;
-    }
+    vc.senderDisplayName = [NSString stringWithFormat:@"%@ %@", clickedPost.author.firstName, clickedPost.author.lastName];
+    
+    vc.avatarIncoming = clickedPost.author.imageURL;
+    
+    vc.avatarOutgoing = [[[ANServerManager sharedManager] currentUser] imageURL];
     
     
     [self.navigationController pushViewController:vc animated:YES];
     
 }
+
+
+
 
 
 - (void) actionGlryImageViewTapped:(UITapGestureRecognizer*) recognizer {
@@ -504,19 +560,6 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
-
-
-#pragma mark - UIScrollViewDelegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= self.tableView.contentSize.height - scrollView.frame.size.height) {
-        if (!self.loadingData)
-        {
-            self.loadingData = YES;
-            [self getPostsFromServer];
-        }
-    }
-}
 
 
 #pragma mark - Segue

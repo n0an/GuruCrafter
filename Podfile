@@ -7,4 +7,6 @@ pod 'JSQMessagesViewController', '~> 7.2'
 
 pod 'CCBottomRefreshControl', '~> 0.5'
 
+pod 'SVPullToRefresh', '~> 0.4'
+
 pod 'SWRevealViewController', '~> 2.3'

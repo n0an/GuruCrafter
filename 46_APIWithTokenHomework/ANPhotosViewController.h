@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class ANPhotoAlbum;
+
 @interface ANPhotosViewController : UIViewController
 
-@property (strong, nonatomic) NSString* albumID;
+@property (strong, nonatomic) ANPhotoAlbum* album;
+
 
 @property (weak, nonatomic) IBOutlet UICollectionView* collectionView;
 

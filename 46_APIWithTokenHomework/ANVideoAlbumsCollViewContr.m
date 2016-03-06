@@ -16,18 +16,21 @@
 
 #import <SWRevealViewController.h>
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
 
-@interface ANVideoAlbumsCollViewContr () <UIScrollViewDelegate>
+
+@interface ANVideoAlbumsCollViewContr ()
 
 @property (strong, nonatomic) NSMutableArray* videoAlbumsArray;
 @property (assign, nonatomic) BOOL loadingData;
 
-@property (strong, nonatomic) UIRefreshControl* refreshControl;
+
 
 @end
 
 
-static NSInteger requestCount = 20;
+static NSInteger requestCount = 10;
 static NSString* iosDevCourseGroupID = @"58860049";
 static NSString* myVKAccountID = @"21743772";
 
@@ -39,6 +42,17 @@ static NSString * const reuseIdentifier = @"videoCVCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
+    
+    self.videoAlbumsArray = [NSMutableArray array];
+    self.loadingData = YES;
+    [self getAlbumsFromServer];
+    
+    [self infiniteScrolling];
+
+    
     SWRevealViewController *revealViewController = self.revealViewController;
     if ( revealViewController )
     {
@@ -48,18 +62,6 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     }
 
     
-    self.videoAlbumsArray = [NSMutableArray array];
-    self.loadingData = YES;
-    
-    
-    [self getAlbumsFromServer];
-    
-    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
-    [refresh addTarget:self action:@selector(refreshAlbums) forControlEvents:UIControlEventValueChanged];
-    
-    [self.collectionView addSubview:refresh];
-    
-    self.refreshControl = refresh;
 
     
 }
@@ -68,6 +70,32 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+
+#pragma mark - Helper Methods
+
+
+- (void)infiniteScrolling {
+    
+    __weak ANVideoAlbumsCollViewContr* weakSelf = self;
+    
+    [self.collectionView addPullToRefreshWithActionHandler:^{
+        
+        [weakSelf refreshAlbums];
+        
+        // once refresh, allow the infinite scroll again
+        weakSelf.collectionView.showsInfiniteScrolling = YES;
+    }];
+    
+    
+    [self.collectionView addInfiniteScrollingWithActionHandler:^{
+        
+        [weakSelf getAlbumsFromServer];
+        
+    }];
+}
+
 
 
 #pragma mark - Actions
@@ -121,11 +149,15 @@ static NSString * const reuseIdentifier = @"videoCVCell";
                     }
                     
                     self.loadingData = NO;
+                    [self.collectionView.infiniteScrollingView stopAnimating];
+
                     
                 }
 
                 onFailure:^(NSError *error, NSInteger statusCode) {
                     NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                    self.collectionView.showsInfiniteScrolling = NO;
+                    [self.collectionView.infiniteScrollingView stopAnimating];
                 }];
 
     
@@ -153,15 +185,16 @@ static NSString * const reuseIdentifier = @"videoCVCell";
                    
                     }
                     
-                    [self.refreshControl endRefreshing];
-                    
                     self.loadingData = NO;
+                    [self.collectionView.pullToRefreshView stopAnimating];
+
                     
                 }
 
                 onFailure:^(NSError *error, NSInteger statusCode) {
                     NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                    [self.refreshControl endRefreshing];
+                    [self.collectionView.pullToRefreshView stopAnimating];
+
                 }];
 
         

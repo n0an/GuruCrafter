@@ -11,18 +11,23 @@
 #import "UIImageView+AFNetworking.h"
 #import "ANPhotoCollectionViewCell.h"
 #import "ANPhoto.h"
+#import "ANPhotoAlbum.h"
 
 #import "ANPhotoDetailsViewController.h"
 #import "ANUploadServer.h"
 #import "ANParsedUploadServer.h"
 #import "ANPhotoAddingViewController.h"
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
 
-@interface ANPhotosViewController () <UIScrollViewDelegate, ANPhotoAddingDelegate, ANPhotoViewerDelegate>
+
+@interface ANPhotosViewController () <ANPhotoAddingDelegate, ANPhotoViewerDelegate>
 @property (strong, nonatomic) NSMutableArray* photosArray;
 @property (assign, nonatomic) BOOL loadingData;
 
-@property (strong, nonatomic) UIRefreshControl* refreshControl;
+@property (strong, nonatomic) NSMutableArray* allPhotosInAlbumArray;
+
 
 @property (strong, nonatomic) ANPhoto* currentViewingPhoto;
 
@@ -38,17 +43,16 @@ static NSString* myVKAccountID = @"21743772";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.allPhotosInAlbumArray = [NSMutableArray array];
     self.photosArray = [NSMutableArray array];
-    
     self.loadingData = YES;
-    
-    UIRefreshControl* refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
-    [self.collectionView addSubview:refreshControl];
-    
-    self.refreshControl = refreshControl;
-    
     [self getPhotosFromServer];
+
+    [self infiniteScrolling];
+
+    
+
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -58,12 +62,40 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
+
+#pragma mark - Helper Methods
+
+
+- (void)infiniteScrolling {
+    
+    __weak ANPhotosViewController* weakSelf = self;
+    
+    [self.collectionView addPullToRefreshWithActionHandler:^{
+        
+        [weakSelf refreshPhotos];
+        
+        // once refresh, allow the infinite scroll again
+        weakSelf.collectionView.showsInfiniteScrolling = YES;
+    }];
+    
+    
+    [self.collectionView addInfiniteScrollingWithActionHandler:^{
+        
+        [weakSelf getPhotosFromServer];
+        
+    }];
+}
+
+
+
+
+
 #pragma mark - API
 
 - (void) getPhotosFromServer {
     
     [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
-            forAlbumID:self.albumID
+            forAlbumID:self.album.albumID
             withOffset:[self.photosArray count]
                  count:requestCount
              onSuccess:^(NSArray *photos) {
@@ -86,11 +118,15 @@ static NSString* myVKAccountID = @"21743772";
                  }
                  
                  self.loadingData = NO;
+                 [self.collectionView.infiniteScrollingView stopAnimating];
+
                  
                  
              }
              onFailure:^(NSError *error, NSInteger statusCode) {
                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                 self.collectionView.showsInfiniteScrolling = NO;
+                 [self.collectionView.infiniteScrollingView stopAnimating];
              }];
     
 }
@@ -104,7 +140,7 @@ static NSString* myVKAccountID = @"21743772";
         
         
         [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
-                forAlbumID:self.albumID
+                forAlbumID:self.album.albumID
                 withOffset:0
                      count:MAX(requestCount, [self.photosArray count])
                  onSuccess:^(NSArray *photos) {
@@ -117,13 +153,18 @@ static NSString* myVKAccountID = @"21743772";
                      }
                      
                      self.loadingData = NO;
-                     [self.refreshControl endRefreshing];
+
+                     [self.collectionView.pullToRefreshView stopAnimating];
+
                      
                      
                  }
                  onFailure:^(NSError *error, NSInteger statusCode) {
                      NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                     [self.refreshControl endRefreshing];
+
+                     [self.collectionView.pullToRefreshView stopAnimating];
+
+                     
 
                  }];
         
@@ -131,6 +172,31 @@ static NSString* myVKAccountID = @"21743772";
     
     
 }
+
+
+
+
+- (void) getAllPhotosFromServer {
+    
+    [[ANServerManager sharedManager] getPhotosForGroup:iosDevCourseGroupID
+            forAlbumID:self.album.albumID
+            withOffset:[self.photosArray count]
+                 count:[self.album.albumSize integerValue] - [self.photosArray count]
+             onSuccess:^(NSArray *photos) {
+                 
+                 if ([photos count] > 0) {
+                     [self.allPhotosInAlbumArray addObjectsFromArray:photos];
+
+                 }
+                 
+                 
+             }
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+             }];
+    
+}
+
 
 
 
@@ -203,21 +269,15 @@ static NSString* myVKAccountID = @"21743772";
     
     [self presentViewController:nav animated:YES completion:nil];
     
+    [self.allPhotosInAlbumArray addObjectsFromArray:self.photosArray];
+
+    [self getAllPhotosFromServer];
+    
+    
+    
 }
 
-#pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-        NSLog(@"scrollViewDidScroll");
-        if (!self.loadingData)
-        {
-            self.loadingData = YES;
-            [self getPhotosFromServer];
-        }
-    }
-}
 
 
 #pragma mark - Segue
@@ -227,7 +287,7 @@ static NSString* myVKAccountID = @"21743772";
         
         ANPhotoAddingViewController* vc = segue.destinationViewController;
         
-        vc.albumID = self.albumID;
+        vc.albumID = self.album.albumID;
         vc.delegate = self;
         
     }
@@ -247,35 +307,35 @@ static NSString* myVKAccountID = @"21743772";
     
     ANPhoto* iteratedPhoto;
     
-    NSInteger currentViewingPhotoIndex = [self.photosArray indexOfObject:self.currentViewingPhoto];
+    NSInteger currentViewingPhotoIndex = [self.allPhotosInAlbumArray indexOfObject:self.currentViewingPhoto];
     NSInteger iteratedPhotoIndex;
     
     if (iterationDirection == ANPhotoIterationDirectionNext) {
         
         NSLog(@"iteratePhoto Next");
         
-        if ([self.currentViewingPhoto isEqual:[self.photosArray lastObject]]) {
-            iteratedPhoto = [self.photosArray firstObject];
+        if ([self.currentViewingPhoto isEqual:[self.allPhotosInAlbumArray lastObject]]) {
+            iteratedPhoto = [self.allPhotosInAlbumArray firstObject];
             
         } else {
             
             iteratedPhotoIndex = currentViewingPhotoIndex + 1;
             
-            iteratedPhoto = [self.photosArray objectAtIndex:iteratedPhotoIndex];
+            iteratedPhoto = [self.allPhotosInAlbumArray objectAtIndex:iteratedPhotoIndex];
         }
         
     } else {
         
         NSLog(@"iteratePhoto Previous");
 
-        if ([self.currentViewingPhoto isEqual:[self.photosArray firstObject]]) {
-            iteratedPhoto = [self.photosArray lastObject];
+        if ([self.currentViewingPhoto isEqual:[self.allPhotosInAlbumArray firstObject]]) {
+            iteratedPhoto = [self.allPhotosInAlbumArray lastObject];
             
         } else {
             
             iteratedPhotoIndex = currentViewingPhotoIndex - 1;
             
-            iteratedPhoto = [self.photosArray objectAtIndex:iteratedPhotoIndex];
+            iteratedPhoto = [self.allPhotosInAlbumArray objectAtIndex:iteratedPhotoIndex];
 
         }
         

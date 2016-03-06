@@ -15,12 +15,14 @@
 #import "ANVideoCell.h"
 #import "ANVideoPlayerVC.h"
 
+#import <UIScrollView+SVInfiniteScrolling.h>
+#import <UIScrollView+SVPullToRefresh.h>
 
-@interface ANVideosViewController () <UIScrollViewDelegate>
+@interface ANVideosViewController ()
 
 @property (strong, nonatomic) NSMutableArray* videosArray;
 @property (assign, nonatomic) BOOL loadingData;
-@property (strong, nonatomic) UIRefreshControl* refreshControl;
+
 
 @end
 
@@ -35,24 +37,44 @@ static NSString* myVKAccountID = @"21743772";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    
     self.videosArray = [NSMutableArray array];
-    
     self.loadingData = YES;
-    
     [self getVideosFromServer];
     
-    UIRefreshControl* refresh = [[UIRefreshControl alloc] init];
-    [refresh addTarget:self action:@selector(refreshVideos) forControlEvents:UIControlEventValueChanged];
-    
-    [self.tableView addSubview:refresh];
-    self.refreshControl = refresh;
-    
-    
+    [self infiniteScrolling];
+
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+
+
+#pragma mark - Helper Methods
+
+
+- (void)infiniteScrolling {
+    
+    __weak ANVideosViewController* weakSelf = self;
+    
+    [self.tableView addPullToRefreshWithActionHandler:^{
+        
+        [weakSelf refreshVideos];
+        
+        // once refresh, allow the infinite scroll again
+        weakSelf.tableView.showsInfiniteScrolling = YES;
+    }];
+    
+    
+    [self.tableView addInfiniteScrollingWithActionHandler:^{
+        
+        [weakSelf getVideosFromServer];
+        
+    }];
 }
 
 
@@ -92,12 +114,17 @@ static NSString* myVKAccountID = @"21743772";
                  }
                  
                  self.loadingData = NO;
+                 [self.tableView.infiniteScrollingView stopAnimating];
+
 
              }
      
              onFailure:^(NSError *error, NSInteger statusCode) {
                  
                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                 self.tableView.showsInfiniteScrolling = NO;
+                 [self.tableView.infiniteScrollingView stopAnimating];
+
              }];
     
     
@@ -123,12 +150,16 @@ static NSString* myVKAccountID = @"21743772";
                      [self.tableView reloadData];
                      
                  }
-                 [self.refreshControl endRefreshing];
+
                  self.loadingData = NO;
+                 [self.tableView.pullToRefreshView stopAnimating];
+
              }
              onFailure:^(NSError *error, NSInteger statusCode) {
                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                 [self.refreshControl endRefreshing];
+
+                 [self.tableView.pullToRefreshView stopAnimating];
+
 
              }];
    
@@ -210,16 +241,6 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
-#pragma mark - UIScrollViewDelegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= self.tableView.contentSize.height - scrollView.frame.size.height) {
-        if (!self.loadingData)
-        {
-            [self getVideosFromServer];
-        }
-    }
-}
 
 
 #pragma mark - Segue
