@@ -13,7 +13,7 @@
 
 @property (strong, nonatomic) UIToolbar *toolbar;
 
-@property (strong, nonatomic) UITextView *textViewComment;
+//@property (strong, nonatomic) UITextView *textViewComment;
 @property (strong, nonatomic) UIBarButtonItem *senderButton;
 
 @end
@@ -127,6 +127,34 @@
 #pragma mark - Helper methods
 
 
+- (void) showAlertTextReady {
+    
+    UIAlertController* alertVC =
+    [UIAlertController alertControllerWithTitle:@"Close this window?"
+                                        message:@"Text will be lost, if you close"
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"Cancel"
+                                                style:UIAlertActionStyleCancel
+                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                  [self.postMessageTextView becomeFirstResponder];
+                                                  [alertVC dismissViewControllerAnimated:YES completion:nil];
+                                              }]];
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"Continue"
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                  [alertVC dismissViewControllerAnimated:YES completion:nil];
+                                                  [self.navigationController popViewControllerAnimated:YES];
+                                                  
+                                              }]];
+    
+    [self presentViewController:alertVC animated:YES completion:nil];
+    
+    
+}
+
+
+
 
 #pragma mark - API
 
@@ -161,7 +189,16 @@
 
 - (IBAction)actionCancel:(UIBarButtonItem *)sender {
     
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    if ([self.postMessageTextView.text length] > 0) {
+        
+        [self showAlertTextReady];
+        
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+
+    }
+    
 
 }
 

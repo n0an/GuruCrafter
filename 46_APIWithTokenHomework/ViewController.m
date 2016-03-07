@@ -220,6 +220,17 @@ static NSString* myVKAccountID = @"21743772";
 
          NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
          
+         UIAlertController* alertVC =
+         [UIAlertController alertControllerWithTitle:@"Network error occured"
+                                             message:[error localizedDescription]
+                                      preferredStyle:UIAlertControllerStyleAlert];
+         [alertVC addAction:[UIAlertAction actionWithTitle:@"Close"
+                                                     style:UIAlertActionStyleCancel
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+                                                       [alertVC dismissViewControllerAnimated:YES completion:nil];
+                                                       
+                                                   }]];
+         
      }];
 
     

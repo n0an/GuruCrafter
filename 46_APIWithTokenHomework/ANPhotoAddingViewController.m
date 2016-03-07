@@ -46,6 +46,8 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+
+
 #pragma mark - Helper Methods
 
 - (void) showAlertNoCameraDeviceFound {
@@ -68,6 +70,35 @@ static NSString* myVKAccountID = @"21743772";
     
     
 }
+
+
+- (void) showAlertPhotoReady {
+    
+    
+    UIAlertController* alertVC =
+    [UIAlertController alertControllerWithTitle:@"Close this window?"
+                                        message:@"Changes will be lost, if you close"
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"Cancel"
+                                                style:UIAlertActionStyleCancel
+                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                  
+                                                  [alertVC dismissViewControllerAnimated:YES completion:nil];
+                                              }]];
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"Continue"
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                  [alertVC dismissViewControllerAnimated:YES completion:nil];
+                                                  [self.navigationController popViewControllerAnimated:YES];
+                                                  
+                                              }]];
+    
+    [self presentViewController:alertVC animated:YES completion:nil];
+
+    
+}
+
 
 
 #pragma mark - Actions
@@ -113,6 +144,20 @@ static NSString* myVKAccountID = @"21743772";
     
     
 }
+
+- (IBAction)actionBackButtonPressed:(UIBarButtonItem*)sender {
+    
+    
+    if (self.photoPreviewImageView.image) {
+        [self showAlertPhotoReady];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    
+    
+    
+}
+
 
 
 
@@ -180,8 +225,6 @@ static NSString* myVKAccountID = @"21743772";
 
 
 
-
-
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
@@ -205,6 +248,9 @@ static NSString* myVKAccountID = @"21743772";
     
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+
 
 
 
