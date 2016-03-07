@@ -126,39 +126,36 @@ static NSString * const reuseIdentifier = @"videoCVCell";
 - (void) getAlbumsFromServer {
     
     [[ANServerManager sharedManager] getVideoAlbumsForGroupID:iosDevCourseGroupID
-               withOffset:[self.videoAlbumsArray count]
-                    count:requestCount
-                onSuccess:^(NSArray *videoAlbums) {
+           withOffset:[self.videoAlbumsArray count]
+                count:requestCount
+            onSuccess:^(NSArray *videoAlbums) {
+                
+                NSLog(@"videoAlbums = %@", videoAlbums);
+                
+                if ([videoAlbums count] > 0) {
+                    [self.videoAlbumsArray addObjectsFromArray:videoAlbums];
                     
-                    NSLog(@"videoAlbums = %@", videoAlbums);
+                    NSMutableArray *newPaths = [NSMutableArray array];
                     
-                    if ([videoAlbums count] > 0) {
-                        [self.videoAlbumsArray addObjectsFromArray:videoAlbums];
+                    for (int i = (int)[self.videoAlbumsArray count] - (int)[videoAlbums count]; i < [self.videoAlbumsArray count]; i++) {
                         
-                        NSMutableArray *newPaths = [NSMutableArray array];
-                        
-                        for (int i = (int)[self.videoAlbumsArray count] - (int)[videoAlbums count]; i < [self.videoAlbumsArray count]; i++) {
-                            
-                            [newPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-                        }
-                        
-                        [self.collectionView insertItemsAtIndexPaths:newPaths];
-                        
-                        // [self.collectionView reloadData];
-
+                        [newPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
                     }
                     
-                    self.loadingData = NO;
-                    [self.collectionView.infiniteScrollingView stopAnimating];
+                    [self.collectionView insertItemsAtIndexPaths:newPaths];
 
-                    
                 }
+                
+                self.loadingData = NO;
+                [self.collectionView.infiniteScrollingView stopAnimating];
 
-                onFailure:^(NSError *error, NSInteger statusCode) {
-                    NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                    self.collectionView.showsInfiniteScrolling = NO;
-                    [self.collectionView.infiniteScrollingView stopAnimating];
-                }];
+            }
+
+            onFailure:^(NSError *error, NSInteger statusCode) {
+                NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+                self.collectionView.showsInfiniteScrolling = NO;
+                [self.collectionView.infiniteScrollingView stopAnimating];
+            }];
 
     
 }
@@ -278,26 +275,6 @@ static NSString * const reuseIdentifier = @"videoCVCell";
     NSLog(@"shouldSelectItemAtIndexPath");
     return YES;
 }
-
-
-
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) {
-        NSLog(@"scrollViewDidScroll");
-        if (!self.loadingData)
-        {
-            self.loadingData = YES;
-            [self getAlbumsFromServer];
-        }
-    }
-}
-
-
-
 
 
 

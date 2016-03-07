@@ -46,6 +46,8 @@ static NSString* myVKAccountID = @"21743772";
 }
 
 
+
+
 #pragma mark - Helper Methods
 
 - (void) showAlertNoCameraDeviceFound {
@@ -68,6 +70,35 @@ static NSString* myVKAccountID = @"21743772";
     
     
 }
+
+
+- (void) showAlertPhotoReady {
+    
+    
+    UIAlertController* alertVC =
+    [UIAlertController alertControllerWithTitle:@"Close this window?"
+                                        message:@"Changes will be lost, if you close"
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"Cancel"
+                                                style:UIAlertActionStyleCancel
+                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                  
+                                                  [alertVC dismissViewControllerAnimated:YES completion:nil];
+                                              }]];
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"Continue"
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                  [alertVC dismissViewControllerAnimated:YES completion:nil];
+                                                  [self.navigationController popViewControllerAnimated:YES];
+                                                  
+                                              }]];
+    
+    [self presentViewController:alertVC animated:YES completion:nil];
+
+    
+}
+
 
 
 #pragma mark - Actions
@@ -114,6 +145,20 @@ static NSString* myVKAccountID = @"21743772";
     
 }
 
+- (IBAction)actionBackButtonPressed:(UIBarButtonItem*)sender {
+    
+    
+    if (self.photoPreviewImageView.image) {
+        [self showAlertPhotoReady];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    
+    
+    
+}
+
+
 
 
 
@@ -129,57 +174,54 @@ static NSString* myVKAccountID = @"21743772";
     NSData* selectedImageData = UIImageJPEGRepresentation(self.selectedImage, 1.0f);
     
     [[ANServerManager sharedManager] getUploadServerForGroupID:iosDevCourseGroupID
-                                               forPhotoAlbumID:self.albumID
-                                                     onSuccess:^(ANUploadServer *uploadServer) {
-                                                         
-                                                         [self getParsedUploadServerForUploadServer:uploadServer andImageData:selectedImageData];
-                                                         
-                                                     }
-                                                     onFailure:^(NSError *error, NSInteger statusCode) {
-                                                         NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                                                     }];
+       forPhotoAlbumID:self.albumID
+             onSuccess:^(ANUploadServer *uploadServer) {
+                 
+                 [self getParsedUploadServerForUploadServer:uploadServer andImageData:selectedImageData];
+                 
+             }
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+             }];
     
 }
 
 - (void) getParsedUploadServerForUploadServer:(ANUploadServer*) uploadServer andImageData:(NSData*)imageData {
-    
     [[ANServerManager sharedManager] getUploadJSONStringForServerURL:uploadServer.uploadURL
-                                                        fileToUpload:imageData
-                                                           onSuccess:^(ANParsedUploadServer *parsedUploadServer) {
-                                                               
-                                                               NSLog(@"parsedUploadServer = %@", parsedUploadServer);
-                                                               
-                                                               [self uploadPhotosToServer:parsedUploadServer];
-                                                               
-                                                           } onFailure:^(NSError *error, NSInteger statusCode) {
-                                                               NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                                                           }];
-    
+            fileToUpload:imageData
+               onSuccess:^(ANParsedUploadServer *parsedUploadServer) {
+                   
+                   NSLog(@"parsedUploadServer = %@", parsedUploadServer);
+                   
+                   [self uploadPhotosToServer:parsedUploadServer];
+                   
+               } onFailure:^(NSError *error, NSInteger statusCode) {
+                   NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+               }];
+
 }
 
 
 - (void) uploadPhotosToServer:(ANParsedUploadServer*) parsedUploadServer {
     [[ANServerManager sharedManager] uploadPhotosToGroupWithServer:parsedUploadServer
-                                                         onSuccess:^(id result) {
-                                                             
-                                                             NSLog(@"result = %@", result);
-                                                             
-                                                             self.waitView.hidden = YES;
+             onSuccess:^(id result) {
+                 
+                 NSLog(@"result = %@", result);
+                 
+                 self.waitView.hidden = YES;
 
-                                                             self.hintLabel.hidden = NO;
-                                                             self.hintLabel.text = @"Photo uploaded successfully!\n You can upload more photos now.";
-                                                             self.uploadBarButton.enabled = NO;
-                                                             
-                                                             [self.delegate photoDidFinishUploading];
-                                                             
-                                                         }
-                                                         onFailure:^(NSError *error, NSInteger statusCode) {
-                                                             
-                                                             NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
-                                                         }];
-}
-
-
+                 self.hintLabel.hidden = NO;
+                 self.hintLabel.text = @"Photo uploaded successfully!\n You can upload more photos now.";
+                 self.uploadBarButton.enabled = NO;
+                 
+                 [self.delegate photoDidFinishUploading];
+                 
+             }
+             onFailure:^(NSError *error, NSInteger statusCode) {
+                 
+                 NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
+             }];
+    }
 
 
 
@@ -206,6 +248,9 @@ static NSString* myVKAccountID = @"21743772";
     
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+
 
 
 

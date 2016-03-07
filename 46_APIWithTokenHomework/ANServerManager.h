@@ -17,8 +17,6 @@
 
 @property (strong, nonatomic) ANUser* currentUser;
 
-//@property (strong, nonatomic) NSURL* photoSelfURL;
-
 + (ANServerManager*) sharedManager;
 
 

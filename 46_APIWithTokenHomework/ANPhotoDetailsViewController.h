@@ -34,9 +34,6 @@ typedef enum {
 @property (weak, nonatomic) id <ANPhotoViewerDelegate> delegate;
 
 
-
-
-
 @end
 
 
