@@ -128,7 +128,7 @@ static NSString* myVKAccountID = @"21743772";
  
               }
               onFailure:^(NSError *error, NSInteger statusCode) {
-                  NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
                   self.collectionView.showsInfiniteScrolling = NO;
                   [self.collectionView.infiniteScrollingView stopAnimating];
 
@@ -164,7 +164,7 @@ static NSString* myVKAccountID = @"21743772";
                       
                   }
                   onFailure:^(NSError *error, NSInteger statusCode) {
-                      NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                      NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
 
                       [self.collectionView.pullToRefreshView stopAnimating];
 

@@ -178,7 +178,7 @@ static NSInteger messagesInRequest = 20;
               
           }
           onFailure:^(NSError *error, NSInteger statusCode) {
-              NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+              NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
               
               
           }];
@@ -217,7 +217,7 @@ static NSInteger messagesInRequest = 20;
                   
               }
               onFailure:^(NSError *error, NSInteger statusCode) {
-                  NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
                   [self.bottomRefreshControl endRefreshing];
 
               }];

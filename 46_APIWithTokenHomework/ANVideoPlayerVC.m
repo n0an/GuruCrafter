@@ -297,7 +297,7 @@ static NSString* myVKAccountID = @"21743772";
                }
                onFailure:^(NSError *error, NSInteger statusCode) {
                    
-                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                   NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
                    self.tableView.showsInfiniteScrolling = NO;
                    [self.tableView.infiniteScrollingView stopAnimating];
                    
@@ -334,7 +334,7 @@ static NSString* myVKAccountID = @"21743772";
                    }
                    onFailure:^(NSError *error, NSInteger statusCode) {
                        
-                       NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                       NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
 
                        [self.tableView.pullToRefreshView stopAnimating];
 
@@ -361,7 +361,7 @@ static NSString* myVKAccountID = @"21743772";
               }
 
               onFailure:^(NSError *error, NSInteger statusCode) {
-                  NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
 
               }];
     
@@ -412,7 +412,7 @@ static NSString* myVKAccountID = @"21743772";
      }
      onFailure:^(NSError *error, NSInteger statusCode)
      {
-         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
          
      }];
     
@@ -457,7 +457,7 @@ static NSString* myVKAccountID = @"21743772";
      }
      onFailure:^(NSError *error, NSInteger statusCode)
      {
-         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
          
      }];
     

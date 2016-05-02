@@ -29,6 +29,7 @@
         self.sendButton.enabled = NO;
     }
     
+    // !!!IMPORTANT!!!
 /********
  * self.automaticallyAdjustsScrollViewInsets = NO;
  * !!!REMOVES VERTICAL INDENT FROM TOP OF TEXTVIEW TO THE FIRST TEXT LINE IN TEXTVIEW !!!

@@ -371,7 +371,7 @@ static NSString* myVKAccountID = @"21743772";
                self.tableView.showsInfiniteScrolling = NO;
                [self.tableView.infiniteScrollingView stopAnimating];
 
-               NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+               NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
                
           }];
 
@@ -407,7 +407,7 @@ static NSString* myVKAccountID = @"21743772";
                onFailure:^(NSError *error, NSInteger statusCode) {
                    [self.tableView.pullToRefreshView stopAnimating];
 
-                   NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                   NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
 
                }];
 
@@ -430,7 +430,7 @@ static NSString* myVKAccountID = @"21743772";
                   
               }
               onFailure:^(NSError *error, NSInteger statusCode) {
-                  NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                  NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
 
               }];
     
@@ -480,7 +480,7 @@ static NSString* myVKAccountID = @"21743772";
      }
      onFailure:^(NSError *error, NSInteger statusCode)
      {
-         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
          
      }];
     
@@ -525,7 +525,7 @@ static NSString* myVKAccountID = @"21743772";
      }
      onFailure:^(NSError *error, NSInteger statusCode)
      {
-         NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+         NSLog(@"error = %@, code = %ld", [error localizedDescription], (long)statusCode);
          
      }];
     
